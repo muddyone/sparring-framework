@@ -52,7 +52,7 @@ Twelve major components, organized into four layers:
 
 **Specialization layer:**
 
-- **Persona library** -- pre-built persona files (code-reviewer, security-specialist, architecture-reviewer, etc.) plus user-defined files. Each file holds a substantive **Role + Domain Knowledge** spec (mandatory; expertise, evidence-base scope, operational conventions, handoff authority, behavioral invariants) and an optional **Persona** layer (voice, tone, structural output conventions, optional anthropomorphization). See "Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer" in the Lessons section for the depth and content guidance.
+- **Persona library** -- pre-built persona files (code-reviewer, security-specialist, architecture-reviewer, etc.) plus user-defined files. Each file holds a substantive **Role + Domain Knowledge** spec (mandatory; expertise, evidence-base scope, operational conventions, handoff authority, behavioral invariants) and an optional **Persona** layer (voice, tone, structural output conventions, optional anthropomorphization). The library organizes personas across three classes (persistent, returning, temporary) with different curation, lifecycle, and visibility properties -- see "Persona library structure: three classes" below for the full lifecycle model. See "Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer" in the Lessons section for depth and content guidance.
 - **Evidence-base resolver** -- at spawn time, identifies and assigns distinct evidence bases to Generator and Challenger. Sources include local file paths (a corpus directory), MCP tool servers (different tools per role), vector stores (with role-scoped namespaces), or external APIs. Falls back to single-Challenger mode with explicit notice when distinct evidence cannot be articulated.
 - **Domain template registry** -- pre-built SPARRING configurations for common decision types (security review, plan review, vendor selection, hire decision); each template specifies recommended persona pairings, evidence-base specifications, and tuned Challenger questions.
 
@@ -62,6 +62,95 @@ Twelve major components, organized into four layers:
 - **Reference record store** -- the persistent backend where artifacts live long-term. Pluggable: filesystem, git-tracked markdown, SQLite, cloud storage, wiki API.
 - **Dialectic surface adapter** -- the pluggable integration with the active-communication channel (Slack, Discord, Teams, GitHub Issues, email, custom webhook).
 - **Eval harness** -- CLI tooling for partner-applied rubric scoring on a sample of past spars, with structured eval logs that themselves enter the Reference Record.
+
+## Persona library structure: three classes
+
+The persona library holds personas across three classes, each with different curation, lifecycle, and visibility properties. This structure addresses a real problem mature deployments hit: persona libraries accumulate cruft over time when there is no model for how personas enter, age, and leave. Three classes give the lifecycle.
+
+### Persistent personas
+
+The named, partner-curated core. Each persistent persona has:
+
+- Full **Role + Domain Knowledge** layer (mandatory: expertise, evidence-base scope, behavioral invariants, conventions, relationships).
+- Full **Persona** layer when project fit warrants (voice, optional Character anchor, anthropomorphization).
+- Versioning discipline -- edits are tracked; spar artifacts cite the persona-file version.
+- Partner-editable; behavior tunable in production by the people who run the deployment.
+
+Persistent personas carry the partner-engagement function (Persona-layer third function) when they include voice and anthropomorphization. They are the deployment's high-trust, authoritative tier. The SFxLS personas (Marcus, Diane, Lena, Idris, Zoe, Dani) are this class.
+
+### Returning personas
+
+A pool of personas that have been used before but do not warrant full curation. Each returning persona has:
+
+- Full **Role + Domain Knowledge** layer (mandatory; same standards as persistent).
+- **No Persona layer** -- voice rules, Character anchor, and anthropomorphization are bounded to the persistent tier specifically because they require curation. Returning personas are deliberately bland on presentation; their value is operational, not characterful.
+- Lower curation bar than persistent (no partner sign-off required at every edit; partner approval at any time can promote, demote, or evict).
+- Evictable -- removed from the pool after N days unused (default 90, configurable). Eviction is automatic and silent; an evicted returning persona can be re-spawned as temporary on demand.
+
+The Persona-layer cap on returning personas is load-bearing: it prevents cosplay creep on the un-curated tier. The persistent tier holds the project's distinctive characters (Diane, Marcus); the returning tier holds functional specialists ("the SQL-query reviewer," "the API-docs auditor," "the dependency-bump assessor") that have been used a few times and may be useful again -- without anyone needing to author a Character anchor for each one.
+
+The **automated lifecycle for returning personas is Phase 2 work** (resolver awareness, CLI lifecycle commands, eviction policy). Phase 1 ships persistent + temporary as the actively-managed classes; the `returning/` directory is created as forward-compatibility scaffolding and Phase 1 deployments may populate it manually for early lifecycle exercise. Phase 2 brings returning to first-class operational status.
+
+### Temporary personas
+
+Resolver-spawned per-spar for topics that do not fit any persistent or returning persona. Each temporary persona has:
+
+- Full **Role + Domain Knowledge** layer (auto-generated by the persona/evidence resolver from the topic).
+- No Persona layer (single-use; voice consistency irrelevant for one invocation).
+- Discarded after the spar; recorded in the spar artifact for audit.
+
+Temporary personas are the v1 fallback when the resolver cannot match the topic to an existing persona. They are also the source pool for the returning tier -- a temporary persona that gets used multiple times for similar topics is a candidate for partner promotion to returning.
+
+### Lifecycle transitions
+
+Five transitions, all partner-gated in v1:
+
+| From | To | Trigger | Approval |
+|---|---|---|---|
+| Temporary | Returning | Partner explicitly requests retention after a useful spar | Partner approval required |
+| Returning | Persistent | Partner curates voice / Character anchor and signs off | Partner approval required |
+| Returning | Evicted | 90 days unused (configurable) | Automatic; silent |
+| Persistent | Returning | Partner explicitly demotes (rare) | Partner approval required |
+| Persistent | Retired | Partner explicitly removes (very rare) | Partner approval required |
+
+**No auto-promotion in v1.** Phase 3 may add eval-driven auto-promotion (a temporary persona used in N spars where the LLM-as-judge rubric scored it >= X is a candidate for auto-promotion to returning). The thresholds (N, X, eviction days) are deployment-tuning parameters; production data is required to set them defensibly. v1 ships conservative defaults that partners override per their context.
+
+### Resolver awareness
+
+The persona/evidence resolver agent (Phase 2) checks classes in priority order:
+
+1. **Persistent personas** -- highest priority. If one matches the topic's required Role+Domain, use it.
+2. **Returning personas** -- fallback when no persistent persona fits. The resolver surfaces the choice to the partner with a brief note ("using returning persona X, last used 47 days ago, used in 6 prior spars") and proceeds unless overridden. The notification step prevents surprise -- a partner sees the choice before the spar runs.
+3. **Temporary** -- last resort. Resolver auto-generates a Role+Domain spec for this spar only.
+
+Class priority is a soft ordering, not a strict precedence. If a returning persona is a meaningfully better fit than any persistent persona for the specific topic, the resolver should prefer it -- but its lower-trust status means partner notification fires regardless.
+
+### Visibility surface
+
+Partners need to see the pool. CLI surface for class management:
+
+```
+spar persona list                              # list all personas across classes
+spar persona list --class persistent           # filter to one class
+spar persona show <slug>                       # display full persona, including class
+spar persona promote <slug>                    # promote temporary -> returning, or returning -> persistent
+spar persona demote <slug>                     # demote persistent -> returning
+spar persona evict <slug>                      # remove from pool (returning only)
+spar persona pool                              # display the returning pool with usage stats and ages
+```
+
+The pool is also visible via the Reference Record (Discipline 9). Spar artifacts cite `persona_class` for every persona reference, so future readers can audit what class the persona was at the time of the spar.
+
+### Why three classes earn their complexity
+
+A two-class model (persistent + temporary) is simpler but creates two real problems:
+
+- Every reusable persona pays the partner-curation cost upfront, which means partners curate fewer personas than would be useful, which means more spars get temporary personas, which means more setup cost per spar.
+- Or partners bypass curation and use shallow persistent personas, which collapses the persistent tier's curation discipline and the partner-engagement function.
+
+The three-class model lets the persistent tier stay disciplined (deeply curated, character-friendly when project fit warrants) while the returning tier absorbs the volume (lots of functional specialists, low curation bar, evictable). Each tier does what it's good at without contaminating the other.
+
+The structural commitment ships in Phase 1 (filesystem layout, schema fields, manual operations); the LLM-driven automation ships in Phase 2 and Phase 3 as deployments accumulate enough usage data to tune thresholds defensibly.
 
 ## Agent topology
 
@@ -114,7 +203,7 @@ These don't run on every spar but are part of the larger deployed system.
 
 - **Persona/evidence resolver agent (Phase 2).**
   - *Model*: Sonnet or Haiku (lower-cost; bounded inference task).
-  - *System prompt*: "You are the persona/evidence resolver. Given a topic, identify two divergent specialist perspectives whose **Role + Domain Knowledge** layers (expertise, evidence-base scope, operational rules) would meaningfully pressure-test the topic. Specify the explicit distinct evidence base each perspective grounds in. The Persona layer (voice/tone) is optional and need not differ between the two perspectives. If you cannot articulate genuinely distinct Role+Domain layers, return `{viable: false, reason}` -- this is honest signal, not failure."
+  - *System prompt*: "You are the persona/evidence resolver. Given a topic, identify two divergent specialist perspectives whose **Role + Domain Knowledge** layers (expertise, evidence-base scope, operational rules) would meaningfully pressure-test the topic. **Class priority**: prefer persistent personas first (highest trust, partner-curated), then returning personas (with partner notification before use), then auto-generate temporary personas only when no existing persona fits. Class priority is a soft ordering -- a returning persona that fits the topic meaningfully better than any persistent persona should still be preferred, but its lower-trust status means partner notification fires regardless. Specify the explicit distinct evidence base each perspective grounds in. The Persona layer (voice/tone) is optional and need not differ between the two perspectives. If you cannot articulate genuinely distinct Role+Domain layers across the available classes, return `{viable: false, reason}` -- this is honest signal, not failure."
   - *Tools*: read access to the persona library and evidence library.
   - *Input*: the topic + available personas + available evidence bases.
   - *Output*: structured persona-A + evidence-A + persona-B + evidence-B specification, OR the `viable: false` fallback signal.
@@ -181,9 +270,14 @@ spar config show                       # display current config
 **Persona and evidence management:**
 
 ```
-spar persona list                      # show available personas
-spar persona create <name>             # create a new persona template
-spar persona show <name>               # display a persona's full definition
+spar persona list                      # show all personas across classes
+spar persona list --class persistent   # filter by class (persistent | returning | temporary)
+spar persona create <name>             # create a new persistent persona file
+spar persona show <name>               # display a persona's full definition (incl. class)
+spar persona promote <name>            # temporary -> returning, or returning -> persistent
+spar persona demote <name>             # persistent -> returning (rare)
+spar persona evict <name>              # remove from returning pool
+spar persona pool                      # display returning pool with usage stats and ages
 spar evidence list                     # show available evidence bases
 spar evidence create <name> --path <path>   # define an evidence base from a corpus
 spar evidence create <name> --tool <mcp-server-spec>   # define from an MCP tool
@@ -248,10 +342,17 @@ A `.spar/` directory in each project (or `~/.spar/` globally), containing:
 ```
 .spar/
 ├── config.toml              # global / project config
-├── personas/                # persona definitions
-│   ├── code-reviewer.md
-│   ├── security-specialist.md
-│   └── ...
+├── personas/
+│   ├── persistent/          # named, partner-curated; full Role+Domain + optional Persona layers
+│   │   ├── marcus.md
+│   │   ├── diane.md
+│   │   └── ...
+│   ├── returning/           # used-before pool, Role+Domain only, evictable (Phase 2)
+│   │   ├── sql-query-reviewer.md
+│   │   ├── api-docs-auditor.md
+│   │   └── ...
+│   └── temporary-cache/     # resolver-spawned, ephemeral, cleared per spar
+│       └── ...
 ├── evidence/                # evidence-base definitions
 │   ├── codebase.toml
 │   ├── design-docs.toml
@@ -282,6 +383,8 @@ iterations_used: <integer>
 outcome: converged | unresolved_at_cap | fallback_single_challenger
 generator:
   persona: <ref to persona definition>
+  persona_class: persistent | returning | temporary
+  persona_version: <version string for persistent / returning; null for temporary>
   evidence_base: <ref to evidence definition>
   proposals:
     - round: 1
@@ -290,6 +393,8 @@ generator:
     - ...
 challenger:
   persona: <ref>
+  persona_class: persistent | returning | temporary
+  persona_version: <version string for persistent / returning; null for temporary>
   evidence_base: <ref distinct from generator's>
   pressure_tests:
     - round: 1
@@ -630,15 +735,17 @@ Concrete staging from MVP to enterprise-grade. Each phase is independently shipp
 - Filesystem persistence under `.spar/records/`.
 - Manual persona and evidence-base specification at invocation time (no auto-pairing yet).
 - Basic Generator -> Challenger -> agreement-check loop with iteration cap.
-- Spar artifact emission as markdown + JSON sidecar.
+- Spar artifact emission as markdown + JSON sidecar (with `persona_class` and `persona_version` fields populated for forward-compatibility).
 - Manual eval (partner reads + scores using a rubric printed by `spar review`).
 - Applicability Gate as a rule list (file-extension heuristics, command-shape patterns, presence-of-artifact-channel keywords) emitting warn-and-proceed prompts before the spar starts.
+- **Persona library: persistent + temporary classes.** `.spar/personas/persistent/` directory holds partner-curated personas; `.spar/personas/temporary-cache/` holds resolver-spawned per-spar specs. The `returning/` directory is created empty as forward-compatibility scaffolding -- v1 deployments can populate it manually if desired, but no automated lifecycle yet.
 
 This is enough to validate the framework on real decisions. Output: real spar artifacts you can read and assess.
 
 **Phase 2 -- Maturity (~2-4 weeks):**
 
-- Persona library with starter persona files (code-reviewer, security-specialist, architecture-reviewer, design-reviewer). Each file ships with a full Role+Domain layer (the mandatory WHAT) and a minimal Persona layer (lightweight voice rules); deployments adjust the Persona layer up or down per project fit.
+- Persona library with starter persistent persona files (code-reviewer, security-specialist, architecture-reviewer, design-reviewer). Each file ships with a full Role+Domain layer (the mandatory WHAT) and a minimal Persona layer (lightweight voice rules); deployments adjust the Persona layer up or down per project fit.
+- **Returning persona class shipped.** Lifecycle CLI commands (`spar persona promote / demote / evict / pool`) operational. Resolver becomes class-aware: checks persistent -> returning -> temporary in priority order, with partner notification before using a returning persona. Eviction policy runs on a daily cron with the configurable threshold (default 90 days unused). All transitions partner-gated -- no auto-promotion in Phase 2.
 - Evidence-base resolver with file-path and basic RAG support.
 - Auto-pairing for personas based on topic analysis (with explicit fallback to single-Challenger).
 - Domain templates (code-review, architecture-decision, vendor-selection, hire-decision, plan-review).
@@ -661,6 +768,7 @@ This is enough for a small team to use SPARRING as part of regular decision-maki
 - Wiki / Notion / Confluence adapters for separate Reference Record.
 - Cost controls, model selection, budget enforcement.
 - Ceiling-hit symptom detector embedded in the spar artifact emitter (convergence-without-artifacts heuristic, reasoning-shape similarity check, LLM-as-judge low-substance flag) emitting "ceiling-hit candidate" findings into the artifact for partner review.
+- **Eval-driven auto-promotion of personas** (temporary -> returning) when the LLM-as-judge rubric scores them >= configurable threshold across N spars. Conservative defaults; the threshold and N are deployment-tuning parameters informed by Phase 2 production data. Partner can disable auto-promotion entirely if all transitions should remain manually gated.
 
 This is the shape ready for adoption by larger organizations.
 
