@@ -51,7 +51,7 @@ The `/docs/bfn/` namespace follows a deliberate scratchpad-to-mature pattern:
 
 *Plain-language description suitable for partner communication, ResourceForge content, and external presentation. Standalone -- readable without reference to other parts of this doc. For technical detail and SFxLS-specific implementation, see Parts 2-5 below and Appendices A-D.*
 
-The **SPARRING Framework** is a method for designing multi-agent decision-making systems that defeat AI's pleasing bias by pairing two specialists with genuinely different evidence in a structured pressure-test, with explicit operational disciplines that prevent the structure from collapsing into theater.
+The **SPARRING Framework** is a method for designing multi-agent decision-making systems that pair two specialists with genuinely different evidence in a structured pressure-test against the family of compounding LLM failure modes -- pleasing bias, hallucinated detail, specialization blind spots, misread questions, confidently-wrong outputs, bandwagon contamination -- with explicit operational disciplines that prevent the structure from collapsing into theater.
 
 ### The problem it solves
 
@@ -69,7 +69,7 @@ A decision moves through four functions, each with a default iteration cap. The 
 
 4. **PNP** -- Polite, Not Pleasing (~3 iterations) -- Pressure-test the strongest option for weaknesses, edge cases, and hidden assumptions. Politeness governs *how* concerns are raised; the substance never softens to make anyone feel better about a weak answer. *Challenger's question: "Does this actually hold up?"*
 
-The iteration cap is a mechanical fallback. When agents don't converge within the cap, the unresolved question returns to the human or parent agent -- that's information, not failure.
+The iteration cap is a mechanical fallback. When agents don't converge within the cap, the unresolved question returns to the human or parent agent -- that's information, not failure. The receiving party has five named response options at that handoff (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize); see "Disagreement-at-cap response protocol" below.
 
 ### SPARRING -- the operating mechanic
 
@@ -109,7 +109,7 @@ Without these operational disciplines, the framework collapses into theater:
 
 3. **Concerns must cite verifiable evidence.** Every challenge raised must point to a specific artifact -- a fact, a source, a measurement, a concrete failure mode. Vague concerns get dismissed as theater. If an honest concern exists but no artifact is yet citable, the Challenger says so explicitly rather than pretending or suppressing.
 
-4. **Both roles must agree to converge.** Generator declaring "we're done" alone is structurally suspect -- the same pleasing-bias direction the framework exists to defeat. Convergence requires explicit agreement from both. **Disagreement at iteration cap returns the unresolved question to the human or parent agent** -- that's information, not failure.
+4. **Both roles must agree to converge.** Generator declaring "we're done" alone is structurally suspect -- it would reintroduce pleasing-bias drift toward the user's apparent expectation of completion, one of several failure modes the two-role structure exists to defeat. Convergence requires explicit agreement from both. **Disagreement at iteration cap returns the unresolved question to the human or parent agent** -- that's information, not failure.
 
 5. **Self-invocation triggers must be observable.** Agents are bad at assessing their own uncertainty. When an agent decides "this needs sparring," the trigger should be a concrete observable condition, not a feeling.
 
@@ -153,6 +153,24 @@ Without these operational disciplines, the framework collapses into theater:
 
    **Scale-dependent surface separation.** The framework requires both functions (Discipline 8 + Discipline 9) be served, not necessarily on separate physical surfaces. In small deployments -- like the SFxLS Round Table -- a single physical surface can host both with discipline (e.g., open threads as active dialogue; resolved/archived threads with curated content as reference). At larger scale, separation usually becomes necessary because (a) active chatter drowns reference signal at retrieval time, (b) curation discipline kills active dialogue, and (c) revision norms conflict (active communication preserves what-was-said-when; reference revises for correctness). Whether implemented as two surfaces or one-with-conventions is a deployment decision; the framework's discipline is that both functions are served and their conflicting demands are explicitly managed.
 
+### Disagreement-at-cap response protocol
+
+When the iteration cap is reached without both roles signaling agreement, Discipline 4 returns the unresolved question to the human or parent agent. That handoff is information, not failure -- but the receiving party has multiple legitimate responses, and naming them prevents the rarer ones from being skipped. The five canonical responses:
+
+1. **Pick a side with explicit tradeoffs.** Accept the Generator's proposal OR the Challenger's strongest counter, documenting what the other side surfaced as a known and accepted cost. Often the right move when the disagreement is real but the costs of one direction are demonstrably more acceptable than the costs of the other.
+
+2. **Defer the decision.** The inconclusiveness IS the answer: not enough evidence yet, decide later. Schedule a follow-up trigger (a date, a milestone, an event that will surface more evidence) and let the disagreement remain explicitly open. Often the right move when the cost of premature commitment exceeds the cost of waiting.
+
+3. **Reframe the question.** The loop revealed that the question itself was malformed -- two valid evidence bases pointed at different problems, not the same problem with different answers. Restart with a sharper question. Often signaled by both roles raising legitimate concerns that don't actually conflict, just aim past each other.
+
+4. **Escalate.** This decision needs more stakeholders than the original human, or a stakeholder with different authority (legal, security, partner-level). The disagreement may be tractable, but not at this level. Often signaled by one role citing constraints the original human cannot adjudicate.
+
+5. **Synthesize.** Produce a third option neither role proposed, integrating insights from both. The most ambitious response and the most likely to be skipped because it is hardest. Real synthesis is structurally distinct from compromise: compromise averages the two positions; synthesis transcends both by integrating their evidence into a position neither alone reached. The discipline here is recognizing the difference -- if the proposed third option is just the midpoint between Generator and Challenger, it is not synthesis.
+
+These are canonical, not exhaustive. If the situation warrants a response not on the list, take it -- the menu's purpose is to make the rarer moves visible, not to constrain the receiving party's judgment.
+
+A note on synthesis specifically: a one-shot synthesis at the disagreement-at-cap boundary is a hybrid of Popper-style falsification (the framework's base shape -- propose, try to falsify, keep what survives) and Hegelian dialectic (thesis-antithesis-synthesis, where synthesis becomes the next thesis and gets antithesized in turn). True Hegelian iteration would feed the synthesis back into a fresh SPARRING round to test it the same way the original proposal was tested. That second-pass option is available -- "synthesize, then re-spar the synthesis" -- but is not the default because it doubles cost for a relatively rare class of decision. When stakes are very high and the synthesis itself contains novel claims, the second pass is worth considering.
+
 ### Observable triggers for self-invocation
 
 A SPARRING-capable agent invokes the ceremony when one or more of these observable conditions fires. The discipline is using the conditions, not the agent's self-reported uncertainty.
@@ -185,11 +203,11 @@ A SPARRING-capable agent invokes the ceremony when one or more of these observab
 
 The unifying property: each is something detectable from outside the agent without asking the agent how confident it feels. The list is not exhaustive -- it should be extended per the deploying organization's context.
 
-### What the framework addresses (beyond sycophancy)
+### Failure modes the framework addresses
 
-Structured challenge with disjoint evidence defends against multiple single-perspective failure modes:
+Structured challenge with disjoint evidence defends against a family of single-perspective failure modes that compound when agents hand outputs to each other:
 
-- **Sycophancy** -- agents agreeing too easily, especially under social or framing pressure.
+- **Sycophancy / pleasing bias** -- agents agreeing too easily, especially under social or framing pressure; the most-cited LLM failure mode in the literature, but one item in the family rather than its center.
 - **Confirmation bias** -- a single agent interprets ambiguous evidence in line with what it expects to see; two agents with different evidence have different priors.
 - **Anchoring** -- once a first answer is generated, subsequent thinking gravitates toward refining rather than reconsidering.
 - **Misreading the question** -- a single-prompt-interpretation error propagates downstream; two interpretations are more likely to surface a misread.
@@ -198,13 +216,25 @@ Structured challenge with disjoint evidence defends against multiple single-pers
 - **Confidently wrong outputs** -- disagreement between two specialists is itself a signal that certainty is unwarranted.
 - **Bandwagon / social-signal contamination** -- single agents absorb user enthusiasm or prior conversational tone; the Challenger introduces a counter-pressure.
 
-The framework's reach is broader than just "agents agree too easily."
+No single failure mode is the framework's sole target. Pleasing-bias compounding is the most easily named and most often referenced, but the leverage from structured cross-evidence challenge applies across the whole list. Framing the framework as "a sycophancy defense" understates what it does; the disciplines are calibrated against the full family.
 
 ### What the framework does not address
 
 - **The model ceiling.** Multi-agent ceremonies don't produce outputs better than the underlying model is capable of; they reduce single-shot variance toward the ceiling. You can't multi-agent your way past the model's underlying capability.
 - **Pure judgment-shaped questions** where there's no checkable evidence and no domain expert with disjoint sources. The framework's leverage is bounded by the availability of evidence.
 - **Low-stakes, single-shot, or routine work** where the structure adds cost without quality gain.
+
+### Recognizing these situations in a deployment
+
+The three boundaries above are real but unevenly detectable. A deployment should recognize and call out each one, varying the response by what's mechanically available.
+
+- **Low-stakes, single-shot, or routine work** is detectable at entry by topic shape. A pre-flight check classifies the topic against the routine pattern (bug fix, rename, dep bump, simple refactor, factual lookup, mechanical edit) and surfaces a warn-and-proceed prompt: "this looks routine; SPARRING will likely add cost without quality gain -- proceed anyway?" Soft gate, not refusal -- the partner retains the call.
+
+- **Pure judgment-shaped questions** are detectable at entry as a verifiable-artifact-channel check: would any artifact -- a fact, a source, a measurement, a concrete failure mode -- settle this question, even partially? If the honest answer is "no, it's pure preference," the deployment flags the topic and routes to a degraded mode: single-Challenger pressure-testing per the Discipline 2 fallback, rather than spawning two correlated specialists pretending to disjoint evidence. Many topics admit partial artifacts (precedent, prior data) and degrade gracefully; full-preference questions are rarer than they look but real when they appear.
+
+- **The model ceiling** cannot be reliably detected at entry. Ceiling-hit only manifests in retrospect against ground truth the system doesn't have. What is detectable at run time are *symptoms*: convergence reached without artifact citation, both roles producing the same reasoning shape, an LLM-as-judge component (when present) flagging that the convergence reasoning is shallow. The deployment surfaces these as "ceiling-hit candidate" findings in the spar artifact and post-run report, where they can be reviewed against the converged decision -- not as entry gates, since false positives would block real work.
+
+The general posture: warn-and-proceed for the two detectable-at-entry cases; instrument-and-surface for the in-run case. The framework does not prescribe specific thresholds -- those are deployment-tuning decisions -- but it does require the recognition behavior exist and produce visible signals to the partner. The reference deployment realizes this as an **Applicability Gate** component (see [`sparring-reference-deployment.md`](sparring-reference-deployment.md)).
 
 ### Where it pays back
 
@@ -223,14 +253,14 @@ Beyond the variants and operational patterns above (which are part of the base f
 
 - **N-specialist decisions** (multi-Generator). Genuine cross-domain decisions sometimes need three or more specialists who each generate proposals from their own evidence base, with a separate convergence layer. Distinct from the Multi-Challenger ensemble in Variants (which keeps the Generator unitary). Requires governance for how N proposals converge -- unanimity, majority, weighted, etc. -- which is itself a design problem worth research.
 - **Cross-time pressure-testing.** A Challenger reviewing decisions made months ago against what's now known. The Watching-role Challenger in Variants applies the function to ongoing systems; cross-time extends it to retrospective review (post-mortems, periodic architecture audits, milestone closeouts).
-- **Synthesis (true dialectic).** The framework currently eliminates and validates; it does not synthesize. Extending PNP into actual synthesis -- where Generator and Challenger produce a *third* option neither alone proposed, integrating insights from both positions -- is the most ambitious extension. Closer to Hegelian thesis-antithesis-synthesis than the current Popper-style falsification shape.
+- **Synthesis (true dialectic).** Synthesis is now *partially shipped* as one of five named responses in the disagreement-at-cap protocol -- the receiving party (human or parent agent) can produce a third option neither role proposed, integrating insights from both positions, when the disagreement reveals two valid evidence bases neither alone resolves. That is a one-shot synthesis at the Popper/Hegel boundary. The remaining ambition is **iterative synthesis**: each synthesis becomes a new thesis that gets antithesized in a fresh SPARRING round, with the cycle repeating until convergence. The "synthesize, then re-spar the synthesis" path is named in the protocol but is not first-class infrastructure -- automating multi-pass synthesis loops, with governance for when to stop iterating, is the genuine future-extension work. Closer to Hegelian thesis-antithesis-synthesis than the current Popper-style falsification shape.
 - **Calibration training.** Using Challenger feedback over time to improve Generator self-assessment. Essentially RL-from-Challenger-feedback applied to the Generator's predictions of where its work will fail. Heavy infrastructure; requires the Phase 3 eval-harness layer to provide the feedback signal.
 - **Adversarial scenario generation.** Pointing SPARRING at existing plans or systems to generate realistic failure scenarios and edge cases. Different from in-loop pressure-testing because the target is an existing artifact (a deployed system, a written plan), not a decision being made now.
 - **Bias-aware Challenger lenses.** Specific Challenger configurations tuned to detect specific cognitive biases (anchoring, availability, framing, sunk cost, optimism) the Generator might exhibit. A library of pre-built Challenger personas, each specialized in a single bias-detection lens.
 
 ### The one-sentence version
 
-The SPARRING Framework says: when an AI system has to make a decision that matters, structure the work as a divergent-then-convergent loop with two roles whose Challenger function shifts as the loop progresses, require that both roles draw on genuinely different evidence, demand that every concern cite a verifiable artifact, only call the decision converged when both roles independently agree, instrument the system so you can tell whether the structured challenge is producing real challenge or theater, and host the work on two surfaces (one for active dialogue between humans and agents, one for the curated record that future readers will rely on) -- recognizing that those two surfaces serve genuinely different purposes and may need to be physically separate at scale.
+The SPARRING Framework says: when an AI system has to make a decision that matters, structure the work as a divergent-then-convergent loop with two roles whose Challenger function shifts as the loop progresses, require that both roles draw on genuinely different evidence, demand that every concern cite a verifiable artifact, only call the decision converged when both roles independently agree, return unresolved disagreement to the human or parent agent with a named response protocol (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) when the iteration cap is reached, instrument the system so you can tell whether the structured challenge is producing real challenge or theater, and host the work on two surfaces (one for active dialogue between humans and agents, one for the curated record that future readers will rely on) -- recognizing that those two surfaces serve genuinely different purposes and may need to be physically separate at scale.
 
 ---
 
@@ -254,7 +284,7 @@ Bart developed this framework as ResourceForge content (LinkedIn, two posts and 
 
 ### Core thesis
 
-In agentic systems, the dominant failure mode is **not hallucination** — it is **pleasing bias compounding across handoffs**. LLMs agree too easily, soften critique, and optimize for sounding helpful. In a single interaction that is manageable. In a chain of agents handing outputs to each other, one agent's softened "yes" becomes the next agent's premise, and the system reinforces its own assumptions while sounding coherent.
+In agentic systems, the dominant failure shape is **not hallucination as a single-shot event** — it is the **family of single-perspective failure modes compounding across handoffs**. Pleasing bias is the most-often-cited (LLMs agree too easily, soften critique, optimize for sounding helpful), but misread questions, invented specifics, specialization blind spots, confidently-wrong outputs, anchoring, and bandwagon contamination compound through agent chains the same way. In a single interaction any one of these is manageable; in a chain of agents handing outputs to each other, one agent's softened "yes" (or invented specific, or missed cross-domain risk) becomes the next agent's premise, and the system reinforces its own assumptions while sounding coherent.
 
 PNP — **Polite, Not Pleasing** — is the antidote: structured challenge instead of structured agreement.
 
@@ -284,7 +314,7 @@ This role-shift is the framework's sharpest contribution. Standard adversarial f
 
 ### Inspirations Bart cites
 
-Divergent / convergent thinking; dialectic (thesis-antithesis-synthesis); red team / blue team; adversarial learning (GANs).
+Divergent / convergent thinking; dialectic (Popper-style falsification at the loop's base, with Hegelian thesis-antithesis-synthesis available as a named response at the disagreement-at-cap handoff); red team / blue team; adversarial learning (GANs).
 
 ---
 
@@ -295,22 +325,30 @@ A document that just praised the concept would be exactly the pleasing-bias arti
 ### What still holds
 
 1. **The Cut is structurally inconsistent in the visual treatment.** It carries an iteration count (~2 in the graphic) but is fundamentally a transition, not a generative phase. Listing it as a peer to SPARK / PNP invites confusion about what it produces. Minor taxonomy issue, not a fundamental flaw.
+   - *Status (2026-04-29)*: textual treatment in these notes already explains the Cut as a mode transition; the open work is at the marketing-graphic level, not the framework level. Defer to graphic refresh; not an active doc concern.
 
 2. **The dialectic citation overreaches.** The loop eliminates and validates; it does not synthesize. Closer to Popper-style falsification than Hegel. Small, intellectual-honesty point.
+   - *Status (2026-04-29)*: **partially resolved** via the Disagreement-at-cap response protocol (above). Synthesis is now a named response option at the disagreement-at-cap handoff, giving the framework a Hegelian extension at one boundary while preserving the Popperian base for the in-loop convergence. The remaining ambition (iterative synthesis as automated infrastructure) is documented in "Future extensions worth pursuing."
 
 3. **Multi-agent designs have their own failure modes.** Coordination overhead, handoff drift, integration of conflicting outputs, delayed convergence. A poorly-designed multi-agent system can produce *worse* results than a single well-designed agent. This is not a critique of the framework -- it is a critique of *naive* applications of the framework. The "carefully considered and crafted" qualifier is doing significant work in the framework's value claim.
+   - *Status (2026-04-29)*: addressed structurally by the reference deployment -- code-orchestrator default minimizes coordination overhead; the spar artifact records each round so handoff drift is auditable; the Disagreement-at-cap response protocol handles integration of conflicting outputs; the iteration cap bounds delayed convergence. The "carefully designed" qualifier remains load-bearing -- the deployment makes "careful" mechanical, not optional.
 
 4. **The model ceiling still bounds quality.** Multi-agent ceremonies don't produce outputs better than the underlying model is capable of; they produce outputs *closer to the model's ceiling* by reducing the single-shot variance from biases, blind spots, and pleasing drift. The trade is single-shot-ceiling-or-below for multi-shot-closer-to-ceiling -- which is the right trade, and what you want -- but it is a real bound. You can't multi-agent your way past Opus's underlying capability.
+   - *Status (2026-04-29)*: addressed structurally via the Applicability Gate's **ceiling-hit symptom detector** in the reference deployment (convergence-without-artifact-citation, identical reasoning shapes between roles, LLM-as-judge low-substance flag). The ceiling itself is not eliminated -- the bound is real and unchanged -- but ceiling-hit candidates are now flagged in the spar artifact so the receiving party can review the converged decision against the suspicion that the model topped out rather than genuinely converged.
 
 5. **Specialization is strongest when agents have genuinely different ground truth, not just different role labels.** Two specialized agents with the same training data, the same evidence pool, and only different system prompts will produce more correlated outputs than they appear to. The strongest specialization is when agents have access to *different evidence*: Marcus reading code Lena hasn't read; Lena citing biomechanical research Marcus doesn't know; Idris citing mythology Lena doesn't have. Persona-only specialization with shared evidence is real but smaller than it looks. The Idris-Lena pairing adopted in Part 5 is strong specifically because their evidence bases are *genuinely disjoint* (mythology / literary tradition vs historical / biomechanical / combat-sports research) -- the Challenger has substance to draw on that the Generator does not. A generic Generator/Challenger pairing with shared evidence is weaker -- still useful, but not as much as the structural framing suggests. (This is also the strongest residual case for partner involvement: the partner has lived experience and project history that agents don't.)
+   - *Status (2026-04-29)*: this concern *is* Discipline 2; the framework's structural response is the **evidence-base resolver** with explicit fallback to single-Challenger when distinct evidence cannot be articulated. The deployment enforces that personas commit to specific evidence sources at generation time. Concern stands as written; it is the design concern Discipline 2 was built to answer, not a residual flaw.
 
 ### What was softened (still real, but smaller than originally framed)
 
 6. **Pleasing bias in the model weights.** The original framing was "role assignment is a partial fix, not a structural one." The clarification that survives: specialization through a carefully-crafted system prompt can *substantially* constrain pleasing bias -- more than the original critique credited. The residual risk is narrower than originally stated: the agent pleasing the user's *expectation of seeing structured challenge*, which is harder to counter via prompt alone but real. This is the sharper version of the concern.
+   - *Status (2026-04-29)*: structural defenses in the deployment (specialization with disjoint evidence, verifiable-artifact discipline rejecting unsubstantiated concerns, "calibrated agreement" rubric criterion in the LLM-as-judge eval) cover the broad case. Residual narrow risk -- the agent pleasing the user's *expectation of seeing structured challenge* -- is partially addressed by the rubric's "substantive vs theatrical" criterion, which catches manufactured-rigor outputs. Not eliminable via prompt alone, but visible to measurement.
 
 7. **Theatrical adversariality.** Original framing presented this as a major implementation risk. Specialization -- especially **domain-grounded persona specialization** like Lena pressure-testing Idris's lore -- is a much stronger defense than the original critique credited. When the Challenger has genuine domain expertise the Generator lacks, the challenge has substance to draw on, not just adversarial posture. The risk persists specifically for *non-domain-grounded Challengers* -- a generic "Challenger" agent told to "pressure-test this" without distinct expertise is more susceptible to manufactured rigor than a Lena or a Marcus would be.
+   - *Status (2026-04-29)*: addressed structurally via domain-grounded specialization (Discipline 2 + persona library + evidence-base resolver), the verifiable-artifact requirement (Discipline 3 + Challenger output schema), and the "substantive vs theatrical" rubric criterion in the LLM-as-judge. The residual risk for non-domain-grounded Challengers is recognized in the deployment: when the evidence-base resolver cannot articulate distinct evidence, it falls back to single-Challenger PNP rather than spawning a generic "Challenger" with no substance to draw on.
 
 8. **The highest-leverage Challenger is often the human partner.** Original framing risked treating the framework as agent-to-agent when the human is the more useful adversary. The clarification: the partner is highest-leverage on *framing, premise, scope, stance* -- the broad judgment calls. Specialized agents can be highest-leverage on *domain-specific pressure-testing* the partner cannot do (Lena on biomechanical plausibility; Dani on security surface; Marcus on implementation risk). Both are needed in different roles, not in competition.
+   - *Status (2026-04-29)*: supported structurally via the `--human-challenger` (and `--human-generator`) role variants in the deployment. The CLI prompts the human in the appropriate round and parses their input into the structured signal format. Both roles can be human, agent, or mixed -- the "best Challenger for this decision" is a deployment-time choice, not a framework constraint.
 
 ### What was retracted
 
@@ -377,11 +415,11 @@ A multi-turn ceremony where two distinct voices actually spar through the four p
 
 ### Surface C — Integration into existing agentic workflows
 
-Where pleasing bias can compound across handoffs in the SFxLS ecosystem today, and where a small added step would have measurable effect.
+Where compounding LLM failure modes (pleasing bias, hallucinated detail, missed cross-domain concerns, single-perspective drift) can stack across handoffs in the SFxLS ecosystem today, and where a small added step would have measurable effect.
 
 Surfaces, grouped by tier:
 
-**Tier 1 — automated agents with no human in the loop.** Highest pleasing-bias risk, highest leverage from PNP, cheapest to add (one extra step per agent).
+**Tier 1 — automated agents with no human in the loop.** Highest compounding-failure risk (pleasing bias most visible, but also unchecked hallucinated detail, missed cross-domain concerns, single-perspective drift), highest leverage from a structured pressure-test, cheapest to add (one extra step per agent).
 
 - Marcus's daily auto-fix workflow — self-PNP on "what would I miss if I am being too agreeable to the audit?"
 - Dani's security digest — self-PNP on "what false positives am I likely flagging?"
@@ -406,7 +444,7 @@ Surfaces, grouped by tier:
 
 ### Cross-cutting observation
 
-The integration surfaces share a useful property: nearly all of them can be added as **one extra step inside an existing skill or workflow**, not as new ceremonies. That is the right shape for a low-friction first adoption — small additions to surfaces that already exist, where the pleasing-bias risk is concrete rather than hypothetical.
+The integration surfaces share a useful property: nearly all of them can be added as **one extra step inside an existing skill or workflow**, not as new ceremonies. That is the right shape for a low-friction first adoption — small additions to surfaces that already exist, where the compounding-failure risks are concrete rather than hypothetical.
 
 ---
 
@@ -916,4 +954,4 @@ The temptation, at every phase, is to build the more exciting next phase before 
 - On-the-fly specialists only get built when standing pairs are demonstrably failing on some topic AND the eval harness can validate the on-the-fly specialist is real specialization vs. theater.
 - Divergent-domain dual judges only get built when single-judge measurement reveals genuinely multidimensional cases that warrant the cost.
 
-This is conservative. The risk it manages: building exciting infrastructure (orchestrator, specialists, dual judges) without validated foundations produces a system that *looks* sophisticated and produces convincing-looking outputs without anyone being able to tell whether it's actually doing better than a single Claude. That is the same pleasing-bias failure mode the framework exists to defeat, applied to architecture rather than to individual outputs.
+This is conservative. The risk it manages: building exciting infrastructure (orchestrator, specialists, dual judges) without validated foundations produces a system that *looks* sophisticated and produces convincing-looking outputs without anyone being able to tell whether it's actually doing better than a single Claude. That is a structural-level instance of the same compounding-failure pattern the framework's individual-decision discipline targets (pleasing-shaped self-validation at the architecture level), applied to architecture rather than to individual outputs.

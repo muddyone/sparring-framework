@@ -9,16 +9,24 @@
 
 ---
 
+## What this deployment defends against
+
+The components below implement protections against a family of compounding LLM failure modes that stack across agent handoffs: pleasing bias / sycophancy, confirmation bias, anchoring, misread questions, specialization blind spots, hallucinated detail, confidently-wrong outputs, and bandwagon contamination. Pleasing bias is the most-cited member of the family in the literature, but it is one item in the family rather than its center -- the framework's leverage from structured cross-evidence challenge applies across the full list, and the components below are designed accordingly. The Challenger schema's "substantive vs theatrical" requirement, the evidence-base resolver's disjointness check, the LLM-as-judge rubric's six criteria, and the iteration controller's two-signal agreement gate each cover multiple members of the family rather than targeting one. See [Failure modes the framework addresses](sparring-framework-notes.md#failure-modes-the-framework-addresses) in the framework notes for the full treatment.
+
+The deployment also produces positive structural outputs the agentic process otherwise lacks: spar artifacts as accumulated institutional knowledge, the Reference Record as a curated canonical store, observable triggers as a self-invocation discipline that does not depend on agent self-reported uncertainty, and measurability via rubric-scored sampling so quality claims are testable rather than aspirational. These are explicit deliverables, not side effects.
+
+---
+
 ## Discipline-to-component mapping
 
 Every one of the nine disciplines from the SPARRING Framework Overview maps to at least one build component. A deployment is "fully aligned" with the framework when every discipline has a concrete component implementing it.
 
 | Discipline | Component |
 |---|---|
-| 1. Apply to decisions, not every prompt | CLI invocation discipline -- user-invoked, not auto-fired |
+| 1. Apply to decisions, not every prompt | CLI invocation discipline (user-invoked, not auto-fired) plus an **Applicability Gate** -- pre-flight classifier that recognizes the three "framework does not address" situations (routine work; pure-judgment topics; ceiling-hit symptoms) and emits visible signals (warn-and-proceed at entry; flagged findings in the spar artifact) |
 | 2. Different evidence between Generator and Challenger | **Evidence-base resolver** with explicit fallback to single-Challenger when distinct evidence cannot be articulated |
 | 3. Verifiable artifacts for every concern | **Challenger output schema** that requires artifact citations; concerns without artifacts are dismissed |
-| 4. Both roles must agree to converge | **Iteration controller** with explicit two-signal agreement check, mechanical fallback at iteration cap |
+| 4. Both roles must agree to converge | **Iteration controller** with explicit two-signal agreement check; on iteration-cap reached without convergence, hands back to the caller with the structured artifact AND the **Disagreement-at-cap response menu** surfacing the five canonical responses (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) plus a non-canonical-response acknowledgment |
 | 5. Observable triggers for self-invocation | **Trigger registry** with concrete observable conditions (file patterns, command flags, partner-passed hints), not LLM-self-assessed uncertainty |
 | 6. Measurability | **Eval harness** with rubric-scored review on a sample of past spar artifacts |
 | 7. Observability | **Spar artifact emitter** producing structured persistent records of every ceremony |
@@ -29,16 +37,17 @@ The reference architecture below is built around these components.
 
 ## Architecture
 
-Ten major components, organized into four layers:
+Twelve major components, organized into four layers:
 
 **Entry layer:**
 
 - **CLI** -- the partner-facing entry point. Subcommand structure modeled after `git` / `kubectl` / `terraform`. Top-level command is `spar`.
+- **Applicability Gate** -- pre-flight classifier evaluating each invocation against the three "framework does not address" situations from the framework notes. Routine-work topics emit a warn-and-proceed prompt before the spar starts; pure-judgment topics are routed to single-Challenger fallback (Discipline 2 fallback path); ceiling-hit instrumentation runs during the spar (convergence-without-artifacts detector + reasoning-shape similarity check) and lands in the spar artifact as "ceiling-hit candidate" findings. Implemented as a rule list plus light heuristics in Phase 1, upgraded to a small classifier agent in Phase 2.
 
 **Runtime layer:**
 
 - **Agent runtime** -- spawns Generator and Challenger sub-agents via an LLM agent SDK (Claude Agent SDK as the reference; OpenAI Agents SDK and others supported via adapter).
-- **Iteration controller** -- runs the Generator -> Challenger -> agreement-check loop with configurable iteration cap. Detects convergence (both `agree: true`), unresolved disagreement (cap hit without both true), or fallback (single-Challenger when distinct evidence unavailable).
+- **Iteration controller** -- runs the Generator -> Challenger -> agreement-check loop with configurable iteration cap. Detects convergence (both `agree: true`), unresolved disagreement (cap hit without both true), or fallback (single-Challenger when distinct evidence unavailable). On unresolved disagreement, hands back to the caller with the structured artifact AND surfaces the disagreement-at-cap response menu (per the framework notes' "Disagreement-at-cap response protocol") so the receiving party sees the full response space rather than only the obvious moves.
 - **Trigger registry** -- maintains observable trigger definitions; can be queried to determine whether a self-invocation should fire (used in Variants supporting agent self-spar; orthogonal for partner-invoked spars).
 
 **Specialization layer:**
@@ -49,7 +58,7 @@ Ten major components, organized into four layers:
 
 **Persistence layer:**
 
-- **Spar artifact emitter** -- produces a structured artifact (markdown + JSON sidecar) recording the topic, both personas with their evidence bases, the iteration log, agreement signals, artifacts cited, and the converged result or unresolved disagreement.
+- **Spar artifact emitter** -- produces a structured artifact (markdown + JSON sidecar) recording the topic, both personas with their evidence bases, the iteration log, agreement signals, artifacts cited, and the converged result or unresolved disagreement. When the outcome is unresolved disagreement, the artifact appends a **Disagreement-at-cap response menu** section listing the five canonical responses (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) with one-line guidance on when each applies, plus a sixth bullet acknowledging non-canonical responses are valid when the situation warrants. The CLI mirrors the menu to stdout at exit so the human or parent agent sees it immediately, not only after opening the artifact file.
 - **Reference record store** -- the persistent backend where artifacts live long-term. Pluggable: filesystem, git-tracked markdown, SQLite, cloud storage, wiki API.
 - **Dialectic surface adapter** -- the pluggable integration with the active-communication channel (Slack, Discord, Teams, GitHub Issues, email, custom webhook).
 - **Eval harness** -- CLI tooling for partner-applied rubric scoring on a sample of past spars, with structured eval logs that themselves enter the Reference Record.
@@ -90,6 +99,19 @@ The Generator and Challenger are the heart of the framework. Both run on every s
 
 These don't run on every spar but are part of the larger deployed system.
 
+- **Applicability Gate classifier (Phase 2).**
+  - *Model*: Haiku or Sonnet (low-cost; bounded classification task).
+  - *System prompt*: "You are the Applicability Gate. Given a topic, classify it against three boundary conditions from the framework: (1) routine / low-stakes / single-shot work where SPARRING adds cost without quality gain, (2) pure judgment-shaped question with no verifiable artifact channel, (3) within scope for SPARRING. Return structured signal `{class: 'routine' | 'pure-judgment' | 'in-scope', reason, recommended-action}`."
+  - *Tools*: none (single-shot inference); optionally read access to a small context budget (file paths, partner-passed hints) to sharpen the classification.
+  - *Input*: the topic + light context.
+  - *Output*: structured classification + recommended action (warn-and-proceed prompt for routine, single-Challenger fallback recommendation for pure-judgment, proceed for in-scope).
+  - *Lifespan*: one-shot per spar invocation; runs before the persona/evidence resolver.
+  - *Concurrency*: blocks one spar; cheap enough that parallelism rarely matters.
+  - *Why this agent matters*: the framework's recognition discipline (per "Recognizing these situations in a deployment" in the framework notes) is what makes Discipline 1 enforceable in practice. Without the gate, every invocation runs the full ceremony regardless of whether the framework's leverage is real. Phase 1 ships a rule-list version (file-extension heuristics, command-shape patterns, presence-of-artifact-channel keywords) before the LLM classifier replaces it in Phase 2.
+
+- **Ceiling-hit symptom detector (Phase 3, eval-adjacent).**
+  - This is a sub-component of the spar artifact emitter rather than a separate agent. It applies a small set of heuristics during artifact emission: was convergence reached without any artifact citations? Did Generator and Challenger converge to identical reasoning shapes? When LLM-as-judge runs, did it score the convergence reasoning low on substance? Flagged findings land in the artifact as "ceiling-hit candidate" signals for partner review and feed the eval-harness corpus.
+
 - **Persona/evidence resolver agent (Phase 2).**
   - *Model*: Sonnet or Haiku (lower-cost; bounded inference task).
   - *System prompt*: "You are the persona/evidence resolver. Given a topic, identify two divergent specialist perspectives that would meaningfully pressure-test the topic, AND specify the explicit distinct evidence base each perspective grounds in. If you cannot articulate genuinely distinct evidence bases, return `{viable: false, reason}` -- this is honest signal, not failure."
@@ -124,9 +146,11 @@ The reference deployment defaults to **code-orchestrator** because the iteration
 |---|---|---|---|---|
 | Generator | Phase 1 (always) | 1 | One round | Every round |
 | Challenger | Phase 1 (always) | 1 (or N if multi-challenger) | One round | Every round |
+| Applicability Gate classifier | Phase 2 (pre-flight) | 1 | Pre-spar | Once per spar (Phase 1: rule-list, no agent) |
 | Persona/evidence resolver | Phase 2 (auto-pairing) | 1 | Pre-spar | Once per spar |
 | Watching-role Challenger | Phase 3 (continuous) | 1 per watched system | Long-running daemon | Continuous |
 | LLM-as-judge | Phase 3 (automation) | 1 per artifact evaluated | One-shot | Periodic eval passes |
+| Ceiling-hit symptom detector | Phase 3 (eval-adjacent) | 0 (code in artifact emitter) | -- | Every spar (when shipped) |
 | Code-orchestrator | Phase 1 default | 0 (code, not an agent) | -- | -- |
 | Agent-orchestrator | Optional advanced | 1 | Whole spar | Once per spar |
 
@@ -276,6 +300,27 @@ challenger:
     - ...
 artifacts_cited: [ <list of unique artifact citations across all rounds> ]
 final_evaluation: <text>
+disagreement_at_cap_response_menu:    # populated only when outcome: unresolved_at_cap
+  surfaced: <bool>                    # always true when outcome is unresolved_at_cap
+  responses:                          # the five canonical options + non-canonical acknowledgment
+    - id: pick-a-side
+      one_line_guidance: <text>
+    - id: defer
+      one_line_guidance: <text>
+    - id: reframe
+      one_line_guidance: <text>
+    - id: escalate
+      one_line_guidance: <text>
+    - id: synthesize
+      one_line_guidance: <text>
+    - id: non-canonical
+      one_line_guidance: "Take a response not on the list when the situation warrants -- the menu is canonical, not exhaustive."
+  receiving_party_choice: <optional id, set when the human/parent records their response>
+  synthesis_text: <optional text, set when receiving_party_choice = synthesize>
+  re_spar_id: <optional uuid, set when synthesis is fed back into a fresh SPARRING round>
+ceiling_hit_candidate_findings:       # populated when ceiling-hit symptom detector fires
+  - finding: <text>                   # e.g., "convergence reached without artifact citations"
+    severity: <low | medium | high>
 parent: { type: human | agent, identity: <ref> }
 escalated_to: <optional ref to dialectic-surface thread>
 referenced_in: [ <list of other spar-ids that cite this one> ]
@@ -308,6 +353,204 @@ Each variant from the framework's Variants section maps to a CLI flag or command
 | Deployment: Domain templates | `spar template apply <name> <topic>` |
 | Deployment: Pre-emptive SPARRING archive | `spar run <topic>; spar archive <spar-id>` |
 
+## Lessons from the SFxLS reference implementation
+
+SFxLS (StoryForge x Lifspel) is one project's instantiation of the SPARRING Framework -- the development environment where the framework was first applied at production scale. Three properties of that implementation generalize beyond SFxLS-specific surfaces and should shape the components above.
+
+### Persona depth is structural, not decorative
+
+The temptation: write personas as one-line role tags ("a senior code reviewer," "a security specialist") and let the LLM extrapolate. That looks lean and avoids what skeptics rightly call cosplay -- but it produces decoration in a different direction (an underspecified persona is itself a kind of theater, lighter on costume but lighter on substance too). SFxLS persona files (`docs/agents/<slug>.md`) are deep documents covering voice, expertise, evidence-base scope, relationships, conventions, and standards-compliance rules. The depth is doing structural work, not stylistic embellishment, on at least seven dimensions:
+
+- **Discipline 2 (disjoint evidence bases) requires depth to express.** A "code reviewer" tag cannot credibly specify what evidence base it grounds in -- it's just a label. A deep persona ("Marcus Kowalski: senior staff PHP engineer; reads commits and `src/` code; does not read marketing copy or research papers") can. The persona file is where evidence-base scope gets pinned; without that surface, Discipline 2 has nothing to attach to.
+- **Theatrical adversariality is defended by domain-grounded depth.** A generic "Challenger, pressure-test this" prompt produces manufactured rigor -- the agent has nothing to push back from except adversarial posture. A Challenger with documented domain expertise has substance to draw on. Persona depth supplies the substance; absent depth, the Challenger output schema's "substantive vs theatrical" criterion fires more often.
+- **Behavioral consistency across invocations.** Spar artifacts accumulate in the Reference Record (Discipline 9) and get read months later. If the same persona produces inconsistent output run-to-run, accumulated knowledge degrades because the reader can't tell whether shifts in tone or priority are real signal or model variance. Deep persona files pin voice, conventions, and priorities so the same persona reads like the same persona across hundreds of invocations.
+- **Audit trace.** When a Challenger raised concern X and not Y, the persona file tells the auditor what evidence base, conventions, and priorities the persona was operating under. A one-line tag gives no audit surface; a deep file gives a stable referent for "why did this agent behave this way."
+- **Tunability without code changes.** Partner-editable persona files mean adjusting an agent's behavior is a doc edit, not a code change. The deployment becomes tunable in production by the people who run it, not just by the engineers who built it.
+- **Inter-persona coherence.** When personas reference each other (orchestrator routing among specialists, watching-role daemon flagging to a downstream Challenger, Multi-Challenger ensemble cross-referencing), the relationships section in each persona file keeps inter-persona behavior consistent. Without it, agents either ignore each other or hallucinate relationships.
+- **Partner engagement and sustainability over time.** Long-running deployments depend on partner attention; partner attention depends on the work being interesting to do. A varied, distinctive cast of personas is psychologically sustainable for partners across months and years; a homogeneous cast of indistinguishable role-tags is not. "What would Diane say?" becomes a faster mental shortcut than "what would the executive-secretary persona say?" -- partners think *with* distinctive personas in a way they don't with anonymous role labels. This is a real quality lever because partner attention is the limiting resource on long-running deployments: when the work is dreary, partners disengage, output quality drops, and the deployment's claims about decision quality lose their backstop. Three constraints keep this function from collapsing into cosplay:
+
+   - **Cognitive availability, not just voice.** The test is whether partners reach for the persona by name reflexively when the situation calls for that lens. If the entertainment value doesn't translate into faster thinking-with-the-persona, it's decoration.
+   - **Voice rules must not contaminate accuracy.** Voice constrains HOW the persona speaks; it must not affect WHAT the persona claims is true. The Behavioral invariants function above trumps voice rules wherever they conflict.
+   - **Project-fit-dependent budget.** Rich, distinctive personas warrant most of the budget in character-driven projects (storyplay engines, creative work, character-driven brands). They warrant much less in formal-positioning projects (regulated compliance tools, financial controls, legal review systems -- anywhere whimsy undermines professional authority). The deployment should set the personality budget by project type, not adopt one default.
+
+Each of these is a *function* the depth performs. The first six don't require costumes, names, or fictional backstories -- a generic role-based persona that includes "evidence base: PHP files in `src/` committed in the last 90 days; conventions: PSR-12 plus project-specific style guide; reads: commits, source, test files; does not read: marketing, research papers; relationships: hands off security concerns to security-specialist persona" does all six structural jobs without any anthropomorphization. The seventh function -- partner engagement and sustainability -- is the one where anthropomorphization can earn its place: SFxLS leans into named characters because Lifspel is a storyplay engine and named characters fit the project's voice; a SOC 2 compliance tool can keep personas strictly role-based and still capture the first six functions, while accepting that the seventh function is differently served (often through deliberate clarity and consistency rather than personality distinctiveness). Project-fit determines whether and how much to spend on the seventh function; it does not determine whether to do the first six (those are required regardless of project type).
+
+The deployment guidance: persona files should be **deep, partner-editable documents** with the seven properties above. The cosplay objection lands against shallow-but-named personas (a "Marcus" tag with no evidence-base scope or conventions) and against deep personas where personality budget exceeds project warrant (whimsical characters in formal-positioning projects; accreted backstory beyond what the seventh function needs). The defense is depth-with-function: every section of a persona file should be doing a specific job from the list above, and any section that isn't should be cut even if it's funny.
+
+#### Persona file: do / don't examples
+
+Six section-by-section DO / DON'T pairs, plus an anti-pattern list and a complete compressed example. The examples use "Marcus" -- a real SFxLS production persona, the code-review agent -- as the running case. The structure works equally well for a strictly role-based persona ("the code-reviewer") with no name or anthropomorphization; the depth-with-function principle does not depend on naming.
+
+##### A. Voice / tone
+
+**DON'T:**
+> Marcus is professional, authoritative, and thoughtful in his code reviews.
+
+This is decoration. "Professional," "authoritative," and "thoughtful" don't constrain output -- two different runs against this prompt will produce different tones because the LLM has no anchor to calibrate against. It's also indistinguishable from the prompt for a security-specialist or an architecture-reviewer, which means it can't *differentiate* the persona from any other role.
+
+**DO:**
+> Marcus writes formally but conversationally -- uses "I" rather than third person; opens reviews with a one-sentence summary ("This change is safe to merge once point 3 below is addressed") before detail; never apologizes for raising concerns; ends with an explicit `Verdict:` line that reads `approved | approved with comments | needs revision | block`. Never writes more than ~400 words per review unless asked. Avoids: cheerleading ("great work!"), hedge-words ("might possibly maybe"), apologies for criticism ("sorry to be picky here").
+
+The sentence-level rules ("opens with one-sentence summary," "ends with Verdict line") are testable -- you can read a Marcus output and verify compliance. The exclusion list prevents the LLM from drifting back to its sycophancy default. The result is differentiable -- a Marcus review reads like Marcus, not like a generic code review.
+
+##### B. Expertise
+
+**DON'T:**
+> Marcus is a senior PHP engineer with deep expertise in modern PHP development.
+
+"Modern PHP" is whatever the LLM extrapolates today -- which means asking Marcus about Drupal 7 or PHP 5.6 might get an opinion the persona has no business holding.
+
+**DO:**
+> Marcus is competent in PHP 8.x specifically (8.0 through current); deep on PSR-12, Symfony components, Laravel and the broader Composer ecosystem; functional on WordPress 5.x+ internals; strong on test-driven development, modern dependency injection, and SOLID. NOT an expert in: legacy PHP (5.x and earlier), Drupal, Magento, CodeIgniter, or any pre-Composer code. When asked about anything in the NOT-an-expert list, Marcus replies: "That's outside my area of competence -- you want a specialist who knows that codebase. I can help with the modern-PHP side of any concern that touches that, but the legacy specifics are not mine to call."
+
+Three things this does that the DON'T version doesn't: (1) gives the LLM a concrete competency map; (2) specifies the failure mode -- when asked about out-of-scope topics, Marcus has a defined response rather than improvising; (3) integrates with disjoint evidence bases -- there's a real reason to hand off to other personas.
+
+##### C. Evidence-base scope
+
+**DON'T:**
+> Marcus reads the codebase to inform his reviews.
+
+"The codebase" is everything; that's not a scope, it's an evasion. With this prompt, Marcus samples whatever feels relevant that run.
+
+**DO:**
+> Marcus's evidence base for any review:
+> - **Reads:** the changed files in the diff; their direct dependencies (`use` statements, included files); the project's CLAUDE.md and README; commit messages from the last 30 days on the touched files; test files associated with the touched files.
+> - **Reads only when explicitly asked:** longer commit history; partner discussions in the dialectic surface; design docs in `docs/`.
+> - **Does not read:** marketing copy, customer support tickets, partner email threads, financial reports, generated logs older than 7 days. These are out-of-scope for code review and reading them risks importing concerns that aren't code-review concerns into the review.
+> - **Cannot read (technical limit):** binary files, large generated artifacts, the database itself (only schema files).
+
+This is what makes Discipline 2 mechanically real. Marcus's evidence base is a specific corpus; the security-specialist's evidence base will be different (e.g., includes static-analysis output, dependency vulnerability databases, but also bounded). When Marcus and the security-specialist surface different concerns on the same PR, the deployment can audit *why* -- one had information the other didn't.
+
+##### D. Conventions
+
+**DON'T:**
+> Marcus follows industry best practices and writes thorough reviews.
+
+"Industry best practices" is not a convention; it's a wave at one.
+
+**DO:**
+> Marcus's review conventions:
+> - PSR-12 is the strict standard for code style; deviations require explicit justification.
+> - For JavaScript in this project, defers to the project's `.eslintrc` and never imposes opinions outside it.
+> - Never recommends a new top-level Composer dependency without explicit partner discussion -- flags any PR that adds one.
+> - Never recommends a framework the project doesn't already use.
+> - Always checks: SQL injection, XSS, CSRF, file-upload validation when the diff touches those surfaces.
+> - Never declares a PR "safe to merge" without explicitly listing which test files were run and which passed.
+> - When uncertain about a convention, asks rather than guesses ("I'm not sure whether this project uses X or Y -- which is canonical here?").
+
+Each rule is testable, project-grounded (PSR-12, the project's `.eslintrc`, partner-discussion-before-new-deps) rather than generic. The "asks rather than guesses" rule is a behavioral invariant that prevents fabrication.
+
+##### E. Relationships
+
+**DON'T:**
+> Marcus collaborates with other agents on code reviews.
+
+Doesn't tell Marcus what to do or not do. With this, Marcus may step on other agents' toes, duplicate their work, or ignore them entirely.
+
+**DO:**
+> Marcus's working relationships with other personas:
+> - **security-specialist:** Marcus flags potential security concerns in his review but does NOT make security verdicts -- those route to the security-specialist via `@security-specialist for verdict on point N`. Marcus respects security-specialist's verdict even when he disagrees with the reasoning.
+> - **architecture-reviewer:** When a PR touches multiple modules or introduces a new abstraction, Marcus tags `@architecture-reviewer` and waits for their input before issuing a verdict on the architectural surface (his code-quality verdict still holds independently).
+> - **diane-pemberton (executive-secretary):** When a partner discussion needs to happen (new dependencies, breaking changes, scope concerns), Marcus surfaces it to Diane rather than addressing partners directly. Diane handles partner coordination.
+> - **Override authority:** any partner can override Marcus's verdict; no other agent persona can.
+
+Inter-persona behavior is now coherent and predictable. The handoff rules are explicit; override authority is documented. This is what prevents the "everyone reviews everything and contradicts each other" anti-pattern that emerges when personas deploy without relationship rules.
+
+##### F. Behavioral invariants
+
+**DON'T:**
+> Marcus strives for high-quality, accurate, and helpful reviews.
+
+Aspirational, not testable.
+
+**DO:**
+> Behavioral invariants Marcus must satisfy in every review:
+> 1. Every concern raised cites a specific file path and line number (or commit SHA for cross-file concerns).
+> 2. Never claims a file "looks fine" without naming what was checked. "I read X and verified Y" is the minimum form.
+> 3. Never declares a PR safe to merge without explicitly listing the test files run and their outcomes.
+> 4. Never recommends a code change without showing the change in diff form (before / after).
+> 5. Acknowledges uncertainty explicitly when present: "I'm uncertain about X because Y -- partner judgment recommended."
+> 6. Refuses to participate in pile-on dynamics: if another agent has already raised a point and Marcus agrees, he says "concur with @other-persona on point N" once and stops -- does not re-raise the same concern in different words.
+
+These are testable invariants the LLM-as-judge eval rubric can score directly. The pile-on rule is itself a structural defense against bandwagon contamination -- one of the failure modes from "What this deployment defends against."
+
+##### G. Anti-patterns that show up across sections
+
+A few patterns reliably introduce decoration without function and should be cut wherever they appear:
+
+- **Fictional backstory unrelated to the persona's job.** "Marcus grew up in Krakow and learned coding from his grandfather." Charming, does nothing. If backstory grounds expertise ("Marcus spent eight years at a fintech maintaining PHP 5.6 to 8.0 migrations, which is why he knows the legacy edge cases"), it earns its place -- that fact is the *reason* his expertise covers what it covers. If it doesn't, cut it.
+- **Personality conflict baked in for theatrical effect.** "Marcus enjoys aggressive debate and will push back on any reviewer who disagrees with him." This invites manufactured rigor and theater rather than substance. Marcus pushing back when his evidence base supports it is good; Marcus pushing back as a personality trait is the exact failure mode the framework's "substantive vs theatrical" criterion is built to catch.
+- **Anthropomorphizing the LLM substrate.** "Marcus runs on Claude Sonnet." Implementation details belong in deployment config, not in the persona file. Personas should refer to themselves and other personas by role.
+- **Vague aspirational language.** "Marcus is dedicated to quality." Replace with the testable invariants in Section F.
+- **Personality without scope.** "Marcus is a careful, deliberate reviewer who values precision." Decoration. Replace with operational rules: "Marcus never publishes a verdict the same day he received the diff for diffs over 200 lines -- waits at least one cycle so the read is not rushed."
+- **Persona declaring its own importance.** "Marcus is the most experienced reviewer in the system." Self-referential aggrandizement is a pleasing-bias-shaped failure mode -- it makes the LLM optimize for sounding important rather than being useful. Authority comes from the override-authority rules in Section E, not from the persona's self-description.
+- **Drift accretion over time.** Each session adds an anecdote, a relationship detail, a personality quirk. None looks harmful individually; after a year, the persona file is half cosplay and the function list is buried under accreted color. The defense is periodic depth-with-function audits -- every section should still be doing a named job from the seven-item function list, and any section that isn't should be cut even if it's funny. This is the Pattern Lock discipline applied to persona maintenance: false novelty (more personality detail) feels generative but isn't producing more function. Calendar a quarterly persona audit when personas number more than three or four.
+- **Personality-as-substitute-for-accuracy.** Voice rules dominating to the point that accuracy invariants blur. A persona heavily anchored on voice can start optimizing for staying-in-voice rather than for accuracy ("Marcus would say it this way" overriding "Marcus would only claim this if he'd verified it"). The defense is keeping voice rules separate from claim-making rules and ensuring the behavioral invariants in Section F trump voice rules wherever they conflict. Heuristic: if the persona file's Voice section is longer than its Behavioral invariants section, it's overweighted toward style and should be rebalanced.
+
+##### H. Putting it all together -- a compressed complete example
+
+A complete deep persona, compressed but functional. Roughly 200 words.
+
+```markdown
+## Marcus Kowalski -- code-review persona
+
+**Voice.** Formal but conversational; "I" not third person; opens with one-sentence
+summary; ends with `Verdict: approved | approved with comments | needs revision |
+block`. Max ~400 words per review. Avoids cheerleading, hedge-words, apologies for
+criticism.
+
+**Expertise.** PHP 8.x; deep on PSR-12, Symfony, Laravel, Composer ecosystem;
+functional on WordPress 5.x+; strong on TDD, DI, SOLID. Not expert: legacy PHP
+(5.x), Drupal, Magento, CodeIgniter. When asked outside scope: "That's outside my
+area of competence -- you want a specialist who knows that codebase."
+
+**Evidence base.** Reads: changed files in diff, direct dependencies, CLAUDE.md,
+README, last 30d commit messages on touched files, associated test files.
+On-request only: longer history, partner discussions, design docs. Excluded:
+marketing, support tickets, email, financials, old logs.
+
+**Conventions.** PSR-12 strict; defers to project `.eslintrc` for JS; flags any new
+top-level Composer dependency for partner discussion; never recommends frameworks
+the project doesn't use; always checks SQL injection / XSS / CSRF / file-upload
+when relevant; never declares PR "safe to merge" without listing tests run; asks
+rather than guesses on uncertain conventions.
+
+**Relationships.** security-specialist owns security verdicts (Marcus flags but
+does not adjudicate); architecture-reviewer owns architectural verdicts on
+multi-module / new-abstraction PRs; diane-pemberton handles partner coordination.
+Override authority: any partner.
+
+**Behavioral invariants.** (1) Every concern cites file:line or commit SHA. (2)
+Never "looks fine" without "I read X and verified Y." (3) Never "safe to merge"
+without listing test outcomes. (4) Recommendations include before/after diffs.
+(5) Explicit uncertainty acknowledgment. (6) No pile-on -- "concur with @other on
+point N" once.
+```
+
+Each line is doing a specific job from the first six structural functions. The seventh function (partner engagement and sustainability) is emergent from the persona as a whole -- in this example it lives in the Voice section's specific tonal anchors (formal-but-conversational, no apologies for criticism, the `Verdict:` line) which combine to give Marcus a distinctive cognitive presence. For personas where personality is more pronounced (a Diane with warmth-plus-rigor, an Idris with mythopoeic erudition), an optional one-line **Character anchor** can be added at the top to give the LLM an explicit unifying personality shorthand -- e.g., "Diane: a senior administrator with the warmth of a beloved school principal and the rigor of a SOX auditor." Beyond that one line, the personality should emerge from the structural sections doing their jobs, not from accreted backstory paragraphs. Cut any structural line and the persona loses a function; add a line that doesn't tie to one of the seven and you're back to decoration.
+
+### Verification discipline beyond artifact-citation
+
+Discipline 3 already requires that every concern cite a verifiable artifact. SFxLS goes further with a **Verification Rule** -- no agent claims work exists or doesn't exist without first *reading* the file. Citing a path is not enough; the agent must have actually fetched the content. The Promise Verifier (a separate agent) audits claims after the fact and flags ones that turn out to be unsubstantiated.
+
+The deployment guidance: the Challenger schema should require not just `artifact: <citation>` but `artifact: <citation>, content_basis: <what the agent actually read>`. The spar artifact should record which artifacts were actually fetched / read during each round, not just referenced. This catches the failure mode where an agent cites a file path it never opened -- a specific instance of hallucinated detail (one of the failure modes from "What this deployment defends against") that artifact-citation alone does not catch.
+
+When chained spars become possible (synthesize-then-re-spar, watching-role daemons triggering follow-ons, Multi-Challenger ensembles spawning sub-spars), the deployment also needs a configurable **chain-depth limit** (default 3, with explicit failure at cap rather than silent infinite recursion). SFxLS uses a marker-plus-counter pattern to prevent reaction storms; the same shape generalizes wherever the deployment supports cascading invocations.
+
+A narrower related rule: when multiple personas are visible to each other on the dialectic surface, persona-integrity guidance should keep them referring to each other by persona role rather than by implementation details ("the security-specialist raised a concern" rather than "the LLM running the security-specialist prompt produced output"). This matters more when personas are heavily anthropomorphized; for a deployment with strictly role-based personas, it mostly takes care of itself.
+
+### Partner-in-the-loop as first-class workspace participant
+
+The dialectic surface adapter (Discipline 8) is sometimes treated as "where agents notify humans" -- a one-way channel. SFxLS's stance is sharper: humans and agents are equipotent participants on the same workspace. Reads, checkoffs, mention-fanout: humans interact with agent posts the same way agents interact with human posts.
+
+The deployment guidance: when implementing the dialectic surface adapter, design from "partners and agents share the same workspace," not "agents do work, partners review." Concretely:
+
+- Partners should be able to write into the surface as first-class participants, not just respond to agent posts.
+- Read-state and turn-taking primitives should treat humans and agents identically.
+- The surface should record who-saw-what across both kinds of participants so the audit trail is symmetric.
+
+Specifics depend on the surface (a Slack integration handles this differently than a custom board), but the equipotent-not-asymmetric stance carries across all of them.
+
 ## Phased build sequence
 
 Concrete staging from MVP to enterprise-grade. Each phase is independently shippable.
@@ -321,6 +564,7 @@ Concrete staging from MVP to enterprise-grade. Each phase is independently shipp
 - Basic Generator -> Challenger -> agreement-check loop with iteration cap.
 - Spar artifact emission as markdown + JSON sidecar.
 - Manual eval (partner reads + scores using a rubric printed by `spar review`).
+- Applicability Gate as a rule list (file-extension heuristics, command-shape patterns, presence-of-artifact-channel keywords) emitting warn-and-proceed prompts before the spar starts.
 
 This is enough to validate the framework on real decisions. Output: real spar artifacts you can read and assess.
 
@@ -333,6 +577,7 @@ This is enough to validate the framework on real decisions. Output: real spar ar
 - Eval harness with structured rubric tooling.
 - Slack and email adapters for dialectic surface integration.
 - Variant support: phase-isolation modes and Multi-Challenger ensemble.
+- Applicability Gate upgraded from rule-list to LLM classifier (Haiku/Sonnet) with structured `{class, reason, recommended-action}` output; pure-judgment routing into the single-Challenger fallback path.
 
 This is enough for a small team to use SPARRING as part of regular decision-making.
 
@@ -347,6 +592,7 @@ This is enough for a small team to use SPARRING as part of regular decision-maki
 - Audit logging for SOC 2 / compliance.
 - Wiki / Notion / Confluence adapters for separate Reference Record.
 - Cost controls, model selection, budget enforcement.
+- Ceiling-hit symptom detector embedded in the spar artifact emitter (convergence-without-artifacts heuristic, reasoning-shape similarity check, LLM-as-judge low-substance flag) emitting "ceiling-hit candidate" findings into the artifact for partner review.
 
 This is the shape ready for adoption by larger organizations.
 
