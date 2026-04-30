@@ -5,7 +5,8 @@
 *Source of truth for the SPARRING reference deployment.*
 
 *Companion working notes (scratchpad / larger conversation): [`sparring-framework-notes.md`](sparring-framework-notes.md).*
-*Extracted from working notes rev. 17 on 2026-04-29.*
+*Companion getting-started guide (opinionated how-to walkthrough for small-team Phase 1 deployments): [`sparring-deployment-walkthrough.md`](sparring-deployment-walkthrough.md).*
+*Extracted from working notes rev. 17 on 2026-04-29; v1 release pass on 2026-04-30.*
 
 ---
 

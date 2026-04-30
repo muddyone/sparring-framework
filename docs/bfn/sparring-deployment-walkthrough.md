@@ -22,6 +22,7 @@ If your project diverges from these defaults (consumer-facing, regulated complia
 - An LLM API account (the walkthrough defaults to Anthropic Claude; alternatives discussed in Step 1e).
 - Approximately 2-4 hours of focused build time for Phase 1, assuming basic familiarity with TypeScript or Python and command-line tooling.
 - Read [`sparring-reference-deployment.md`](sparring-reference-deployment.md) at least once. The walkthrough cross-references components and concepts the reference defines; this guide does not re-derive them.
+- Optional but recommended: skim [`sparring-framework-notes.md`](sparring-framework-notes.md) for the framework's design rationale, conditionalities, and the historical PNP-applied-to-itself record. Useful when judgment calls during the build need framework-level grounding (e.g., "should I really skip the Persona layer here?", "is this decision shape actually a SPARRING fit?").
 
 **What "done with Phase 1" looks like:**
 - `.spar/` directory initialized with persistent + temporary persona classes
@@ -41,7 +42,7 @@ Three project-level axes to check (these mirror the deployment-by-type framing i
 
 **Scale and duration.** SPARRING pays back over many decisions across months or years. The setup cost (authoring personas, defining evidence bases, building tooling) is amortized over the volume of decisions the deployment supports. **One-shot deployments do not recover the setup cost.** If you anticipate fewer than ~20 decisions per quarter routed through the deployment, evaluate whether ad-hoc partner-conducted PNP would serve the same need at lower setup cost.
 
-**Project culture.** Character-friendly, partner-driven, internal projects benefit most -- the persona layer pays partner-engagement dividends and the dialectic surface fits a workspace partners already inhabit. **Highly regulated environments** (medical decision support, financial advice, legal analysis) and **consumer-facing surfaces** may want the structural defenses without the persona layer -- the framework supports this (Role+Domain mandatory, Persona optional), but you will be skipping the seventh-function partner-engagement payoff.
+**Project culture.** Character-friendly, partner-driven, internal projects benefit most -- the Persona layer pays partner-engagement dividends and the dialectic surface fits a workspace partners already inhabit. **Highly regulated environments** (medical decision support, financial advice, legal analysis) and **consumer-facing surfaces** may want the structural defenses without the Persona layer -- the framework supports this (Role+Domain mandatory, Persona optional), but you will be skipping the partner-engagement function (the third function in the Persona layer's three-function set; see the reference doc's persona-depth section).
 
 **Decision shape.** Decisions with **multiple valid disjoint perspectives** benefit most -- code-architecture-by-engineer-and-security-specialist, scoping-by-PM-and-tech-lead, design-by-author-and-domain-expert. **Decisions that are factual or single-perspective** (lookups, mechanical edits, routine work) collapse the framework's leverage -- there is nothing to pressure-test if there is one canonical correct answer. The Applicability Gate (per the reference doc) catches these at runtime, but your *project-level* applicability is a more upstream filter.
 
