@@ -73,7 +73,7 @@ The Generator and Challenger are the heart of the framework. Both run on every s
 
 - **Generator agent.**
   - *Model*: configurable per persona (typical: Sonnet for cost; Opus for hard topics).
-  - *System prompt*: persona definition (role, voice, expertise) + explicit evidence-base scope (the specific corpus, files, tools, or sources the persona is required to ground in) + SPARRING-role instruction ("You are the Generator role in a SPARRING ceremony. Propose an evaluation of the topic. End with a structured signal.").
+  - *System prompt*: persona definition combining the **Role + Domain Knowledge** layer (role, expertise, evidence-base scope, conventions, behavioral invariants -- mandatory) and an optional **Persona** layer (voice, tone, structural output conventions -- adopted per project fit) + SPARRING-role instruction ("You are the Generator role in a SPARRING ceremony. Propose an evaluation of the topic. End with a structured signal.").
   - *Tools*: read-only access to *its* evidence base. Tools may include file reading (Read/Grep/Glob), MCP tools scoped to the evidence base, RAG queries against a corpus, or external API calls. Cannot write.
   - *Input*: the topic + (on rounds 2+) the Challenger's prior pressure-test from round N-1.
   - *Output*: a structured proposal + agreement signal `{agree: bool, reasoning: text}`.
@@ -82,7 +82,7 @@ The Generator and Challenger are the heart of the framework. Both run on every s
 
 - **Challenger agent.**
   - *Model*: same family as Generator; can differ if cost / capability tradeoffs warrant.
-  - *System prompt*: a different persona definition (genuinely divergent from the Generator's, per Discipline 2) + a different evidence-base scope (also distinct from the Generator's) + SPARRING-role instruction ("You are the Challenger role in a SPARRING ceremony. Apply PNP discipline. Verifiable-artifact requirement: every concern must cite a specific artifact or be dismissed as theatrical.").
+  - *System prompt*: a persona definition with **Role + Domain Knowledge that is genuinely divergent from the Generator's** (per Discipline 2 -- distinct expertise, distinct evidence-base scope, distinct behavioral invariants); the Persona layer (voice/tone) need not differ from the Generator's. SPARRING-role instruction ("You are the Challenger role in a SPARRING ceremony. Apply PNP discipline. Verifiable-artifact requirement: every concern must cite a specific artifact or be dismissed as theatrical.").
   - *Tools*: read-only access to *its* evidence base, distinct from the Generator's.
   - *Input*: the Generator's current proposal + the topic.
   - *Output*: a structured pressure-test with concerns (each citing a specific artifact, or honestly flagging "I suspect X but cannot point to specific evidence") + an agreement signal.
@@ -91,7 +91,7 @@ The Generator and Challenger are the heart of the framework. Both run on every s
 
 **Conditionally (variant-dependent):**
 
-- **N Challengers (Multi-Challenger ensemble variant).** When invoked with `--multi-challenger N`, the Challenger above multiplies into N parallel agents, each with a distinct persona AND distinct evidence base. They run in parallel within each round, all surface concerns, and convergence requires all N (or a configurable threshold) to signal `agree: true`. The most expensive variant -- cost scales linearly with N.
+- **N Challengers (Multi-Challenger ensemble variant).** When invoked with `--multi-challenger N`, the Challenger above multiplies into N parallel agents, each with a **distinct Role + Domain Knowledge layer** (distinct expertise, distinct evidence-base scope, distinct behavioral invariants). The Persona layer (voice/tone) may be identical across the N Challengers; the structural distinctness lives in Role+Domain. They run in parallel within each round, all surface concerns, and convergence requires all N (or a configurable threshold) to signal `agree: true`. The most expensive variant -- cost scales linearly with N.
 - **Human-in-the-Generator or Human-in-the-Challenger (role variants).** When invoked with `--human-generator` or `--human-challenger`, the named role is a human at the CLI rather than an agent. The other role remains an agent. The CLI prompts the human in the appropriate round and parses their input into the structured signal format.
 - **Watching-role Challenger daemon.** When invoked with `spar daemon --watch <path>`, a long-running agent runs continuously, monitoring the watched system (filesystem changes, log streams, metric thresholds, scheduled checks). It is a Challenger persona applied to ongoing state rather than a one-shot decision. When trigger conditions fire, it emits a flag with cited artifacts to the dialectic surface.
 
@@ -114,7 +114,7 @@ These don't run on every spar but are part of the larger deployed system.
 
 - **Persona/evidence resolver agent (Phase 2).**
   - *Model*: Sonnet or Haiku (lower-cost; bounded inference task).
-  - *System prompt*: "You are the persona/evidence resolver. Given a topic, identify two divergent specialist perspectives that would meaningfully pressure-test the topic, AND specify the explicit distinct evidence base each perspective grounds in. If you cannot articulate genuinely distinct evidence bases, return `{viable: false, reason}` -- this is honest signal, not failure."
+  - *System prompt*: "You are the persona/evidence resolver. Given a topic, identify two divergent specialist perspectives whose **Role + Domain Knowledge** layers (expertise, evidence-base scope, operational rules) would meaningfully pressure-test the topic. Specify the explicit distinct evidence base each perspective grounds in. The Persona layer (voice/tone) is optional and need not differ between the two perspectives. If you cannot articulate genuinely distinct Role+Domain layers, return `{viable: false, reason}` -- this is honest signal, not failure."
   - *Tools*: read access to the persona library and evidence library.
   - *Input*: the topic + available personas + available evidence bases.
   - *Output*: structured persona-A + evidence-A + persona-B + evidence-B specification, OR the `viable: false` fallback signal.
@@ -407,7 +407,7 @@ Two decisions per agent in the deployment:
 Examples by deployment type:
 
 - **SOC 2 compliance tool**: full Role+Domain, minimal Persona (functional voice rules only -- terse, structured, no anthropomorphization, no Character anchor).
-- **Lifspel / storyplay engine**: full Role+Domain, full Persona including anthropomorphization and Character anchor -- the seventh-function partner engagement pays out.
+- **Lifspel / storyplay engine**: full Role+Domain, full Persona including anthropomorphization and Character anchor -- the partner-engagement function (Persona-layer third function) pays out.
 - **One-shot decision API**: full Role+Domain auto-generated by the resolver per call, zero Persona (no voice consistency target -- the agent runs once and is discarded).
 - **Consumer chatbot built on SPARRING**: full Role+Domain, lightweight Persona (voice and structural conventions for consistency, no anthropomorphization to avoid user confusion or perceived deception).
 - **Internal architecture-decision tool, small engineering team**: full Role+Domain, light-to-medium Persona depending on whether the team enjoys the named-roles framing.
@@ -684,7 +684,7 @@ Practical concerns for deploying this beyond a small team:
 - **Privacy.** Spar artifacts may contain sensitive business decisions. Reference deployment supports encryption at rest in the persistence layer and supports air-gapped deployment (local model + local persistence) for regulated industries.
 - **Auditability.** Enterprise customers will want SOC 2 / GDPR-compatible logging. Discipline 7 (Observability) and the spar artifact schema support this; Phase 3 adds the audit-grade signing and retention layer.
 - **Multi-user.** Teams have multiple invokers; the deployment supports user identity, per-user invocation history, and shared / private record visibility.
-- **Versioning.** Persona templates and evidence-base definitions evolve. Templates are versioned; spar artifacts cite the template version they were invoked with so historical artifacts remain interpretable.
+- **Versioning.** Persona files and evidence-base definitions evolve. Files are versioned; spar artifacts cite the persona-file version they were invoked with so historical artifacts remain interpretable. Versioning applies to both layers of the persona file -- a Role+Domain edit (changing evidence-base scope, adding behavioral invariants) and a Persona-layer edit (refining voice rules) both produce new versions, so a reader of an old artifact can reconstruct the exact persona that produced it.
 - **Vendor-neutrality.** All four adapters (agent SDK, persistence, dialectic surface, reference record) are pluggable. No vendor lock-in beyond what the partner chooses to enable.
 
 ## Reference deployment, not the only one

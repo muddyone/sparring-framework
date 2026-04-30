@@ -552,14 +552,14 @@ A **specialized agent** is one whose system prompt + tool set + sometimes model 
 - A Plan-shaped agent -- system prompt focused on designing implementation plans.
 - A general-purpose agent -- broad capability, no restrictions, used when the task does not fit a specialty.
 
-**Specialization by persona.** Shaping how the agent reasons rather than what tasks it does. The StoryForge agents are this kind:
+**Specialization by Role + Domain Knowledge (the agent's expertise lens).** Shaping how the agent reasons rather than what tasks it does. The StoryForge agents are this kind:
 
 - Marcus thinks like a senior engineer.
 - Lena thinks like a research scientist.
 - Idris thinks like a comparative-mythology scholar.
 - Dani thinks like a security/quality reviewer.
 
-Persona specialization shapes *how the agent reasons* about whatever is in front of it. Two persona-specialized agents handed the same input can produce meaningfully different judgments because the system prompt has programmed different reasoning lenses.
+Role+Domain specialization shapes *how the agent reasons* about whatever is in front of it -- expertise scope, evidence-base scope, operational conventions, behavioral invariants. Two Role+Domain-specialized agents handed the same input can produce meaningfully different judgments because the system prompt has programmed different reasoning lenses (different evidence bases, different conventions, different priorities). Note: the optional Persona layer (voice, tone) does NOT carry this kind of specialization weight -- two agents with the same Role+Domain but different voice rules will produce stylistically different but substantively similar output. The lens is in the WHAT layer, not the HOW.
 
 ### Why specialization matters
 
@@ -582,9 +582,9 @@ Rule of thumb: **specialize when the task type has a distinct shape worth optimi
 
 The framework's claim that multi-agent designs produce higher decision quality rests on specialization. Specifically:
 
-- The Generator and Challenger roles are *structurally* specialized (they have different jobs even when wearing the same persona).
+- The Generator and Challenger roles are *structurally* specialized (they have different jobs even when operating from the same Role+Domain Knowledge layer).
 - The Challenger's function shifts per phase -- a *temporal* specialization.
-- The most powerful version pairs structural / temporal specialization with **persona specialization where the agents have genuinely different domain expertise** (Lena pressure-testing Idris). That is where the framework's quality leverage compounds the strongest.
+- The most powerful version pairs structural / temporal specialization with **Role+Domain specialization where the agents have genuinely different domain expertise and genuinely different evidence bases** (Lena pressure-testing Idris). That is where the framework's quality leverage compounds the strongest. Persona-layer specialization (different voice, different tone, different framing) does NOT add to this leverage and can subtract from it if it manufactures contrast that masks identical evidence bases.
 
 The conditionalities in Part 3 -- careful design, different ground truth, model ceiling -- are statements about *when* the multi-agent quality leverage is real and when it shrinks toward zero.
 
@@ -745,7 +745,7 @@ Most products lean hard on one pattern (LangGraph shops use graphs everywhere; C
 
 Properties most off-the-shelf frameworks do not give you out of the box:
 
-- **Persona richness.** Persona files (`docs/agents/<slug>.md`) are deep -- voice, expertise, relationships, conventions, standards compliance. Most frameworks treat agents as one-line role descriptions ("a senior code reviewer"). SFxLS treats them as documented people whose voice is partner-editable. Closer to how a small company maintains role descriptions than how most agent frameworks work.
+- **Persona richness.** Persona files (`docs/agents/<slug>.md`) are deep -- a substantive **Role + Domain Knowledge** layer (expertise, evidence-base scope, conventions, standards-compliance rules, handoff authority and override rules) plus a calibrated **Persona** layer (voice, tonal anchors, surface-form conventions, optional Character anchor). Most frameworks treat agents as one-line role descriptions ("a senior code reviewer"). SFxLS treats them as documented people whose Role+Domain layer carries the structural commitments and whose Persona layer is partner-editable for cognitive availability. Closer to how a small company maintains role descriptions than how most agent frameworks work. (See `docs/bfn/sparring-reference-deployment.md` "Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer" for the depth-with-function specification.)
 - **Partner-in-the-loop as a first-class design.** The Round Table sidebar, reads, checkoffs, and the sidebar-override math at `storyforge/tests/api/round-table-tree.php` exist specifically to make agent work visible and actionable for human partners. Most frameworks treat humans as either out-of-loop or as interruptive. SFxLS's design starts from "agents and partners share the same workspace."
 - **Verification discipline.** The Verification Rule (no agent claims work exists or doesn't without reading the file), the Promise Verifier, the persona-integrity rules (no breaking the fiction by referencing automation), the chain-depth + agent-reaction marker for reaction-loop prevention -- project-grown reliability patterns. Most frameworks ship without them.
 - **Mixed coordination patterns by design.** Choreography for reactions (low overhead, partner-visible), orchestration for plan-review (structured, auditable), fleet for cron tasks (predictable, billable). Most frameworks force you into one. SFxLS picks per use case.
