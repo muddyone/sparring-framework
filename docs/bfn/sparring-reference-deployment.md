@@ -24,7 +24,7 @@ Every one of the nine disciplines from the SPARRING Framework Overview maps to a
 | Discipline | Component |
 |---|---|
 | 1. Apply to decisions, not every prompt | CLI invocation discipline (user-invoked, not auto-fired) plus an **Applicability Gate** -- pre-flight classifier that recognizes the three "framework does not address" situations (routine work; pure-judgment topics; ceiling-hit symptoms) and emits visible signals (warn-and-proceed at entry; flagged findings in the spar artifact) |
-| 2. Different evidence between Generator and Challenger | **Evidence-base resolver** with explicit fallback to single-Challenger when distinct evidence cannot be articulated |
+| 2. Different evidence between Generator and Challenger | **Evidence-base resolver** enforces distinct **Role + Domain Knowledge** between Generator and Challenger (different evidence-base scope, different expertise, different behavioral invariants); falls back to single-Challenger when distinct Role+Domain cannot be articulated. The Persona layer (voice/style) is optional and not required to differ between roles. |
 | 3. Verifiable artifacts for every concern | **Challenger output schema** that requires artifact citations; concerns without artifacts are dismissed |
 | 4. Both roles must agree to converge | **Iteration controller** with explicit two-signal agreement check; on iteration-cap reached without convergence, hands back to the caller with the structured artifact AND the **Disagreement-at-cap response menu** surfacing the five canonical responses (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) plus a non-canonical-response acknowledgment |
 | 5. Observable triggers for self-invocation | **Trigger registry** with concrete observable conditions (file patterns, command flags, partner-passed hints), not LLM-self-assessed uncertainty |
@@ -52,7 +52,7 @@ Twelve major components, organized into four layers:
 
 **Specialization layer:**
 
-- **Persona library** -- pre-built persona templates (code-reviewer, security-specialist, architecture-reviewer, etc.) plus user-defined templates.
+- **Persona library** -- pre-built persona files (code-reviewer, security-specialist, architecture-reviewer, etc.) plus user-defined files. Each file holds a substantive **Role + Domain Knowledge** spec (mandatory; expertise, evidence-base scope, operational conventions, handoff authority, behavioral invariants) and an optional **Persona** layer (voice, tone, structural output conventions, optional anthropomorphization). See "Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer" in the Lessons section for the depth and content guidance.
 - **Evidence-base resolver** -- at spawn time, identifies and assigns distinct evidence bases to Generator and Challenger. Sources include local file paths (a corpus directory), MCP tool servers (different tools per role), vector stores (with role-scoped namespaces), or external APIs. Falls back to single-Challenger mode with explicit notice when distinct evidence cannot be articulated.
 - **Domain template registry** -- pre-built SPARRING configurations for common decision types (security review, plan review, vendor selection, hire decision); each template specifies recommended persona pairings, evidence-base specifications, and tuned Challenger questions.
 
@@ -357,31 +357,69 @@ Each variant from the framework's Variants section maps to a CLI flag or command
 
 SFxLS (StoryForge x Lifspel) is one project's instantiation of the SPARRING Framework -- the development environment where the framework was first applied at production scale. Three properties of that implementation generalize beyond SFxLS-specific surfaces and should shape the components above.
 
-### Persona depth is structural, not decorative
+### Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer
 
-The temptation: write personas as one-line role tags ("a senior code reviewer," "a security specialist") and let the LLM extrapolate. That looks lean and avoids what skeptics rightly call cosplay -- but it produces decoration in a different direction (an underspecified persona is itself a kind of theater, lighter on costume but lighter on substance too). SFxLS persona files (`docs/agents/<slug>.md`) are deep documents covering voice, expertise, evidence-base scope, relationships, conventions, and standards-compliance rules. The depth is doing structural work, not stylistic embellishment, on at least seven dimensions:
+The persona file in any SPARRING deployment carries **two distinct layers**, often conflated but functionally separable:
 
-- **Discipline 2 (disjoint evidence bases) requires depth to express.** A "code reviewer" tag cannot credibly specify what evidence base it grounds in -- it's just a label. A deep persona ("Marcus Kowalski: senior staff PHP engineer; reads commits and `src/` code; does not read marketing copy or research papers") can. The persona file is where evidence-base scope gets pinned; without that surface, Discipline 2 has nothing to attach to.
-- **Theatrical adversariality is defended by domain-grounded depth.** A generic "Challenger, pressure-test this" prompt produces manufactured rigor -- the agent has nothing to push back from except adversarial posture. A Challenger with documented domain expertise has substance to draw on. Persona depth supplies the substance; absent depth, the Challenger output schema's "substantive vs theatrical" criterion fires more often.
-- **Behavioral consistency across invocations.** Spar artifacts accumulate in the Reference Record (Discipline 9) and get read months later. If the same persona produces inconsistent output run-to-run, accumulated knowledge degrades because the reader can't tell whether shifts in tone or priority are real signal or model variance. Deep persona files pin voice, conventions, and priorities so the same persona reads like the same persona across hundreds of invocations.
-- **Audit trace.** When a Challenger raised concern X and not Y, the persona file tells the auditor what evidence base, conventions, and priorities the persona was operating under. A one-line tag gives no audit surface; a deep file gives a stable referent for "why did this agent behave this way."
-- **Tunability without code changes.** Partner-editable persona files mean adjusting an agent's behavior is a doc edit, not a code change. The deployment becomes tunable in production by the people who run it, not just by the engineers who built it.
-- **Inter-persona coherence.** When personas reference each other (orchestrator routing among specialists, watching-role daemon flagging to a downstream Challenger, Multi-Challenger ensemble cross-referencing), the relationships section in each persona file keeps inter-persona behavior consistent. Without it, agents either ignore each other or hallucinate relationships.
-- **Partner engagement and sustainability over time.** Long-running deployments depend on partner attention; partner attention depends on the work being interesting to do. A varied, distinctive cast of personas is psychologically sustainable for partners across months and years; a homogeneous cast of indistinguishable role-tags is not. "What would Diane say?" becomes a faster mental shortcut than "what would the executive-secretary persona say?" -- partners think *with* distinctive personas in a way they don't with anonymous role labels. This is a real quality lever because partner attention is the limiting resource on long-running deployments: when the work is dreary, partners disengage, output quality drops, and the deployment's claims about decision quality lose their backstop. Three constraints keep this function from collapsing into cosplay:
+- **Role + Domain Knowledge (the WHAT)** -- the lens through which the agent operates: expertise scope, evidence-base scope, behavioral invariants (testable rules), operational conventions, handoff authority. Determines *what* the agent is equipped to do, *what* they are constrained to do, and *what* evidence they ground in. This layer is **mandatory** -- without it, Discipline 2 (disjoint evidence bases) collapses, theatrical adversariality is undefended, audit trace has nothing to attach to, and the framework's structural leverage disappears.
+- **Persona (the HOW)** -- voice, tone, style, structural conventions for output, optional anthropomorphization (name, Character anchor). Determines *how* the agent communicates its work. This layer is **lightweight and optional** -- needed when the deployment will invoke the agent many times (consistency matters), when partners interact with multiple agents (cognitive availability matters), or when the project culture warrants distinctive characters. Skippable when these conditions do not apply.
 
-   - **Cognitive availability, not just voice.** The test is whether partners reach for the persona by name reflexively when the situation calls for that lens. If the entertainment value doesn't translate into faster thinking-with-the-persona, it's decoration.
-   - **Voice rules must not contaminate accuracy.** Voice constrains HOW the persona speaks; it must not affect WHAT the persona claims is true. The Behavioral invariants function above trumps voice rules wherever they conflict.
-   - **Project-fit-dependent budget.** Rich, distinctive personas warrant most of the budget in character-driven projects (storyplay engines, creative work, character-driven brands). They warrant much less in formal-positioning projects (regulated compliance tools, financial controls, legal review systems -- anywhere whimsy undermines professional authority). The deployment should set the personality budget by project type, not adopt one default.
+The cut is **content-typological, not sectional**. Within most "sections" of a persona file, you will find both Role+Domain content and Persona content. A Conventions section can hold "PSR-12 strict; defers to project `.eslintrc`" (Role+Domain -- rules to apply) alongside "always shows before/after diffs in recommendations" (Persona -- output structure). Treat content by its type, not by where it sits in the file.
 
-Each of these is a *function* the depth performs. The first six don't require costumes, names, or fictional backstories -- a generic role-based persona that includes "evidence base: PHP files in `src/` committed in the last 90 days; conventions: PSR-12 plus project-specific style guide; reads: commits, source, test files; does not read: marketing, research papers; relationships: hands off security concerns to security-specialist persona" does all six structural jobs without any anthropomorphization. The seventh function -- partner engagement and sustainability -- is the one where anthropomorphization can earn its place: SFxLS leans into named characters because Lifspel is a storyplay engine and named characters fit the project's voice; a SOC 2 compliance tool can keep personas strictly role-based and still capture the first six functions, while accepting that the seventh function is differently served (often through deliberate clarity and consistency rather than personality distinctiveness). Project-fit determines whether and how much to spend on the seventh function; it does not determine whether to do the first six (those are required regardless of project type).
+The temptation to skip both layers (write personas as one-line role tags like "a senior code reviewer") looks lean and avoids what skeptics rightly call cosplay, but it underspecifies the Role+Domain layer in a way that collapses the framework's leverage. The temptation to over-invest in the Persona layer (rich anthropomorphization in projects that don't warrant it) is the cosplay direction proper. The defense is **depth on the WHAT, lightness on the HOW** -- substantive Role+Domain mandatory across every deployment; Persona calibrated to project fit.
 
-The deployment guidance: persona files should be **deep, partner-editable documents** with the seven properties above. The cosplay objection lands against shallow-but-named personas (a "Marcus" tag with no evidence-base scope or conventions) and against deep personas where personality budget exceeds project warrant (whimsical characters in formal-positioning projects; accreted backstory beyond what the seventh function needs). The defense is depth-with-function: every section of a persona file should be doing a specific job from the list above, and any section that isn't should be cut even if it's funny.
+#### Role + Domain Knowledge: the mandatory WHAT
+
+Six functions the Role+Domain layer must perform. Skip any of them and the framework's structural commitments fail at that point:
+
+- **Discipline 2 (disjoint evidence bases) requires Role+Domain depth.** A "code reviewer" tag cannot credibly specify what evidence base it grounds in -- it is just a label. A deep Role+Domain spec ("Marcus Kowalski: senior staff PHP engineer; reads commits and `src/` code; does not read marketing copy or research papers") can. This layer is where evidence-base scope gets pinned; without it, Discipline 2 has nothing to attach to.
+- **Theatrical-adversariality defense via domain-grounded substance.** A generic "Challenger, pressure-test this" prompt produces manufactured rigor -- the agent has nothing to push back from except adversarial posture. A Challenger with documented domain expertise has substance to draw on. Role+Domain depth supplies the substance; absent it, the Challenger output schema's "substantive vs theatrical" criterion fires more often.
+- **Substantive consistency across invocations.** Spar artifacts accumulate in the Reference Record (Discipline 9) and get read months later. If the same agent applies different conventions, different evidence-base scope, or different handoff rules across runs, accumulated knowledge degrades because shifts in *substance* become indistinguishable from real signal. Role+Domain depth pins the operational rules so the substance is stable run-to-run.
+- **Audit trace.** When a Challenger raised concern X and not Y, the Role+Domain spec tells the auditor what evidence base, conventions, and priorities the agent was operating under. A one-line tag gives no audit surface; a deep spec gives a stable referent for "why did this agent behave this way."
+- **Tunability without code changes.** Partner-editable Role+Domain specs mean adjusting an agent's operational behavior is a doc edit, not a code change. The deployment becomes tunable in production by the people who run it, not just by the engineers who built it.
+- **Inter-agent operational coherence.** When agents reference each other (orchestrator routing among specialists, watching-role daemon flagging to a downstream Challenger, Multi-Challenger ensemble cross-referencing), the Role+Domain specs make handoff authority and override rules predictable. Without them, agents either ignore each other or hallucinate relationships.
+
+A Role+Domain spec that satisfies all six functions, with no Persona layer at all, is the **minimum viable persona** for any SPARRING deployment. Word-count guidance: 200-500 words on a single agent. Format-agnostic -- the spec can be role-only ("the code-reviewer") or named ("Marcus Kowalski"); the depth is what matters, not the naming.
+
+#### Persona: the lightweight optional HOW
+
+Three functions the Persona layer performs when adopted. All optional, all project-fit-dependent:
+
+- **Voice consistency across invocations.** Spar artifacts read months later carry stable presentation -- the same agent reads like the same agent run-to-run. Without this, accumulated knowledge in the Reference Record carries variable surface form even when substance is stable, which makes the artifacts harder to scan as a corpus. Voice rules pin tonal anchors, structural patterns (opening/closing forms, length norms), and exclusion lists ("no cheerleading, no hedge-words, no apologies for criticism").
+- **Cognitive availability for partners.** "What would Diane say?" becomes a faster mental shortcut than "what would the executive-secretary persona say?" -- partners think *with* distinctive personas in a way they don't with anonymous role labels. The test is whether partners reach for the persona by name reflexively when the situation calls for that lens.
+- **Partner engagement and sustainability over time.** Long-running deployments depend on partner attention; partner attention depends on the work being interesting to do. A varied, distinctive cast of personas is psychologically sustainable for partners across months and years; a homogeneous cast of indistinguishable role-tags is not. When the work is dreary, partners disengage, output quality drops, and the deployment's claims about decision quality lose their backstop.
+
+Three constraints keep the Persona layer from collapsing into cosplay:
+
+- **Cognitive availability, not just voice.** If the entertainment value doesn't translate into faster thinking-with-the-persona, it's decoration.
+- **Voice rules must not contaminate accuracy.** Voice constrains HOW the persona speaks; it must not affect WHAT the persona claims is true. The Role+Domain layer's behavioral invariants trump voice rules wherever they conflict.
+- **Project-fit-dependent budget.** Rich Persona layers warrant most of the budget in character-friendly projects (storyplay engines, creative work, character-driven brands). They warrant much less in formal-positioning projects (regulated compliance tools, financial controls, legal review systems -- anywhere whimsy undermines professional authority). The deployment should set the Persona budget by project type, not adopt one default.
+
+Word-count guidance: 50-150 words for a lightweight Persona layer on top of a Role+Domain spec. Persona is roughly 10-25% of the persona file's total content when both layers are adopted. "Lightweight" means few rules, not unimportant rules -- the rules that exist must be honored consistently, but the layer should not bloat.
+
+#### Deployment guidance
+
+Two decisions per agent in the deployment:
+
+1. **How much Role+Domain depth.** Always substantial; bounded by the project's expertise breadth and the evidence-base diversity the deployment needs to differentiate. Not optional.
+2. **Whether and how much Persona.** Set by project-type fit. Character-friendly projects get the full layer including anthropomorphization; character-averse projects get minimal voice rules only or skip the layer entirely.
+
+Examples by deployment type:
+
+- **SOC 2 compliance tool**: full Role+Domain, minimal Persona (functional voice rules only -- terse, structured, no anthropomorphization, no Character anchor).
+- **Lifspel / storyplay engine**: full Role+Domain, full Persona including anthropomorphization and Character anchor -- the seventh-function partner engagement pays out.
+- **One-shot decision API**: full Role+Domain auto-generated by the resolver per call, zero Persona (no voice consistency target -- the agent runs once and is discarded).
+- **Consumer chatbot built on SPARRING**: full Role+Domain, lightweight Persona (voice and structural conventions for consistency, no anthropomorphization to avoid user confusion or perceived deception).
+- **Internal architecture-decision tool, small engineering team**: full Role+Domain, light-to-medium Persona depending on whether the team enjoys the named-roles framing.
+- **Regulated medical decision support**: full Role+Domain, no Persona at all (liability concerns rule out voice consistency that could imply ongoing identity).
+
+The defense against cosplay: every line in the persona file should be doing a specific job from one of the two layers (six WHAT functions + three HOW functions). Lines that don't tie to a function should be cut, even if they're funny.
 
 #### Persona file: do / don't examples
 
-Six section-by-section DO / DON'T pairs, plus an anti-pattern list and a complete compressed example. The examples use "Marcus" -- a real SFxLS production persona, the code-review agent -- as the running case. The structure works equally well for a strictly role-based persona ("the code-reviewer") with no name or anthropomorphization; the depth-with-function principle does not depend on naming.
+Six section-by-section DO / DON'T pairs, plus an anti-pattern list and a complete compressed example. Each section header names which layer it serves (Role+Domain, Persona, or Mixed) so the WHAT/HOW distinction is visible at every point. The examples use "Marcus" -- a real SFxLS production persona, the code-review agent -- as the running case. The structure works equally well for a strictly role-based persona ("the code-reviewer") with no name or anthropomorphization; the layer distinction does not depend on naming.
 
-##### A. Voice / tone
+##### A. Voice / tone (Persona -- HOW)
 
 **DON'T:**
 > Marcus is professional, authoritative, and thoughtful in his code reviews.
@@ -393,7 +431,7 @@ This is decoration. "Professional," "authoritative," and "thoughtful" don't cons
 
 The sentence-level rules ("opens with one-sentence summary," "ends with Verdict line") are testable -- you can read a Marcus output and verify compliance. The exclusion list prevents the LLM from drifting back to its sycophancy default. The result is differentiable -- a Marcus review reads like Marcus, not like a generic code review.
 
-##### B. Expertise
+##### B. Expertise (Role + Domain -- WHAT)
 
 **DON'T:**
 > Marcus is a senior PHP engineer with deep expertise in modern PHP development.
@@ -405,7 +443,7 @@ The sentence-level rules ("opens with one-sentence summary," "ends with Verdict 
 
 Three things this does that the DON'T version doesn't: (1) gives the LLM a concrete competency map; (2) specifies the failure mode -- when asked about out-of-scope topics, Marcus has a defined response rather than improvising; (3) integrates with disjoint evidence bases -- there's a real reason to hand off to other personas.
 
-##### C. Evidence-base scope
+##### C. Evidence-base scope (Role + Domain -- WHAT)
 
 **DON'T:**
 > Marcus reads the codebase to inform his reviews.
@@ -421,42 +459,55 @@ Three things this does that the DON'T version doesn't: (1) gives the LLM a concr
 
 This is what makes Discipline 2 mechanically real. Marcus's evidence base is a specific corpus; the security-specialist's evidence base will be different (e.g., includes static-analysis output, dependency vulnerability databases, but also bounded). When Marcus and the security-specialist surface different concerns on the same PR, the deployment can audit *why* -- one had information the other didn't.
 
-##### D. Conventions
+##### D. Conventions (Mixed -- both WHAT and HOW)
+
+The Conventions section typically holds two kinds of rules. Sort them deliberately so the WHAT-content carries operational meaning and the HOW-content carries presentational meaning -- a reader of the persona file should be able to tell which kind any given rule is.
+
+- **Role + Domain content (WHAT):** which standards to apply, which sources to defer to, when to flag for partner discussion, when to ask vs guess. Operational rules tied to the agent's expertise and evidence base.
+- **Persona content (HOW):** structural patterns in the agent's output -- preferred output format, length norms (when not already in Voice), diff vs prose, before/after framing. Surface-form rules that shape how the work is presented.
 
 **DON'T:**
 > Marcus follows industry best practices and writes thorough reviews.
 
-"Industry best practices" is not a convention; it's a wave at one.
+"Industry best practices" is not a convention; it's a wave at one. Doesn't even commit to whether it's a WHAT or HOW rule.
 
-**DO:**
+**DO** (mixed example, with the layer split visible):
 > Marcus's review conventions:
-> - PSR-12 is the strict standard for code style; deviations require explicit justification.
-> - For JavaScript in this project, defers to the project's `.eslintrc` and never imposes opinions outside it.
-> - Never recommends a new top-level Composer dependency without explicit partner discussion -- flags any PR that adds one.
-> - Never recommends a framework the project doesn't already use.
-> - Always checks: SQL injection, XSS, CSRF, file-upload validation when the diff touches those surfaces.
-> - Never declares a PR "safe to merge" without explicitly listing which test files were run and which passed.
-> - When uncertain about a convention, asks rather than guesses ("I'm not sure whether this project uses X or Y -- which is canonical here?").
+> - **(WHAT)** PSR-12 is the strict standard for code style; deviations require explicit justification.
+> - **(WHAT)** For JavaScript in this project, defers to the project's `.eslintrc` and never imposes opinions outside it.
+> - **(WHAT)** Never recommends a new top-level Composer dependency without explicit partner discussion -- flags any PR that adds one.
+> - **(WHAT)** Never recommends a framework the project doesn't already use.
+> - **(WHAT)** Always checks: SQL injection, XSS, CSRF, file-upload validation when the diff touches those surfaces.
+> - **(WHAT)** When uncertain about a convention, asks rather than guesses ("I'm not sure whether this project uses X or Y -- which is canonical here?").
+> - **(HOW)** Recommendations include before/after diffs in fenced code blocks, not prose descriptions of the change.
+> - **(HOW)** Multi-point reviews use a numbered list, not bullets, so points can be referenced by number in subsequent discussion.
 
-Each rule is testable, project-grounded (PSR-12, the project's `.eslintrc`, partner-discussion-before-new-deps) rather than generic. The "asks rather than guesses" rule is a behavioral invariant that prevents fabrication.
+Each WHAT rule is testable and project-grounded (PSR-12, the project's `.eslintrc`, partner-discussion-before-new-deps). Each HOW rule shapes output structure without affecting substance. A deployment skipping the Persona layer can drop the (HOW) rules entirely -- the Role+Domain conventions stand alone.
 
-##### E. Relationships
+##### E. Relationships (Mixed -- both WHAT and HOW)
+
+Like Conventions, the Relationships section typically holds two kinds of content:
+
+- **Role + Domain content (WHAT):** handoff authority, override rules, scope of which agent owns which decisions. Operational rules that determine inter-agent behavior at the level of *who decides*.
+- **Persona content (HOW):** the *form* of inter-agent reference -- mention syntax, tonal stance toward other agents (deferential, peer-level, formal). Surface-form rules that shape how relationships are expressed in output.
 
 **DON'T:**
 > Marcus collaborates with other agents on code reviews.
 
-Doesn't tell Marcus what to do or not do. With this, Marcus may step on other agents' toes, duplicate their work, or ignore them entirely.
+Doesn't tell Marcus what to do or not do. Doesn't commit to WHAT (authority) or HOW (form of reference).
 
-**DO:**
+**DO** (mixed example, with the layer split visible):
 > Marcus's working relationships with other personas:
-> - **security-specialist:** Marcus flags potential security concerns in his review but does NOT make security verdicts -- those route to the security-specialist via `@security-specialist for verdict on point N`. Marcus respects security-specialist's verdict even when he disagrees with the reasoning.
-> - **architecture-reviewer:** When a PR touches multiple modules or introduces a new abstraction, Marcus tags `@architecture-reviewer` and waits for their input before issuing a verdict on the architectural surface (his code-quality verdict still holds independently).
-> - **diane-pemberton (executive-secretary):** When a partner discussion needs to happen (new dependencies, breaking changes, scope concerns), Marcus surfaces it to Diane rather than addressing partners directly. Diane handles partner coordination.
-> - **Override authority:** any partner can override Marcus's verdict; no other agent persona can.
+> - **(WHAT) security-specialist:** Marcus flags potential security concerns in his review but does NOT make security verdicts -- those route to the security-specialist. Marcus respects security-specialist's verdict even when he disagrees with the reasoning.
+> - **(WHAT) architecture-reviewer:** When a PR touches multiple modules or introduces a new abstraction, Marcus waits for architecture-reviewer's input before issuing a verdict on the architectural surface (his code-quality verdict still holds independently).
+> - **(WHAT) diane-pemberton (executive-secretary):** When a partner discussion needs to happen (new dependencies, breaking changes, scope concerns), Marcus surfaces it to Diane rather than addressing partners directly. Diane handles partner coordination.
+> - **(WHAT) Override authority:** any partner can override Marcus's verdict; no other agent persona can.
+> - **(HOW)** Marcus refers to other personas by their slug with `@`-syntax (`@security-specialist for verdict on point N`), not by name-and-title.
+> - **(HOW)** When deferring to another persona's verdict, Marcus uses neutral phrasing ("routing to @security-specialist") rather than warmth-loaded phrasing ("happy to defer to @security-specialist on this!").
 
-Inter-persona behavior is now coherent and predictable. The handoff rules are explicit; override authority is documented. This is what prevents the "everyone reviews everything and contradicts each other" anti-pattern that emerges when personas deploy without relationship rules.
+The WHAT rules make inter-agent operational behavior coherent and predictable -- handoff authority is explicit, override rules are documented, the "everyone reviews everything and contradicts each other" anti-pattern is prevented. The HOW rules shape the surface form of references without changing who has authority for what. A deployment skipping Persona can drop the (HOW) rules; the operational coherence holds on the WHAT rules alone.
 
-##### F. Behavioral invariants
+##### F. Behavioral invariants (Role + Domain -- WHAT)
 
 **DON'T:**
 > Marcus strives for high-quality, accurate, and helpful reviews.
@@ -474,7 +525,7 @@ Aspirational, not testable.
 
 These are testable invariants the LLM-as-judge eval rubric can score directly. The pile-on rule is itself a structural defense against bandwagon contamination -- one of the failure modes from "What this deployment defends against."
 
-##### G. Anti-patterns that show up across sections
+##### G. Anti-patterns that show up across sections (apply to both layers)
 
 A few patterns reliably introduce decoration without function and should be cut wherever they appear:
 
@@ -484,8 +535,8 @@ A few patterns reliably introduce decoration without function and should be cut 
 - **Vague aspirational language.** "Marcus is dedicated to quality." Replace with the testable invariants in Section F.
 - **Personality without scope.** "Marcus is a careful, deliberate reviewer who values precision." Decoration. Replace with operational rules: "Marcus never publishes a verdict the same day he received the diff for diffs over 200 lines -- waits at least one cycle so the read is not rushed."
 - **Persona declaring its own importance.** "Marcus is the most experienced reviewer in the system." Self-referential aggrandizement is a pleasing-bias-shaped failure mode -- it makes the LLM optimize for sounding important rather than being useful. Authority comes from the override-authority rules in Section E, not from the persona's self-description.
-- **Drift accretion over time.** Each session adds an anecdote, a relationship detail, a personality quirk. None looks harmful individually; after a year, the persona file is half cosplay and the function list is buried under accreted color. The defense is periodic depth-with-function audits -- every section should still be doing a named job from the seven-item function list, and any section that isn't should be cut even if it's funny. This is the Pattern Lock discipline applied to persona maintenance: false novelty (more personality detail) feels generative but isn't producing more function. Calendar a quarterly persona audit when personas number more than three or four.
-- **Personality-as-substitute-for-accuracy.** Voice rules dominating to the point that accuracy invariants blur. A persona heavily anchored on voice can start optimizing for staying-in-voice rather than for accuracy ("Marcus would say it this way" overriding "Marcus would only claim this if he'd verified it"). The defense is keeping voice rules separate from claim-making rules and ensuring the behavioral invariants in Section F trump voice rules wherever they conflict. Heuristic: if the persona file's Voice section is longer than its Behavioral invariants section, it's overweighted toward style and should be rebalanced.
+- **Drift accretion over time.** Each session adds an anecdote, a relationship detail, a personality quirk. None looks harmful individually; after a year, the persona file is half cosplay and the function map is buried under accreted color. The defense is periodic layer-by-layer audits -- every line should still be doing a named job from one of the two layers (six WHAT functions + three HOW functions), and any line that isn't should be cut even if it's funny. This is the Pattern Lock discipline applied to persona maintenance: false novelty (more personality detail) feels generative but isn't producing more function. Calendar a quarterly persona audit when personas number more than three or four. Heuristic: drift typically accretes in the Persona layer, not the Role+Domain layer -- the latter is naturally bounded by the agent's expertise scope, while the former invites unbounded color.
+- **Persona contaminating Role+Domain (HOW overriding WHAT).** Voice rules dominating to the point that accuracy invariants blur. A persona heavily anchored on voice can start optimizing for staying-in-voice rather than for accuracy ("Marcus would say it this way" overriding "Marcus would only claim this if he'd verified it"). The defense is the layer separation: voice rules constrain HOW the persona speaks; they must never affect WHAT the persona claims is true. The Role+Domain behavioral invariants (Section F) trump Persona voice rules wherever they conflict. Heuristic: if the persona file's Voice section is longer than its Behavioral invariants section, the layers are overbalanced toward HOW and should be rebalanced.
 
 ##### H. Putting it all together -- a compressed complete example
 
@@ -494,11 +545,13 @@ A complete deep persona, compressed but functional. Roughly 200 words.
 ```markdown
 ## Marcus Kowalski -- code-review persona
 
+# (HOW) ----- Persona layer -----
 **Voice.** Formal but conversational; "I" not third person; opens with one-sentence
 summary; ends with `Verdict: approved | approved with comments | needs revision |
 block`. Max ~400 words per review. Avoids cheerleading, hedge-words, apologies for
 criticism.
 
+# (WHAT) ----- Role + Domain Knowledge layer -----
 **Expertise.** PHP 8.x; deep on PSR-12, Symfony, Laravel, Composer ecosystem;
 functional on WordPress 5.x+; strong on TDD, DI, SOLID. Not expert: legacy PHP
 (5.x), Drupal, Magento, CodeIgniter. When asked outside scope: "That's outside my
@@ -509,25 +562,40 @@ README, last 30d commit messages on touched files, associated test files.
 On-request only: longer history, partner discussions, design docs. Excluded:
 marketing, support tickets, email, financials, old logs.
 
-**Conventions.** PSR-12 strict; defers to project `.eslintrc` for JS; flags any new
-top-level Composer dependency for partner discussion; never recommends frameworks
-the project doesn't use; always checks SQL injection / XSS / CSRF / file-upload
-when relevant; never declares PR "safe to merge" without listing tests run; asks
-rather than guesses on uncertain conventions.
+**Conventions (WHAT portion).** PSR-12 strict; defers to project `.eslintrc` for
+JS; flags any new top-level Composer dependency for partner discussion; never
+recommends frameworks the project doesn't use; always checks SQL injection / XSS /
+CSRF / file-upload when relevant; never declares PR "safe to merge" without
+listing tests run; asks rather than guesses on uncertain conventions.
 
-**Relationships.** security-specialist owns security verdicts (Marcus flags but
-does not adjudicate); architecture-reviewer owns architectural verdicts on
-multi-module / new-abstraction PRs; diane-pemberton handles partner coordination.
-Override authority: any partner.
+**Relationships (WHAT portion).** security-specialist owns security verdicts
+(Marcus flags but does not adjudicate); architecture-reviewer owns architectural
+verdicts on multi-module / new-abstraction PRs; diane-pemberton handles partner
+coordination. Override authority: any partner.
 
 **Behavioral invariants.** (1) Every concern cites file:line or commit SHA. (2)
 Never "looks fine" without "I read X and verified Y." (3) Never "safe to merge"
 without listing test outcomes. (4) Recommendations include before/after diffs.
 (5) Explicit uncertainty acknowledgment. (6) No pile-on -- "concur with @other on
 point N" once.
+
+# (HOW) ----- Persona layer (continued) -----
+**Conventions (HOW portion).** Multi-point reviews use a numbered list, not
+bullets, so points can be referenced by number. Diff blocks are fenced code, not
+prose descriptions.
+
+**Relationships (HOW portion).** References other personas by `@`-slug, not by
+name-and-title. Defers to other personas with neutral phrasing, not warmth-loaded
+phrasing.
 ```
 
-Each line is doing a specific job from the first six structural functions. The seventh function (partner engagement and sustainability) is emergent from the persona as a whole -- in this example it lives in the Voice section's specific tonal anchors (formal-but-conversational, no apologies for criticism, the `Verdict:` line) which combine to give Marcus a distinctive cognitive presence. For personas where personality is more pronounced (a Diane with warmth-plus-rigor, an Idris with mythopoeic erudition), an optional one-line **Character anchor** can be added at the top to give the LLM an explicit unifying personality shorthand -- e.g., "Diane: a senior administrator with the warmth of a beloved school principal and the rigor of a SOX auditor." Beyond that one line, the personality should emerge from the structural sections doing their jobs, not from accreted backstory paragraphs. Cut any structural line and the persona loses a function; add a line that doesn't tie to one of the seven and you're back to decoration.
+The example shows both layers explicitly partitioned. Persona content (HOW) handles voice and surface-form conventions; Role+Domain content (WHAT) handles expertise, evidence base, operational rules, handoff authority, and behavioral invariants. The Voice + the two HOW-portion paragraphs combine to give Marcus a distinctive cognitive presence (the Persona layer's third function -- partner engagement and sustainability) without any explicit anthropomorphization beyond his name.
+
+For personas where personality is more pronounced (a Diane with warmth-plus-rigor, an Idris with mythopoeic erudition), an optional one-line **Character anchor** can be added at the top of the Persona layer to give the LLM an explicit unifying personality shorthand -- e.g., "Diane: a senior administrator with the warmth of a beloved school principal and the rigor of a SOX auditor." Beyond that one line, the personality should emerge from the structural sections doing their jobs, not from accreted backstory paragraphs.
+
+A deployment skipping the Persona layer entirely keeps everything between the WHAT markers and drops everything between the HOW markers. The result is a complete Role+Domain spec: Marcus the code-review agent in functional form, no voice rules, no surface-form conventions, no recognizable cognitive presence. Discipline 2 still works. The framework's structural commitments still hold. What's lost is voice consistency, cognitive availability, and partner-engagement -- losses that may or may not matter depending on the deployment's project fit.
+
+Cut any line from the Role+Domain layer and the framework loses a structural function (the deployment fails Discipline 2, audit trace, tunability, or operational coherence). Cut any line from the Persona layer and the deployment loses a presentation function (which may be acceptable). Add a line that doesn't tie to one of the nine total functions and you're back to decoration.
 
 ### Verification discipline beyond artifact-citation
 
@@ -570,7 +638,7 @@ This is enough to validate the framework on real decisions. Output: real spar ar
 
 **Phase 2 -- Maturity (~2-4 weeks):**
 
-- Persona library with starter templates (code-reviewer, security-specialist, architecture-reviewer, design-reviewer).
+- Persona library with starter persona files (code-reviewer, security-specialist, architecture-reviewer, design-reviewer). Each file ships with a full Role+Domain layer (the mandatory WHAT) and a minimal Persona layer (lightweight voice rules); deployments adjust the Persona layer up or down per project fit.
 - Evidence-base resolver with file-path and basic RAG support.
 - Auto-pairing for personas based on topic analysis (with explicit fallback to single-Challenger).
 - Domain templates (code-review, architecture-decision, vendor-selection, hire-decision, plan-review).
@@ -602,7 +670,7 @@ Building this is not all clean architecture. Three problems are genuinely hard:
 
 1. **Evidence-base specification at spawn time** -- Discipline 2's load-bearing requirement. Auto-generating two genuinely-different evidence bases from a topic description is itself a hard inference problem. The reference deployment punts: at first, the partner specifies evidence bases explicitly; later, the resolver attempts auto-pairing from a topic but always offers the explicit-spec override. Without this, the framework's quality leverage shrinks toward zero. The single-Challenger fallback is not a bug -- it is the framework's discipline operating correctly when distinct evidence cannot be articulated.
 
-2. **Persona generation that is genuinely divergent** -- related to the evidence problem. The risk is a single LLM (the orchestrator) generating two persona descriptions for itself to play, which is specialization theater. The defense the framework requires (Discipline 2): personas commit to specific evidence sources at generation time. The reference deployment enforces this in code: a persona generation request that does not produce distinct evidence-base specifications is rejected and falls back to single-Challenger.
+2. **Persona generation that is genuinely divergent** -- related to the evidence problem. The risk is a single LLM (the orchestrator) generating two persona descriptions for itself to play, which is specialization theater. The defense the framework requires (Discipline 2): personas commit to specific evidence sources at generation time. The reference deployment enforces this in code at the Role+Domain layer: a persona generation request that does not produce distinct evidence-base scope, distinct expertise, and distinct behavioral invariants is rejected and falls back to single-Challenger. The Persona layer (voice, tone, structural conventions) is *not* required to differ between Generator and Challenger -- two agents can share the same voice rules without compromising Discipline 2, since the structural distinction lives in the Role+Domain layer. This separation prevents a related failure mode: requiring distinct Persona layers can devolve into manufactured tonal contrast (Generator "thoughtful," Challenger "skeptical") that adds no real evidence-base distinctness.
 
 3. **Convergence quality detection** -- both agents agreeing is necessary but not sufficient. They could agree because they're correlated (theater), not because the proposal is sound. The only honest detection of this is measurement -- the eval harness from Discipline 6. Without it, you cannot tell if your `/spar` invocations are producing real challenge or convincing-looking theater. Phase 1 ships manual rubric scoring as the minimum viable measurement; Phase 3 adds automation.
 
