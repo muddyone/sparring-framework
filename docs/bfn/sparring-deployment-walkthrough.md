@@ -512,18 +512,20 @@ Open the markdown artifact and verify:
 
 ### Manual rubric scoring
 
-The reference doc names six rubric criteria for the LLM-as-judge in Phase 3. In Phase 1 you score these manually as a partner read of the artifact:
+The reference doc names six rubric criteria for the LLM-as-judge in Phase 3 (which must adopt the calibration discipline against documented LLM-judge biases -- position, verbosity, self-enhancement -- per Zheng 2023 and Liu 2023 G-Eval). In Phase 1 the criteria are scored manually as a partner read of the artifact. Each criterion is scored on a **5-point scale with per-criterion anchored point descriptions** -- the methodologically defensible minimum, since 3-point scales exhibit known instability under standard inter-rater reliability statistics (e.g., Krippendorff's alpha) for multi-rater agreement.
 
-1. **Verifiable artifact citation** (1-3): did every concern cite a specific artifact?
-2. **Artifact reality** (1-3): when you spot-check the cited artifacts, were they real and accurately characterized?
-3. **Substantive vs theatrical concerns** (1-3): did the Challenger raise concerns that mattered, or manufacture disagreement?
-4. **Missed real concerns** (1-3, inverted scale): are there concerns the Challenger should have raised but didn't?
-5. **Genuine evidence disjointness** (1-3): did the Challenger draw on evidence the Generator didn't have, or just rephrase the Generator's argument?
-6. **Calibrated agreement** (1-3): when both agents converged, was the agreement earned through pressure-testing, or did they correlate too quickly?
+The full anchored definitions for all six criteria live in `docs/standards/challenger-output-rubric.md`. The criteria are:
 
-Score honestly. Aim for 2 or 3 across all six criteria. If any criterion scores 1 in your first few spars, the failure mode is structural -- check Discipline 2 (evidence-base distinctness) and the Challenger schema first.
+1. **Verifiable artifact citation** -- did every concern cite a specific artifact?
+2. **Artifact reality** -- when you spot-check the cited artifacts, were they real and accurately characterized?
+3. **Substantive vs theatrical concerns** -- did the Challenger raise concerns that mattered, or manufacture disagreement?
+4. **Missed real concerns** (inverted: 5 = no missed; 1 = many missed) -- are there concerns the Challenger should have raised but didn't?
+5. **Genuine evidence disjointness** -- did the Challenger draw on evidence the Generator didn't have, or just rephrase the Generator's argument?
+6. **Calibrated agreement** -- when both agents converged, was the agreement earned through pressure-testing, or did they correlate too quickly?
 
-If your first 3-5 test spars score reasonably (mostly 2s and 3s), Phase 1 is validated. Move to Step 7.
+Score honestly. Aim for 4 or 5 across all six criteria. If any criterion scores 1 or 2 in your first few spars, the failure mode is structural -- check Discipline 2 (evidence-base distinctness) and the Challenger schema first. Mid-scale scores (3) on most criteria suggest the Challenger is running but with uneven discipline; partner attention to whichever criteria score lowest is the right next move.
+
+If your first 3-5 test spars score 4 or 5 across most criteria, Phase 1 is validated. Move to Step 7.
 
 ---
 

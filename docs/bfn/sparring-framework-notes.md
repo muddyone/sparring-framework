@@ -882,7 +882,7 @@ The eval harness expands in three phases. Each phase is independently shippable 
 
 #### Phase 1: lightweight rubric + partner sampling -- shipped 2026-04-28 (rev. 9)
 
-The minimum viable measurement layer. A six-criterion rubric scored 1-3 per criterion, applied by partners to a sample of 3-5 Challenger outputs across the five surfaces on a regular cadence (weekly to start). Eval reviews are saved as structured markdown files in `docs/chatlogs/` so they sit alongside other chatlogs and are browsable in The Stacks.
+The minimum viable measurement layer. A six-criterion rubric scored on a 5-point scale with per-criterion anchored point descriptions, applied by partners to a sample of 3-5 Challenger outputs across the five surfaces on a regular cadence (weekly to start). Eval reviews are saved as structured markdown files in `docs/chatlogs/` so they sit alongside other chatlogs and are browsable in The Stacks.
 
 Lives at `docs/standards/challenger-output-rubric.md`.
 

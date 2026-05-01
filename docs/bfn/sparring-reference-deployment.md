@@ -214,12 +214,19 @@ These don't run on every spar but are part of the larger deployed system.
 
 - **LLM-as-judge agent (Phase 3, eval-harness automation).**
   - *Model*: Sonnet or Opus (judges should be at least as capable as the agents they judge).
-  - *System prompt*: "You are an evaluator applying the SPARRING rubric. Given a spar artifact, score it 1-3 on each of the six criteria: verifiable artifact citation, artifact reality, substantive vs theatrical concerns, missed real concerns, genuine evidence disjointness, calibrated agreement. Return structured scores with reasoning."
+  - *System prompt*: "You are an evaluator applying the SPARRING rubric. Given a spar artifact, score it on a 5-point scale with per-criterion anchored point descriptions across the six criteria: verifiable artifact citation, artifact reality, substantive vs theatrical concerns, missed real concerns, genuine evidence disjointness, calibrated agreement. Apply the calibration discipline below. Return structured scores with reasoning."
   - *Tools*: read access to the spar artifact and the artifacts it cites (so the judge can verify citations).
   - *Input*: a spar artifact.
-  - *Output*: structured rubric scores + reasoning per criterion.
+  - *Output*: structured rubric scores + reasoning per criterion, persisted as an eval artifact (see schema in the public Implementation Guide Appendix C.2).
   - *Lifespan*: one-shot per eval pass; bulk-parallelizable across many artifacts.
   - *Concurrency*: highly parallel -- many judges can run simultaneously over a corpus of past spars.
+  - *Calibration discipline (mandatory at Phase 3)*: LLM-judge implementations carry systematic biases that must be controlled at deployment time. Zheng 2023 documents three: *position bias* (judges favor the first-presented answer in pairwise comparisons), *verbosity bias* (judges favor longer outputs independent of substance), and *self-enhancement bias* (judges favor outputs from their own model family). The required moves:
+    - *Position bias*: when pairwise comparison is used, run swap-order and average. Required when applicable; not applicable to point-wise rubric scoring.
+    - *Verbosity bias*: rubric criteria text includes explicit length-independence ("score the substance of the concern, not the length of the discussion"). Required, no exception.
+    - *Self-enhancement bias*: distinct judge model family required when the deployment supports multi-vendor configuration. Single-vendor deployments (the v1 reference defaults to Sonnet or Opus -- Anthropic-only) cannot satisfy this when the Generator and Challenger are also from the same family; the eval artifact must record this as a known calibration limitation.
+    - *Calibration improvements*: chain-of-thought reasoning before the score is required, no exception. Probability-weighted summation per Liu 2023 G-Eval is required when the runtime API exposes token logprobs; deployments without logprob access use direct integer scoring and record the limitation in the eval artifact.
+  - *Eval artifact*: structured record of every eval pass. Minimum fields: `eval_id`, `timestamp`, `spar_id`, `judge` identity and configuration, `eval_design` with `controls_applied`, `rubric_scores[]` per criterion with reasoning, `calibration_limitations[]` populated when any calibration discipline cannot be satisfied. Full schema specified in the public Implementation Guide Appendix C.2.
+  - *Status*: the calibration discipline above defines what Phase 3 must do; the v1 reference implementation does not yet satisfy it (no Phase 3 LLM-as-judge has been built). Adopters implementing Phase 3 inherit the discipline as part of the Phase 3 contract.
 
 **A real architectural choice: code-orchestrator vs. agent-orchestrator.**
 
