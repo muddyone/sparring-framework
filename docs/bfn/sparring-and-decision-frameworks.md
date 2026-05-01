@@ -102,14 +102,14 @@ The point is *not* that SPARRING phases match OST nodes one-to-one. It is that a
 
 ## 7. Extraction targets
 
-Downstream artifacts derived from this working draft. Updated as each moves through its lifecycle (PLANNED -> DRAFT -> SHIPPED with link).
+Downstream artifacts derived from this working draft. Updated as each moves through its lifecycle (PLANNED -> DRAFT -> SHIPPED with link). LinkedIn posts that ship from this draft become Series 2 of the LinkedIn post tree (`docs/bfn/linkedin/posts/02-decision-frameworks-*.md`); Series 2 follows the SPARRING framework series (Series 1) with a 1-2 week gap so each series lands cleanly.
 
 | Artifact | Surface | Status | Notes |
 |---|---|---|---|
-| Agentic-compounding-in-discovery LinkedIn post | LinkedIn | PLANNED | Lede: the problem (compounding LLM failure modes hit Torres-style discovery the moment agents enter the loop). Anchors on Torres respectfully -- book + OST attribution. Closes with link to the canonical professional-distribution preprint. |
-| Discipline-injection LinkedIn post | LinkedIn | PLANNED | Lede: the framing (D2/D3/D4 move from good-practice to structurally-required under agent mediation). Names the three disciplines specifically. Same closing as above. |
-| Worked-example LinkedIn post | LinkedIn | PLANNED | The four boundaries from §6, made concrete. May be a carousel rather than a single post. |
-| Self-applied spar artifact (credibility move) | LinkedIn or repo | PLANNED | Run a real `/spar` on one of the post drafts (Marcus on the SPARRING side; a PM-discovery-grounded Challenger on the Torres side); link to the artifact from the post. Walking the talk on a post that names epistemic discipline is the post. |
+| Agentic-compounding-in-discovery LinkedIn post | LinkedIn -- `posts/02-decision-frameworks-01-agentic-compounding.md` (planned path) | PLANNED | Lede: the problem (compounding LLM failure modes hit Torres-style discovery the moment agents enter the loop). Anchors on Torres respectfully -- book + OST attribution. Closes with link to the canonical professional-distribution preprint. |
+| Discipline-injection LinkedIn post | LinkedIn -- `posts/02-decision-frameworks-02-discipline-injection.md` (planned path) | PLANNED | Lede: the framing (D2/D3/D4 move from good-practice to structurally-required under agent mediation). Names the three disciplines specifically. Same closing as above. |
+| Worked-example LinkedIn post | LinkedIn -- `posts/02-decision-frameworks-03-worked-example.md` (planned path) | PLANNED | The four boundaries from §6, made concrete. May be a carousel rather than a single post. |
+| Self-applied spar artifact (credibility move) | `.claude/spars/<date>/` + narrative companion at `docs/bfn/spars/` | PLANNED | Run a real `/spar` on one of the post drafts (Marcus on the SPARRING side; a PM-discovery-grounded Challenger on the Torres side); link to the artifact from one of the posts. Walking the talk on a series that names epistemic discipline. |
 | v1.1 companion document: SPARRING in relation to human-discipline decision frameworks | `docs/bfn/public/sparring-framework/professional-distribution/` | DEFERRED | Not v1.0 scope. Awaits stabilization of multiple framework comparisons in this draft. The companion will need its own honest-self-critique section (see §9) modeled on Spec §5.3. |
 
 **Extraction discipline:** anything that ships gets a link back from this register; any drift between the artifact and this draft gets resolved in favor of whichever has had real challenge run on it.
