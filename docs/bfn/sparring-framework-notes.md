@@ -1,6 +1,6 @@
 # SPARRING Framework -- Working Notes
 
-*Working-notes / scratchpad for Bart Niedner's SPARRING Framework (originally "SPARK/PNP," developed under ResourceForge), and the larger ongoing conversation around it -- including how it has been applied to the StoryForge x Lifspel (SFxLS) agentic ecosystem.*
+*Working-notes / scratchpad for Bart Niedner's SPARRING Framework (originally "SPARK/PNP," developed under ResourceForge), and the larger ongoing conversation around it -- including how it has been applied to the Lifspel agentic ecosystem.*
 
 *This is a **living working document**, not a single-source-of-truth artifact. Mature content is extracted from this doc into standalone docs in `/docs/bfn/`. See "Documentation workflow" below.*
 
@@ -22,20 +22,20 @@ The `/docs/bfn/` namespace follows a deliberate scratchpad-to-mature pattern:
 | [`sparring-reference-deployment.md`](sparring-reference-deployment.md) | The CLI-based reference deployment of the SPARRING Framework -- architectural spec, what to build | 2026-04-29 (from rev. 17 of these notes) |
 | [`sparring-deployment-walkthrough.md`](sparring-deployment-walkthrough.md) | Staged getting-started guide for deploying SPARRING -- opinionated path through one common project shape, how to actually do this | 2026-04-30 (during the Phase 1 v1 release pass) |
 
-(More to come as topics mature -- the full framework Overview, the SFxLS adoption history, and the appendices on agent fundamentals, multi-agent terminology, deployment patterns, and theatrical-adversariality mitigations are all candidates for future extraction.)
+(More to come as topics mature -- the full framework Overview, the Lifspel adoption history, and the appendices on agent fundamentals, multi-agent terminology, deployment patterns, and theatrical-adversariality mitigations are all candidates for future extraction.)
 
 ---
 
 *Revision history:*
-*- 2026-04-30 r19 -- v1 release pass on the deployment docs. (1) Pleasing-bias rebalance across 8 places in these working notes: the framework no longer pins on pleasing-bias as primary purpose; pleasing-bias is named as the most-cited member of a family of compounding LLM failure modes (sycophancy, confirmation bias, anchoring, misread questions, specialization blind spots, hallucinated detail, confidently-wrong outputs, bandwagon contamination). (2) Added "Recognizing these situations in a deployment" subsection in the Overview, naming the Applicability Gate behavior for routine work, pure-judgment topics, and ceiling-hit symptoms. (3) Added "Disagreement-at-cap response protocol" subsection with five canonical responses (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) plus non-canonical acknowledgment; clarified Popperian base + Hegelian extension at the cap boundary. (4) Sharpened Discipline 2 to name the Role + Domain Knowledge layer (mandatory) vs Persona layer (optional, lightweight) distinction explicitly; persona-only specialization (manufactured tonal contrast) does not satisfy Discipline 2. (5) Coherence pass on Part 3 with structural-resolution Status notes per surviving concern; Future Extensions Synthesis entry rewritten to reflect partial shipping (one of five disagreement-at-cap responses) with iterative synthesis as the remaining ambition; Inspirations citation sharpened (Popper-style falsification at base + Hegelian thesis-antithesis-synthesis at the boundary). (6) Reference deployment doc gained: "What this deployment defends against" section, Applicability Gate component, Disagreement-at-cap menu surfacing in iteration controller and artifact emitter, Lessons-from-SFxLS section with three subsections (Role+Domain mandatory + Persona lightweight optional layer model with bucket-labeled do/don't examples; Verification discipline beyond artifact-citation; Partner-in-the-loop as first-class workspace participant), three-class persona lifecycle (persistent / returning / temporary) with full lifecycle structure section. (7) Walkthrough doc created -- staged getting-started guide for small-team Phase 1 deployments, sibling to the reference doc. Includes PNP'd Anthropic Claude Agent SDK recommendation (Sharma et al. 2023 sycophancy research; recent Claude versions target sycophancy reduction; operational fit; defense-in-depth not replacement; revisit annually). Lifspel and LineMind Novelist worked examples. End-to-end alignment audits ran twice during the pass; cross-doc alignment confirmed at session close.*
+*- 2026-04-30 r19 -- v1 release pass on the deployment docs. (1) Pleasing-bias rebalance across 8 places in these working notes: the framework no longer pins on pleasing-bias as primary purpose; pleasing-bias is named as the most-cited member of a family of compounding LLM failure modes (sycophancy, confirmation bias, anchoring, misread questions, specialization blind spots, hallucinated detail, confidently-wrong outputs, bandwagon contamination). (2) Added "Recognizing these situations in a deployment" subsection in the Overview, naming the Applicability Gate behavior for routine work, pure-judgment topics, and ceiling-hit symptoms. (3) Added "Disagreement-at-cap response protocol" subsection with five canonical responses (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) plus non-canonical acknowledgment; clarified Popperian base + Hegelian extension at the cap boundary. (4) Sharpened Discipline 2 to name the Role + Domain Knowledge layer (mandatory) vs Persona layer (optional, lightweight) distinction explicitly; persona-only specialization (manufactured tonal contrast) does not satisfy Discipline 2. (5) Coherence pass on Part 3 with structural-resolution Status notes per surviving concern; Future Extensions Synthesis entry rewritten to reflect partial shipping (one of five disagreement-at-cap responses) with iterative synthesis as the remaining ambition; Inspirations citation sharpened (Popper-style falsification at base + Hegelian thesis-antithesis-synthesis at the boundary). (6) Reference deployment doc gained: "What this deployment defends against" section, Applicability Gate component, Disagreement-at-cap menu surfacing in iteration controller and artifact emitter, Lessons-from-Lifspel section with three subsections (Role+Domain mandatory + Persona lightweight optional layer model with bucket-labeled do/don't examples; Verification discipline beyond artifact-citation; Partner-in-the-loop as first-class workspace participant), three-class persona lifecycle (persistent / returning / temporary) with full lifecycle structure section. (7) Walkthrough doc created -- staged getting-started guide for small-team Phase 1 deployments, sibling to the reference doc. Includes PNP'd Anthropic Claude Agent SDK recommendation (Sharma et al. 2023 sycophancy research; recent Claude versions target sycophancy reduction; operational fit; defense-in-depth not replacement; revisit annually). Lifspel and LineMind Novelist worked examples. End-to-end alignment audits ran twice during the pass; cross-doc alignment confirmed at session close.*
 *- 2026-04-29 r18 -- restructured working notes for documentation workflow. Moved file from `docs/reference/spark-pnp-and-sfxls.md` to `docs/bfn/sparring-framework-notes.md` and renamed H1 to clarify it is working notes, not a marketing artifact. Added "Documentation workflow" section + "External documents" table at the top. Extracted the Reference Deployment section into standalone `docs/bfn/sparring-reference-deployment.md` (sourced from rev. 17 content). Replaced the Reference Deployment section body with a one-paragraph link stub. The 14 inbound references (CLAUDE.md, five `/`-skills, marcus-agent.js, three agent personas, challenger-output-rubric.md) updated to point at the new path.*
 *- 2026-04-28 r1 -- initial concept doc + brainstorm.*
 *- 2026-04-28 r2 -- post-adoption: Part 3 critique revised after Bart clarified the framework's intended scope (high-quality decisions, not every prompt), iteration-count semantics (dynamic / task-driven, not fixed), and that quality is the metric, not token cost. Added Appendix A on agent fundamentals (what is an agent, sub-agent, specialization) as foundational background.*
 *- 2026-04-28 r3 -- integrated Part 3 + Part 5 sharpening: concrete Idris-Lena evidence-disjoint example as the canonical illustration of the ground-truth conditionality; sharper model-ceiling phrasing; forward-looking note in Part 5 deferred section setting the focus for the future `/sparring` brainstorm.*
 *- 2026-04-28 r4 -- added Appendix B on multi-agent terminology (MAS as umbrella term, orchestration vs choreography distinction, vocabulary fragmentation in the LLM-agent field, mapping of the StoryForge ecosystem to industry-standard patterns).*
-*- 2026-04-28 r5 -- added Appendix C on agent deployment patterns: the eight architectural patterns dominating the LLM-agent field, the framework brand names that embody each, where SFxLS sits in the landscape (a deliberate hybrid), what is distinctive about SFxLS, and what it lacks vs. mature industry practice with priority ranking for what to add first.*
+*- 2026-04-28 r5 -- added Appendix C on agent deployment patterns: the eight architectural patterns dominating the LLM-agent field, the framework brand names that embody each, where Lifspel sits in the landscape (a deliberate hybrid), what is distinctive about Lifspel, and what it lacks vs. mature industry practice with priority ranking for what to add first.*
 *- 2026-04-28 r6 -- revised the Part 5 forward-looking note for the deferred `/sparring` brainstorm. Earlier framing defaulted to "partner gates at phase transitions" as a safety mechanism, which conflicts with the autonomy goal. Replaced with: orchestrated escalation paths for high-stakes-by-design phases + choreographed escalation criteria encoded in each agent's system prompt for agent-determined cases. Separated the transition-declaration-reliability concern (handled by iteration caps, ground-truth-exhaustion signals, or inter-agent agreement) from the partner-involvement question. Notes residual concerns: LLM self-assessed uncertainty is unreliable; theatrical adversariality can fire without the agents detecting it.*
-*- 2026-04-28 r7 -- added Appendix D on theatrical-adversariality mitigation: the eight-pattern tool kit (anti-pattern prompting, asymmetric prompting, tool-grounded verification, domain-grounded specialization, multiple Challengers, eval harness with rubric scoring, architectural mitigations, training-layer), what is well-solved vs. not, and the SFxLS mapping table showing where the architecture is strong (#1, #4, #8, partial #3) and weak (#2, #5, #6, #7).*
+*- 2026-04-28 r7 -- added Appendix D on theatrical-adversariality mitigation: the eight-pattern tool kit (anti-pattern prompting, asymmetric prompting, tool-grounded verification, domain-grounded specialization, multiple Challengers, eval harness with rubric scoring, architectural mitigations, training-layer), what is well-solved vs. not, and the Lifspel mapping table showing where the architecture is strong (#1, #4, #8, partial #3) and weak (#2, #5, #6, #7).*
 *- 2026-04-28 r8 -- extended Appendix D #3 (tool-grounded verification) to claim-of-concern across all five Challenger surfaces (`/pnp`, `/act-as-agent` Idris-Lena Challenger prompt, `/plan-review --pnp` Challenger prompt, `/thread-assessment` close-decision PNP, Marcus's self-PNP). Verifiable-artifact requirement: every concern must cite a specific file/line, source citation, test/commit, or concrete edge case; concerns without an artifact are dismissed as theatrical adversariality. Also added two named candidates for the remaining eval-harness leverage move: divergent-domain dual judges, and on-the-fly specialized agents with genuinely-different-evidence injection routed by a detection orchestrator.*
 *- 2026-04-28 r9 -- added Appendix D "Implementation roadmap" section with Phase 1 / Phase 2 / Phase 3 staging for the eval-harness work. Phase 1 (rubric + partner sampling) shipped concurrently as `docs/standards/challenger-output-rubric.md`. Phase 2 (smoke-test corpus + before/after testing) and Phase 3 (automated scoring, divergent-domain dual judges, on-the-fly specialists with detection orchestrator) documented as deferred with the discipline that prevents premature investment.*
 *- 2026-04-28 r10 -- shipped `/spar [iterations] <topic>` skill (`.claude/skills/spar/SKILL.md`) on best-guess assumptions given project-timeline pressure that does not support full Phase 1 measurement first. Shipped with three design tightenings: (a) persona generation requires explicit evidence-base specification with single-Challenger fallback when distinct sources cannot be articulated; (b) convergence requires both agents to emit explicit `agree: true` signals (not Generator's self-judgment alone); (c) self-invocation triggers documented as observable conditions, not LLM-self-assessed uncertainty. Iterations default to 2 if omitted; minimum 1. Scope today: partner-invokable and Claude-Code-invokable. Agent self-invocation deferred (requires SDK-level work to add Agent tool to automated agents' kits, or marker-based orchestration).*
@@ -43,7 +43,7 @@ The `/docs/bfn/` namespace follows a deliberate scratchpad-to-mature pattern:
 *- 2026-04-28 r12 -- doc body updates to reflect everything shipped since the original 2026-04-28 partner Cut: added "Subsequent additions" subsection in Part 5 listing post-Cut additions in chronological order; rewrote the "What is deferred" entry to acknowledge that `/spar` (rev. 10) and Marcus self-spar (rev. 11) operationalized parts of the originally-deferred `/sparring` brainstorm; added "Shape analysis: which agents benefit from in-loop sparring" subsection to Appendix D's implementation roadmap; added a brief "Implementation caveats" note about SDK tool-name uncertainty (`Task` vs `Agent`).*
 *- 2026-04-29 r13 -- added top-level standalone "Overview" section (right after frontmatter, before Part 1) with a comprehensive plain-language description suitable for marketing use. Integrates: marketing name (SPARRING Framework), iteration defaults with dynamic-adjustment caveat, Challenger model-question per phase, comprehensive observable-triggers list categorized by Stakes / Complexity / Confidence / Authority / Domain fit, two new disciplines (Measurability, Observability) added as #6 and #7, broader failure-mode coverage beyond sycophancy (confirmation bias, anchoring, misreading, blind spots, hallucinated detail, confidently-wrong outputs, bandwagon effects), future-extension directions (N-specialist decisions, cross-time pressure-testing, continuous monitoring, hypothesis generation mode, synthesis, calibration training, adversarial scenario generation, bias-aware lenses), and the parent-agent edit to discipline #4 (disagreement returns to the human OR parent agent, preserving the autonomy framing).*
 *- 2026-04-29 r14 -- expanded the Overview section to integrate the variants/operational-patterns and an additional discipline that had been latent in the framework. Added a new "Variants and operational patterns" section between SPARRING and the disciplines, with three subsections: phase-isolation modes (SPARK alone for hypothesis generation; Pattern Lock alone as ideation-hygiene tool; PNP alone for single-pass pressure-test); role variants (Human-in-the-Generator with AI Challenger; AI-Generator with Human-in-the-Challenger; Multi-Challenger ensemble per phase; Watching-role Challenger for ongoing systems); deployment patterns (domain-specific SPARRING templates; pre-emptive SPARRING for decision archives). Added Discipline 8 "Dialectic Surface" -- the persistent, shared, asynchronous, threadable, searchable, auditable, equipotent communication surface where humans and agents interact over time (escalation / correction / reference). Implementation tool-agnostic (message board, chat platform with thread discipline, issue tracker, wiki, shared document) -- the discipline is "what must exist," not "which tool." Restructured Future Extensions to reflect what moved into base: removed continuous monitoring (became Watching-role Challenger in Variants) and hypothesis generation (became phase-isolation in Variants); kept N-specialist decisions, cross-time pressure-testing, synthesis (true dialectic), calibration training, adversarial scenario generation, bias-aware Challenger lenses.*
-*- 2026-04-29 r15 -- split rev. 14's Discipline 8 into two disciplines after partner PNP-ed the conflation. The previous Discipline 8 mixed two functionally distinct things: active dialogue (escalation, correction, ongoing turn-taking) and reference record (persistent curated material for retrieval long after the fact). The two functions differ on volume / signal density, curation requirements, write privileges, revision norms, decay curves, and audience -- mixing them on one surface is a real failure mode (active chatter drowns reference signal; curation discipline kills active dialogue). Now: Discipline 8 "Dialectic Surface" covers active communication only; new Discipline 9 "Reference Record" covers persistent curated retrieval. Both required. Scale-dependent note explicitly added: small deployments can serve both with one physical surface plus discipline (e.g., the SFxLS Round Table uses thread resolution states); at scale, separation usually becomes necessary. "The eight disciplines" header updated to "The nine disciplines"; one-sentence version updated to reflect both surfaces.*
+*- 2026-04-29 r15 -- split rev. 14's Discipline 8 into two disciplines after partner PNP-ed the conflation. The previous Discipline 8 mixed two functionally distinct things: active dialogue (escalation, correction, ongoing turn-taking) and reference record (persistent curated material for retrieval long after the fact). The two functions differ on volume / signal density, curation requirements, write privileges, revision norms, decay curves, and audience -- mixing them on one surface is a real failure mode (active chatter drowns reference signal; curation discipline kills active dialogue). Now: Discipline 8 "Dialectic Surface" covers active communication only; new Discipline 9 "Reference Record" covers persistent curated retrieval. Both required. Scale-dependent note explicitly added: small deployments can serve both with one physical surface plus discipline (e.g., the Lifspel Round Table uses thread resolution states); at scale, separation usually becomes necessary. "The eight disciplines" header updated to "The nine disciplines"; one-sentence version updated to reflect both surfaces.*
 *- 2026-04-29 r16 -- added a new top-level "Reference Deployment" section between the Overview and Part 1, describing what to build to deploy the SPARRING Framework as fully aligned as possible for general business use from a CLI. Covers: discipline-to-component mapping (every one of the nine disciplines to a concrete build component); architecture (entry point, agent runtime, persona library, evidence-base resolver, iteration controller, artifact emitter, persistence, dialectic surface integration, eval harness, trigger registry); CLI surface (concrete `spar` commands modeled after git/kubectl); configuration and data model (`.spar/` directory layout and spar artifact schema); four integration adapters (agent SDK, persistence, dialectic surface, reference record); variant support (CLI flags and commands per Variant); phased build sequence (Phase 1 MVP, Phase 2 maturity, Phase 3 enterprise); honest tradeoffs (evidence-base specification is the hardest problem; persona generation second-hardest; convergence-quality requires measurement); general business considerations (cost, privacy, multi-user, versioning, auditability); and the explicit framing that this is one valid reference deployment, not the only one.*
 *- 2026-04-29 r17 -- added "Agent topology" subsection in Reference Deployment, between Architecture and CLI surface. Specifies what agents actually run when CLI commands fire: Generator and Challenger always (per-round, sequential, alternating); N Challengers when multi-challenger variant invoked; human-in-the-Generator or human-in-the-Challenger per role variant; persona/evidence resolver as Phase 2 infrastructure; watching-role Challenger as long-running daemon for ongoing systems; LLM-as-judge as Phase 3 eval-harness automation. Names the code-orchestrator vs agent-orchestrator architectural choice (code-orchestrator recommended as default for determinism / cost / debuggability; agent-orchestrator available for advanced reasoning-shaped orchestration). Per-agent specs: model, system prompt sketch, tools, input, output, lifespan, concurrency. Summary table and concrete cost picture for a typical 2-iteration default run (2-4 LLM calls per spar in baseline mode).*
 
@@ -51,7 +51,7 @@ The `/docs/bfn/` namespace follows a deliberate scratchpad-to-mature pattern:
 
 ## Overview: The SPARRING Framework
 
-*Plain-language description suitable for partner communication, ResourceForge content, and external presentation. Standalone -- readable without reference to other parts of this doc. For technical detail and SFxLS-specific implementation, see Parts 2-5 below and Appendices A-D.*
+*Plain-language description suitable for partner communication, ResourceForge content, and external presentation. Standalone -- readable without reference to other parts of this doc. For technical detail and Lifspel-specific implementation, see Parts 2-5 below and Appendices A-D.*
 
 The **SPARRING Framework** is a method for designing multi-agent decision-making systems that pair two specialists with genuinely different evidence in a structured pressure-test against the family of compounding LLM failure modes -- pleasing bias, hallucinated detail, specialization blind spots, misread questions, confidently-wrong outputs, bandwagon contamination -- with explicit operational disciplines that prevent the structure from collapsing into theater.
 
@@ -85,7 +85,7 @@ The default ceremony is two-agent, four-phase, full-loop. Practical use surfaces
 
 - **SPARK alone (hypothesis generation mode).** Pure ideation. Strip the loop to its first phase: generate as many possibilities as the question can support, no convergence requirement. Useful early in a problem space where the goal is breadth, not decision.
 - **Pattern Lock alone (ideation-hygiene tool).** Apply Pattern Lock to a brainstorm, a meeting transcript, a backlog: flag where novelty has stopped and ideas are rephrasings of earlier ones. Decoupled from the four-phase loop. Useful for individual reviewers or teams running their own brainstorms.
-- **PNP alone (single-pass pressure-test).** One pressure-test pass on an existing proposal. Lighter than full SPARRING; appropriate when the topic has already converged and only validation remains. (The SFxLS `/pnp` skill is exactly this -- single-reply self-pressure-test by Claude Code.)
+- **PNP alone (single-pass pressure-test).** One pressure-test pass on an existing proposal. Lighter than full SPARRING; appropriate when the topic has already converged and only validation remains. (The Lifspel `/pnp` skill is exactly this -- single-reply self-pressure-test by Claude Code.)
 
 **Role variants** -- restructured pairings of who plays which role:
 
@@ -136,7 +136,7 @@ Without these operational disciplines, the framework collapses into theater:
 
    Less weighted on this surface: long-term auditability, deep search across years of content, and curation discipline -- those concerns belong to Discipline 9.
 
-   Implementation examples: chat platforms with thread discipline (Slack, Discord, Teams), message boards (the SFxLS Round Table), issue trackers (GitHub Issues, Linear, Jira), email lists with structured threading.
+   Implementation examples: chat platforms with thread discipline (Slack, Discord, Teams), message boards (the Lifspel Round Table), issue trackers (GitHub Issues, Linear, Jira), email lists with structured threading.
 
 9. **Reference Record (persistent curated record).** The framework requires a persistent, structured record of decisions, spar artifacts, resolved questions, and accumulated institutional knowledge. Optimized for retrieval long after the fact, by audiences who weren't part of the original conversation.
 
@@ -153,7 +153,7 @@ Without these operational disciplines, the framework collapses into theater:
 
    Implementation examples: wikis (Confluence, Notion, MediaWiki), structured docs in a repo, Architecture Decision Records, post-mortem archives, dedicated reference databases.
 
-   **Scale-dependent surface separation.** The framework requires both functions (Discipline 8 + Discipline 9) be served, not necessarily on separate physical surfaces. In small deployments -- like the SFxLS Round Table -- a single physical surface can host both with discipline (e.g., open threads as active dialogue; resolved/archived threads with curated content as reference). At larger scale, separation usually becomes necessary because (a) active chatter drowns reference signal at retrieval time, (b) curation discipline kills active dialogue, and (c) revision norms conflict (active communication preserves what-was-said-when; reference revises for correctness). Whether implemented as two surfaces or one-with-conventions is a deployment decision; the framework's discipline is that both functions are served and their conflicting demands are explicitly managed.
+   **Scale-dependent surface separation.** The framework requires both functions (Discipline 8 + Discipline 9) be served, not necessarily on separate physical surfaces. In small deployments -- like the Lifspel Round Table -- a single physical surface can host both with discipline (e.g., open threads as active dialogue; resolved/archived threads with curated content as reference). At larger scale, separation usually becomes necessary because (a) active chatter drowns reference signal at retrieval time, (b) curation discipline kills active dialogue, and (c) revision norms conflict (active communication preserves what-was-said-when; reference revises for correctness). Whether implemented as two surfaces or one-with-conventions is a deployment decision; the framework's discipline is that both functions are served and their conflicting demands are explicitly managed.
 
 ### Disagreement-at-cap response protocol
 
@@ -278,7 +278,7 @@ When the deployment plan evolves, edit the standalone document, not this stub. N
 
 ## Part 1 — Origin
 
-Bart developed this framework as ResourceForge content (LinkedIn, two posts and two graphics, April 2026). On 2026-04-28 the partner Cut adopted five SFxLS integrations (Part 5). The framework is **not** intended as a default discipline for every prompt; its target is **high-quality decisions** where iterative pushback and structured challenge produce qualitative or accuracy benefits the single-shot path would miss. Token cost is not the optimization metric -- decision quality is.
+Bart developed this framework as ResourceForge content (LinkedIn, two posts and two graphics, April 2026). On 2026-04-28 the partner Cut adopted five Lifspel integrations (Part 5). The framework is **not** intended as a default discipline for every prompt; its target is **high-quality decisions** where iterative pushback and structured challenge produce qualitative or accuracy benefits the single-shot path would miss. Token cost is not the optimization metric -- decision quality is.
 
 ---
 
@@ -382,7 +382,7 @@ These are conditions on *when* the framework works, not arguments against it.
 
 ---
 
-## Part 4 — Applicability to SFxLS
+## Part 4 — Applicability to Lifspel
 
 The brainstorm covers three surfaces, ordered from lightest to heaviest.
 
@@ -417,7 +417,7 @@ A multi-turn ceremony where two distinct voices actually spar through the four p
 
 ### Surface C — Integration into existing agentic workflows
 
-Where compounding LLM failure modes (pleasing bias, hallucinated detail, missed cross-domain concerns, single-perspective drift) can stack across handoffs in the SFxLS ecosystem today, and where a small added step would have measurable effect.
+Where compounding LLM failure modes (pleasing bias, hallucinated detail, missed cross-domain concerns, single-perspective drift) can stack across handoffs in the Lifspel ecosystem today, and where a small added step would have measurable effect.
 
 Surfaces, grouped by tier:
 
@@ -546,7 +546,7 @@ Properties:
 
 ### Specialization
 
-A **specialized agent** is one whose system prompt + tool set + sometimes model choice are tuned for a specific kind of work. Two distinct kinds of specialization matter for SFxLS:
+A **specialized agent** is one whose system prompt + tool set + sometimes model choice are tuned for a specific kind of work. Two distinct kinds of specialization matter for Lifspel:
 
 **Specialization by task type.** Optimizing the agent for a specific kind of work:
 
@@ -594,7 +594,7 @@ The conditionalities in Part 3 -- careful design, different ground truth, model 
 
 ## Appendix B — Multi-agent terminology (MAS, orchestration vs choreography)
 
-Vocabulary background for talking about multi-agent systems precisely. The LLM-agent field is too young to have a single canonical vocabulary; this appendix names what is established, what is fragmented, and what cleanest terms map to the patterns in the SFxLS ecosystem.
+Vocabulary background for talking about multi-agent systems precisely. The LLM-agent field is too young to have a single canonical vocabulary; this appendix names what is established, what is fragmented, and what cleanest terms map to the patterns in the Lifspel ecosystem.
 
 ### The umbrella term: Multi-Agent System (MAS)
 
@@ -603,7 +603,7 @@ Vocabulary background for talking about multi-agent systems precisely. The LLM-a
 In the LLM era, vocabulary has fragmented:
 
 - **"Agentic system"** -- Anthropic's preferred term. Implies a system built around agents.
-- **"Agent ecosystem"** -- looser, more colloquial (the SFxLS doc `docs/reference/agentic-ai-ecosystem.md` uses this).
+- **"Agent ecosystem"** -- looser, more colloquial (the Lifspel doc `docs/reference/agentic-ai-ecosystem.md` uses this).
 - **"Compound AI system"** -- Berkeley / Databricks term, broader than just multi-agent.
 - **"Agent network"** / **"agent society"** -- older academic terms still in use.
 
@@ -637,7 +637,7 @@ Distinct from the interact-vs-independent axis, MAS literature also distinguishe
 
 This is about *goal alignment*, not coordination pattern. Adversarial setups like the SPARRING ceremony are a kind of structured competitive interaction *inside* a cooperative ceremony -- the Generator and Challenger have opposing local roles but a shared goal of producing a higher-quality decision.
 
-### Mapping to the SFxLS ecosystem
+### Mapping to the Lifspel ecosystem
 
 Both major coordination patterns appear in the StoryForge agent ecosystem. Naming them in standard vocabulary clarifies what is there:
 
@@ -648,7 +648,7 @@ Both major coordination patterns appear in the StoryForge agent ecosystem. Namin
 
 ### Honest note on the terminology
 
-For external writing (ResourceForge, public-facing posts, partner communication outside SFxLS):
+For external writing (ResourceForge, public-facing posts, partner communication outside Lifspel):
 
 - **MAS** or **"agentic system"** is safe for the umbrella term.
 - For the interact-vs-independent distinction, **explicitly defining your own terms** (e.g. "orchestrated vs choreographed agents" with a one-sentence definition each) is more reliable than assuming a reader already maps the words to the same meanings. Different audiences map the same words differently because the field's vocabulary has not converged.
@@ -656,9 +656,9 @@ For external writing (ResourceForge, public-facing posts, partner communication 
 
 ---
 
-## Appendix C — Agent deployment patterns and where SFxLS sits
+## Appendix C — Agent deployment patterns and where Lifspel sits
 
-How other people deploy multi-agent systems, with the SFxLS architecture mapped into the landscape. The pattern level matters more than the brand level -- most frameworks are variations on a smaller set of architectural patterns. Appendix B covers the *vocabulary* (orchestration, choreography, fleet, etc.); this appendix covers the *patterns* and the frameworks that embody each.
+How other people deploy multi-agent systems, with the Lifspel architecture mapped into the landscape. The pattern level matters more than the brand level -- most frameworks are variations on a smaller set of architectural patterns. Appendix B covers the *vocabulary* (orchestration, choreography, fleet, etc.); this appendix covers the *patterns* and the frameworks that embody each.
 
 Caveat: the LLM-agent field has been moving fast. Knowledge cutoff is January 2026; specific framework details may have shifted by the time this is read.
 
@@ -698,7 +698,7 @@ Caveat: the LLM-agent field has been moving fast. Knowledge cutoff is January 20
 
 #### 5. Tool-use loop with sub-agent spawn
 
-**Examples**: Claude Agent SDK (what SFxLS uses); various Anthropic-built systems.
+**Examples**: Claude Agent SDK (what Lifspel uses); various Anthropic-built systems.
 **Shape**: A primary agent has a tool kit, *including* the ability to spawn a specialized sub-agent for a task. The sub-agent runs to completion, returns a result, terminates. Parent agent decides what to do next.
 **Coordination**: Orchestration from the parent's perspective; the parent decides when and what to spawn.
 **Strengths**: Maximum flexibility -- the parent decides the orchestration shape on the fly. Good for developer-driven systems where the workflow is not predetermined.
@@ -728,11 +728,11 @@ Caveat: the LLM-agent field has been moving fast. Knowledge cutoff is January 20
 **Strengths**: Long-running collaborative work, mixed sync/async, partner-in-the-loop visibility.
 **Weaknesses**: Coordination is implicit and can drift. Hard to enforce ordering or invariants.
 
-### Where SFxLS sits in the landscape
+### Where Lifspel sits in the landscape
 
-SFxLS is a **deliberate hybrid** combining several of these patterns. Most frameworks pick one and stick with it; SFxLS picks per surface:
+Lifspel is a **deliberate hybrid** combining several of these patterns. Most frameworks pick one and stick with it; Lifspel picks per surface:
 
-| SFxLS surface | Pattern | Notes |
+| Lifspel surface | Pattern | Notes |
 |---|---|---|
 | Foundation (Claude Agent SDK) | **Tool-use loop + sub-agent spawn** (#5) | Each agent is a tool-using loop; sub-agents spawn via Agent tool |
 | Round Table | **Blackboard / shared workspace** (#8) | Threads + posts + reads + checkoffs; humans and agents share the same workspace |
@@ -741,19 +741,19 @@ SFxLS is a **deliberate hybrid** combining several of these patterns. Most frame
 | `/plan-review` | **Role-based crew + orchestration** (#3 + #1) | Agents reviewing in parallel through their lenses; Diane consolidates |
 | Idris-Lena auto-spar | **Small-orchestration + handoff** (#4 + #5) | After Idris produces, Lena auto-spawned as Challenger |
 
-Most products lean hard on one pattern (LangGraph shops use graphs everywhere; CrewAI shops define crews for everything). SFxLS picks per use case. That is a real architectural choice and worth naming.
+Most products lean hard on one pattern (LangGraph shops use graphs everywhere; CrewAI shops define crews for everything). Lifspel picks per use case. That is a real architectural choice and worth naming.
 
-### What SFxLS does that is distinctive (positive)
+### What Lifspel does that is distinctive (positive)
 
 Properties most off-the-shelf frameworks do not give you out of the box:
 
-- **Persona richness.** Persona files (`docs/agents/<slug>.md`) are deep -- a substantive **Role + Domain Knowledge** layer (expertise, evidence-base scope, conventions, standards-compliance rules, handoff authority and override rules) plus a calibrated **Persona** layer (voice, tonal anchors, surface-form conventions, optional Character anchor). Most frameworks treat agents as one-line role descriptions ("a senior code reviewer"). SFxLS treats them as documented people whose Role+Domain layer carries the structural commitments and whose Persona layer is partner-editable for cognitive availability. Closer to how a small company maintains role descriptions than how most agent frameworks work. (See `docs/bfn/sparring-reference-deployment.md` "Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer" for the depth-with-function specification.)
-- **Partner-in-the-loop as a first-class design.** The Round Table sidebar, reads, checkoffs, and the sidebar-override math at `storyforge/tests/api/round-table-tree.php` exist specifically to make agent work visible and actionable for human partners. Most frameworks treat humans as either out-of-loop or as interruptive. SFxLS's design starts from "agents and partners share the same workspace."
+- **Persona richness.** Persona files (`docs/agents/<slug>.md`) are deep -- a substantive **Role + Domain Knowledge** layer (expertise, evidence-base scope, conventions, standards-compliance rules, handoff authority and override rules) plus a calibrated **Persona** layer (voice, tonal anchors, surface-form conventions, optional Character anchor). Most frameworks treat agents as one-line role descriptions ("a senior code reviewer"). Lifspel treats them as documented people whose Role+Domain layer carries the structural commitments and whose Persona layer is partner-editable for cognitive availability. Closer to how a small company maintains role descriptions than how most agent frameworks work. (See `docs/bfn/sparring-reference-deployment.md` "Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer" for the depth-with-function specification.)
+- **Partner-in-the-loop as a first-class design.** The Round Table sidebar, reads, checkoffs, and the sidebar-override math at `storyforge/tests/api/round-table-tree.php` exist specifically to make agent work visible and actionable for human partners. Most frameworks treat humans as either out-of-loop or as interruptive. Lifspel's design starts from "agents and partners share the same workspace."
 - **Verification discipline.** The Verification Rule (no agent claims work exists or doesn't without reading the file), the Promise Verifier, the persona-integrity rules (no breaking the fiction by referencing automation), the chain-depth + agent-reaction marker for reaction-loop prevention -- project-grown reliability patterns. Most frameworks ship without them.
-- **Mixed coordination patterns by design.** Choreography for reactions (low overhead, partner-visible), orchestration for plan-review (structured, auditable), fleet for cron tasks (predictable, billable). Most frameworks force you into one. SFxLS picks per use case.
-- **PHP + Node hybrid.** The board layer is PHP (mature, partner-facing); the agents are Node.js (Claude Agent SDK). Most frameworks are TS-only or Python-only. SFxLS architecture explicitly bridges so each layer uses the best tool. Rare and works.
+- **Mixed coordination patterns by design.** Choreography for reactions (low overhead, partner-visible), orchestration for plan-review (structured, auditable), fleet for cron tasks (predictable, billable). Most frameworks force you into one. Lifspel picks per use case.
+- **PHP + Node hybrid.** The board layer is PHP (mature, partner-facing); the agents are Node.js (Claude Agent SDK). Most frameworks are TS-only or Python-only. Lifspel architecture explicitly bridges so each layer uses the best tool. Rare and works.
 
-### What SFxLS lacks vs. mature industry practice
+### What Lifspel lacks vs. mature industry practice
 
 Honest gaps. Not all are worth filling at the current scale -- naming them is the point.
 
@@ -762,11 +762,11 @@ Honest gaps. Not all are worth filling at the current scale -- naming them is th
 - **No vector-store-based long-term memory.** Memory is file-based (chatlogs, persona files, memory dir). For an agent ecosystem doing long-running creative work, a vector store can let agents pull relevant prior context automatically. Trade-off: vector stores have their own failure modes (false-positive retrieval, embedding drift). The file-based approach is more inspectable.
 - **No replay debugging.** When Marcus produces a wrong output, you can read his post and his commit, but you cannot replay his full reasoning trace step-by-step. Frameworks like LangSmith and AutoGen Studio offer this.
 - **No A/B prompt testing infrastructure.** When tuning a system prompt (e.g. the recent PNP rule on Marcus), there is no systematic way to compare "before" vs "after" on a held-out test set. Reliance on interactive partner judgment. Fine at current scale, not at scale.
-- **No formal eval / quality CI.** Most frameworks let you run a battery of evals on every prompt change. SFxLS is "ship it and see," with the auto-deploy hook providing cheap rollback as partial compensation.
+- **No formal eval / quality CI.** Most frameworks let you run a battery of evals on every prompt change. Lifspel is "ship it and see," with the auto-deploy hook providing cheap rollback as partial compensation.
 
 ### Honest read and priority ranking
 
-For a system at SFxLS's scale and stage, the architecture is strong. The hybrid pattern choice is mature. Verification and persona discipline are above-average. Most missing pieces (eval harness, tracing, vector memory) are *scaling infrastructure* -- useful at 20 agents or 1000 tasks/day, not urgent at current scale.
+For a system at Lifspel's scale and stage, the architecture is strong. The hybrid pattern choice is mature. Verification and persona discipline are above-average. Most missing pieces (eval harness, tracing, vector memory) are *scaling infrastructure* -- useful at 20 agents or 1000 tasks/day, not urgent at current scale.
 
 Cost-vs-leverage priority for what to add first:
 
@@ -831,7 +831,7 @@ The closest pattern to "what mature shops actually do":
 
 Production tools: **Braintrust**, **LangFuse**, **Humanloop**, custom in-house harnesses. The evaluator is sometimes a separate LLM (LLM-as-judge), sometimes human raters, sometimes both. LLM-as-judge has its own problems (judges can have similar biases to the agents being judged), so the gold standard is human raters on a sample with LLM-as-judge for volume.
 
-This is the missing piece named in Appendix C as priority #1 for SFxLS.
+This is the missing piece named in Appendix C as priority #1 for Lifspel.
 
 #### 7. Architectural mitigations (varied)
 
@@ -859,9 +859,9 @@ RLHF and Constitutional AI approaches that train models to push back rather than
 - Purely judgment-shaped questions where ground truth is not available and you cannot pair domain experts. There is no clean defense beyond the weak ones (#1, #2).
 - Sycophancy at the model layer. Despite training-time work, it persists, especially under user pressure.
 
-### How this maps to SFxLS
+### How this maps to Lifspel
 
-| Defense | SFxLS state |
+| Defense | Lifspel state |
 |---|---|
 | #1 Anti-pattern prompting | Present (`/pnp`, `/plan-review` Challenger prompt, Idris-Lena prompt) |
 | #2 Asymmetric prompting | Partial (Challenger prompts say "pressure-test"; could be sharper) |
@@ -872,7 +872,7 @@ RLHF and Constitutional AI approaches that train models to push back rather than
 | #7 Architectural mitigations | Mostly absent |
 | #8 Training-layer | Using Opus 4.7 (best in class on this dimension) |
 
-SFxLS is strong on #1, #3 (both directions, as of rev. 8), #4, #8. Weak on #2, #5, #6, #7.
+Lifspel is strong on #1, #3 (both directions, as of rev. 8), #4, #8. Weak on #2, #5, #6, #7.
 
 The biggest remaining leverage move is **#6 (eval harness)** -- it is what actually *measures* whether the other defenses are working. Without it, the architecture is flying blind on whether Challenger ceremonies are producing real challenge or theater.
 
@@ -910,7 +910,7 @@ The discipline at the rubric and log layer in Phase 1 (consistent format, append
 
 Production-grade infrastructure: automated rubric scoring (LLM-as-judge), regression tests on every prompt change, A/B framework for comparing prompt variants, divergent-domain dual judges where evaluations are multidimensional, on-the-fly specialized agents with detection-orchestrator routing for topics outside the standing pairs.
 
-This is what shops like Braintrust, LangFuse, and Humanloop sell as products. At SFxLS scale, it is overkill until Phase 2 has produced enough signal to justify the investment.
+This is what shops like Braintrust, LangFuse, and Humanloop sell as products. At Lifspel scale, it is overkill until Phase 2 has produced enough signal to justify the investment.
 
 The two named refinement candidates from rev. 8 sit here:
 

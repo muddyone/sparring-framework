@@ -71,7 +71,7 @@ This decides how much **Persona layer** investment is appropriate. From the refe
 
 This decides whether the **dialectic surface** and **reference record** can share one physical surface or need separation:
 
-- **1-5 partners**: one surface with discipline. The SFxLS Round Table pattern (open threads as active dialogue; resolved/archived threads with curated content as reference) works at this scale.
+- **1-5 partners**: one surface with discipline. The Lifspel Round Table pattern (open threads as active dialogue; resolved/archived threads with curated content as reference) works at this scale.
 - **5-15 partners**: one surface still works but the curation discipline gets harder. Consider explicit sectioning (a #decisions channel + a /decisions/ wiki section).
 - **15+ partners**: separate surfaces become necessary. Active chatter drowns reference signal; curation discipline kills active dialogue.
 
@@ -107,7 +107,7 @@ The reference deployment uses the **Anthropic Claude Agent SDK** as its default 
 
 1. **Anthropic has published specific research on sycophancy reduction** (Sharma et al. 2023, *Towards Understanding Sycophancy in Language Models*, an Anthropic paper; subsequent constitutional-AI work continues the line). Sycophancy is one of the framework's named failure modes; using a model whose training explicitly targets this dimension reduces the failure mode at the model layer in addition to the structural defenses the framework provides at the deployment layer.
 2. **Recent Claude versions (Opus 4.7, Sonnet 4.6) target sycophancy reduction in training**, per Anthropic's published release notes. This is a moving target -- model vendors continually update -- but as of 2026-04 the published evidence supports Claude as a strong choice on this specific dimension. Revisit annually as the comparative landscape shifts.
-3. **Operational fit with the reference implementation.** The Claude Agent SDK was used to build the SFxLS deployment that produced the artifacts and patterns this doc draws on. Adopters using the same SDK encounter the same tooling that produced the reference, reducing context-switching cost when implementing.
+3. **Operational fit with the reference implementation.** The Claude Agent SDK was used to build the Lifspel deployment that produced the artifacts and patterns this doc draws on. Adopters using the same SDK encounter the same tooling that produced the reference, reducing context-switching cost when implementing.
 
 Deployers choosing a different SDK (OpenAI Agents SDK, LangChain, custom runtimes) should verify that vendor's published research on the framework's named failure modes (sycophancy, confirmation bias, hallucinated detail, etc.) and adjust the eval-harness rubric accordingly. The structural defenses -- distinct Role+Domain layers, verifiable-artifact requirement, both-must-agree convergence, the Applicability Gate, the disagreement-at-cap response menu -- are model-agnostic and carry across vendors. The model layer adds defense-in-depth; it does not replace the structural defenses.
 
@@ -644,6 +644,6 @@ In all cases, the [reference deployment doc](sparring-reference-deployment.md) i
 
 ## Acknowledgments and provenance
 
-This walkthrough is a v1 release artifact for the SPARRING Framework, produced 2026-04-30 alongside the reference deployment v1. Both documents are working-notes-stable at this revision; future revisions will track operational learnings from real-world adopters as the framework scales beyond SFxLS.
+This walkthrough is a v1 release artifact for the SPARRING Framework, produced 2026-04-30 alongside the reference deployment v1. Both documents are working-notes-stable at this revision; future revisions will track operational learnings from real-world adopters as the framework scales beyond Lifspel.
 
 For the framework's design rationale, conditionalities, and historical PNP-applied-to-itself record, see [`sparring-framework-notes.md`](sparring-framework-notes.md) -- the long-form working notes.

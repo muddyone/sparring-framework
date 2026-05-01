@@ -77,7 +77,7 @@ The named, partner-curated core. Each persistent persona has:
 - Versioning discipline -- edits are tracked; spar artifacts cite the persona-file version.
 - Partner-editable; behavior tunable in production by the people who run the deployment.
 
-Persistent personas carry the partner-engagement function (Persona-layer third function) when they include voice and anthropomorphization. They are the deployment's high-trust, authoritative tier. The SFxLS personas (Marcus, Diane, Lena, Idris, Zoe, Dani) are this class.
+Persistent personas carry the partner-engagement function (Persona-layer third function) when they include voice and anthropomorphization. They are the deployment's high-trust, authoritative tier. The Lifspel personas (Marcus, Diane, Lena, Idris, Zoe, Dani) are this class.
 
 ### Returning personas
 
@@ -459,9 +459,9 @@ Each variant from the framework's Variants section maps to a CLI flag or command
 | Deployment: Domain templates | `spar template apply <name> <topic>` |
 | Deployment: Pre-emptive SPARRING archive | `spar run <topic>; spar archive <spar-id>` |
 
-## Lessons from the SFxLS reference implementation
+## Lessons from the Lifspel reference implementation
 
-SFxLS (StoryForge x Lifspel) is one project's instantiation of the SPARRING Framework -- the development environment where the framework was first applied at production scale. Three properties of that implementation generalize beyond SFxLS-specific surfaces and should shape the components above.
+Lifspel is one project's instantiation of the SPARRING Framework -- the development environment where the framework was first applied at production scale. Three properties of that implementation generalize beyond Lifspel-specific surfaces and should shape the components above.
 
 ### Role + Domain Knowledge is mandatory; Persona is a lightweight optional layer
 
@@ -525,7 +525,7 @@ The two-layer model interacts with the **three-class lifecycle** (persistent / r
 
 #### Persona file: do / don't examples
 
-Six section-by-section DO / DON'T pairs, plus an anti-pattern list and a complete compressed example. Each section header names which layer it serves (Role+Domain, Persona, or Mixed) so the WHAT/HOW distinction is visible at every point. The examples use "Marcus" -- a real SFxLS production persona, the code-review agent -- as the running case. The structure works equally well for a strictly role-based persona ("the code-reviewer") with no name or anthropomorphization; the layer distinction does not depend on naming.
+Six section-by-section DO / DON'T pairs, plus an anti-pattern list and a complete compressed example. Each section header names which layer it serves (Role+Domain, Persona, or Mixed) so the WHAT/HOW distinction is visible at every point. The examples use "Marcus" -- a real Lifspel production persona, the code-review agent -- as the running case. The structure works equally well for a strictly role-based persona ("the code-reviewer") with no name or anthropomorphization; the layer distinction does not depend on naming.
 
 ##### A. Voice / tone (Persona -- HOW)
 
@@ -707,17 +707,17 @@ Cut any line from the Role+Domain layer and the framework loses a structural fun
 
 ### Verification discipline beyond artifact-citation
 
-Discipline 3 already requires that every concern cite a verifiable artifact. SFxLS goes further with a **Verification Rule** -- no agent claims work exists or doesn't exist without first *reading* the file. Citing a path is not enough; the agent must have actually fetched the content. The Promise Verifier (a separate agent) audits claims after the fact and flags ones that turn out to be unsubstantiated.
+Discipline 3 already requires that every concern cite a verifiable artifact. Lifspel goes further with a **Verification Rule** -- no agent claims work exists or doesn't exist without first *reading* the file. Citing a path is not enough; the agent must have actually fetched the content. The Promise Verifier (a separate agent) audits claims after the fact and flags ones that turn out to be unsubstantiated.
 
 The deployment guidance: the Challenger schema should require not just `artifact: <citation>` but `artifact: <citation>, content_basis: <what the agent actually read>`. The spar artifact should record which artifacts were actually fetched / read during each round, not just referenced. This catches the failure mode where an agent cites a file path it never opened -- a specific instance of hallucinated detail (one of the failure modes from "What this deployment defends against") that artifact-citation alone does not catch.
 
-When chained spars become possible (synthesize-then-re-spar, watching-role daemons triggering follow-ons, Multi-Challenger ensembles spawning sub-spars), the deployment also needs a configurable **chain-depth limit** (default 3, with explicit failure at cap rather than silent infinite recursion). SFxLS uses a marker-plus-counter pattern to prevent reaction storms; the same shape generalizes wherever the deployment supports cascading invocations.
+When chained spars become possible (synthesize-then-re-spar, watching-role daemons triggering follow-ons, Multi-Challenger ensembles spawning sub-spars), the deployment also needs a configurable **chain-depth limit** (default 3, with explicit failure at cap rather than silent infinite recursion). Lifspel uses a marker-plus-counter pattern to prevent reaction storms; the same shape generalizes wherever the deployment supports cascading invocations.
 
 A narrower related rule: when multiple personas are visible to each other on the dialectic surface, persona-integrity guidance should keep them referring to each other by persona role rather than by implementation details ("the security-specialist raised a concern" rather than "the LLM running the security-specialist prompt produced output"). This matters more when personas are heavily anthropomorphized; for a deployment with strictly role-based personas, it mostly takes care of itself.
 
 ### Partner-in-the-loop as first-class workspace participant
 
-The dialectic surface adapter (Discipline 8) is sometimes treated as "where agents notify humans" -- a one-way channel. SFxLS's stance is sharper: humans and agents are equipotent participants on the same workspace. Reads, checkoffs, mention-fanout: humans interact with agent posts the same way agents interact with human posts.
+The dialectic surface adapter (Discipline 8) is sometimes treated as "where agents notify humans" -- a one-way channel. Lifspel's stance is sharper: humans and agents are equipotent participants on the same workspace. Reads, checkoffs, mention-fanout: humans interact with agent posts the same way agents interact with human posts.
 
 The deployment guidance: when implementing the dialectic surface adapter, design from "partners and agents share the same workspace," not "agents do work, partners review." Concretely:
 
