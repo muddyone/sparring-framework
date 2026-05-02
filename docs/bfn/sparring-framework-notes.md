@@ -4,7 +4,7 @@
 
 *This is a **living working document**, not a single-source-of-truth artifact. Mature content is extracted from this doc into standalone docs in `/docs/bfn/`. See "Documentation workflow" below.*
 
-*Last updated: 2026-05-02 (rev. 21)*
+*Last updated: 2026-05-02 (rev. 22)*
 *Status: **five integrations adopted 2026-04-28**. The full SPARRING ceremony (`/sparring`) is deferred pending a brainstorm on theatrical-adversariality risk. See "Adoption status" below.*
 
 ## Documentation workflow
@@ -31,10 +31,12 @@ Working drafts that are NOT extracted from these notes -- they cover adjacent to
 | Document | Status | Topic |
 |---|---|---|
 | [`sparring-and-decision-frameworks.md`](sparring-and-decision-frameworks.md) | WORKING DRAFT | SPARRING in relation to existing decision frameworks. First comparison (Torres / Continuous Discovery Habits / OST) sketched 2026-05-01; further frameworks (Lean Startup, premortems, ADRs, design thinking, RAT) deferred. Source for downstream LinkedIn posts and an eventual v1.1 professional-distribution companion document. |
+| [`sparring-monte-carlo-design.md`](sparring-monte-carlo-design.md) | DRAFT | Eval-harness design bridging Appendix D Phase 2/3 deferred work into a concrete milestone shape, modeled on the combat-engine Monte Carlo machinery. Candidate units of measurement, corpus-construction paths, ablation table, statistical shape, cost projection, four-phase decomposition (harness shell + corpus seed; ablation toggles; LLM-as-judge at scale; cross-model integration). Drafted 2026-05-02; not yet a milestone. |
 
 ---
 
 *Revision history:*
+*- 2026-05-02 r22 -- three additions stemming from a partner discussion about value-vs-cost framing, multi-model SPARRING, and empirical validation. (1) Replaced the brief `### Where it pays back` section with a fuller `### Value proposition (and honest cost)` that names what the framework gives, what it costs, the worth-it/not-worth-it gate table, comparisons to specific alternatives, and the honest meta-claim ("structurally argued but not yet empirically measured"). (2) Added a new `**Substrate variants**` category to the Variants section, with one entry: cross-model SPARRING (Generator and Challenger on different model families) as the structural defense against the residual coordinated-theater risk that same-vendor pairings carry; orthogonal to the Multi-Challenger ensemble role variant. Mirrored as v1.1 candidates in the spec at Section 5.1 (value/cost paragraph) and Section 3.4 (substrate variants entry). (3) Created sibling working draft `sparring-monte-carlo-design.md` -- design doc bridging the Appendix D Phase 2/3 eval-harness roadmap into a concrete milestone shape, modeled on the combat-engine Monte Carlo machinery (`storyforge/tests/api/monte-carlo.php`) with proposed units of measurement, corpus-construction paths, ablation table, statistical shape, cost projection, and a four-phase decomposition. Reference deployment doc's Applicability Gate description extended to point at the value/cost framing as the per-topic calibrator. The triggering discussion: Generator's load-bearing case for D6/measurability in the post-6 closer spar rested on citing the framework's own Appendix D, which surfaced the broader question "how would empirical data actually get produced?" The Monte Carlo design doc is the answer scoped for milestone work rather than indefinite deferral.*
 *- 2026-05-02 r21 -- added "Self-citation circularity" to the failure-mode catalog ("Failure modes the framework addresses" section), with corresponding additions proposed for the spec at Section 4.1 (failure-mode entry) and Section 5.2 (residual-case mitigation paragraph) staged as v1.1 candidates. Surfaced during the post-6 closer spar (artifact: `.claude/spars/2026-05-02/spar-post-6-closer-readiness.md`) when the Generator's load-bearing case for D6/measurability rested on citing the framework's own Appendix D as evidence -- a verifiable but not externally validated citation. The new failure-mode entry names the pattern operationally; the operational defense (tag such claims as `internally consistent / externally unvalidated`) is added to the `/spar` SKILL.md Step 3 verifiable-artifact discipline; structural fix awaits Appendix D Phase 1 empirical work.*
 *- 2026-05-01 r20 -- documentation workflow expanded to handle sibling working drafts (not just extracted standalones). New "Sibling working drafts" subsection added under "Documentation workflow," with first entry: `sparring-and-decision-frameworks.md`, the staging ground for cross-framework comparisons. First comparison (Torres / Continuous Discovery Habits / OST) sketched, originating from an external suggestion that the SPARRING Framework rhymes structurally with Torres's product-discovery work. The new working draft is the source for downstream LinkedIn posts (planned, multiple) and an eventual v1.1 professional-distribution companion document (deferred until multiple framework comparisons stabilize). Header bumped from rev. 18 to rev. 20 to fix prior stale revision-line bug (r19 had updated the body but not the "Last updated" line).*
 *- 2026-04-30 r19 -- v1 release pass on the deployment docs. (1) Pleasing-bias rebalance across 8 places in these working notes: the framework no longer pins on pleasing-bias as primary purpose; pleasing-bias is named as the most-cited member of a family of compounding LLM failure modes (sycophancy, confirmation bias, anchoring, misread questions, specialization blind spots, hallucinated detail, confidently-wrong outputs, bandwagon contamination). (2) Added "Recognizing these situations in a deployment" subsection in the Overview, naming the Applicability Gate behavior for routine work, pure-judgment topics, and ceiling-hit symptoms. (3) Added "Disagreement-at-cap response protocol" subsection with five canonical responses (pick-a-side-with-tradeoffs, defer, reframe, escalate, synthesize) plus non-canonical acknowledgment; clarified Popperian base + Hegelian extension at the cap boundary. (4) Sharpened Discipline 2 to name the Role + Domain Knowledge layer (mandatory) vs Persona layer (optional, lightweight) distinction explicitly; persona-only specialization (manufactured tonal contrast) does not satisfy Discipline 2. (5) Coherence pass on Part 3 with structural-resolution Status notes per surviving concern; Future Extensions Synthesis entry rewritten to reflect partial shipping (one of five disagreement-at-cap responses) with iterative synthesis as the remaining ambition; Inspirations citation sharpened (Popper-style falsification at base + Hegelian thesis-antithesis-synthesis at the boundary). (6) Reference deployment doc gained: "What this deployment defends against" section, Applicability Gate component, Disagreement-at-cap menu surfacing in iteration controller and artifact emitter, Lessons-from-Lifspel section with three subsections (Role+Domain mandatory + Persona lightweight optional layer model with bucket-labeled do/don't examples; Verification discipline beyond artifact-citation; Partner-in-the-loop as first-class workspace participant), three-class persona lifecycle (persistent / returning / temporary) with full lifecycle structure section. (7) Walkthrough doc created -- staged getting-started guide for small-team Phase 1 deployments, sibling to the reference doc. Includes PNP'd Anthropic Claude Agent SDK recommendation (Sharma et al. 2023 sycophancy research; recent Claude versions target sycophancy reduction; operational fit; defense-in-depth not replacement; revisit annually). Lifspel and LineMind Novelist worked examples. End-to-end alignment audits ran twice during the pass; cross-doc alignment confirmed at session close.*
@@ -104,12 +106,16 @@ The default ceremony is two-agent, four-phase, full-loop. Practical use surfaces
 - **Multi-Challenger ensemble per phase.** Single Generator, multiple Challengers each surfacing concerns from their own evidence base. Convergence requires all Challengers to agree, OR the framework reports the dimension-specific disagreement explicitly. Cross-validates concerns and catches blind spots in any single Challenger. Distinct from N-specialist decisions (in Future Extensions) -- this keeps the Generator unitary; that splits the Generator role too.
 - **Watching-role Challenger for ongoing systems.** Apply the Challenger function to *existing* decisions (deployments, architectural choices, ongoing systems) by flagging when a previously-converged decision's premises no longer hold. The classic case: a deployment that worked when the system was small now scales poorly; the watching Challenger notices the changed conditions before failure forces the issue.
 
+**Substrate variants** -- using genuinely different model families to extend Discipline 2 below the evidence-base layer:
+
+- **Cross-model SPARRING.** Generator and Challenger run on different model families (e.g., Generator on Claude, Challenger on Grok or ChatGPT, or N-way ensembles across vendors). Same-vendor pairings satisfy Discipline 2 at the evidence-base layer (different docs to read) but share model substrate -- training distribution, RLHF approach, sycophancy-reduction tuning, reasoning-pattern biases. Cross-model pairings extend the disjointness one layer down: agents fail in different ways because they don't share trained-in pleasing patterns, which makes coordinated theater meaningfully harder to produce. Tradeoffs: API integration cost across multiple vendors (rate limits, error modes, output-format normalization), roughly multiplicative cost per spar, latency variance, output-shape normalization in the orchestrator. Where it pays back most: high-stakes spars where the residual theatrical-adversariality risk matters (production architecture decisions, plan reviews on partner-facing deliverables, security review of agent prompts themselves), and as cross-vendor judges in the eval-harness work (LLM-as-judge calibration is much stronger when judges are cross-vendor). Distinct from the Multi-Challenger ensemble role variant above -- that variant adds Challenger personas; this variant changes the model substrate. The two dimensions are orthogonal: you can have either, both, or neither.
+
 **Deployment patterns** -- operational shapes:
 
 - **Domain-specific SPARRING templates.** Pre-built configurations for common decision types (security review, code review, plan review, design review, hire decision, vendor selection). Each template includes recommended persona pairings, evidence-base specifications, and Challenger questions tuned to the domain. Reduces per-spar setup cost and produces consistency across recurring decision types.
 - **Pre-emptive SPARRING for decision archives.** Run SPARRING on decisions before they're acutely needed. Build a structured archive of "we considered X and resolved it this way, with these tradeoffs" -- essentially Architecture Decision Records (ADRs) generated through structured SPARRING rather than ad-hoc documentation. When live decisions arise, the archive provides reference points; prior spar artifacts also feed the Observability discipline.
 
-These variants share the nine disciplines below. They differ in *which* phases run, *who* plays which role, and *what* operational shape the ceremony takes -- not in the underlying disciplines.
+These variants share the nine disciplines below. They differ in *which* phases run, *who* plays which role, *what model substrate* the roles run on, and *what* operational shape the ceremony takes -- not in the underlying disciplines.
 
 ### The nine disciplines that make it work
 
@@ -249,16 +255,50 @@ The three boundaries above are real but unevenly detectable. A deployment should
 
 The general posture: warn-and-proceed for the two detectable-at-entry cases; instrument-and-surface for the in-run case. The framework does not prescribe specific thresholds -- those are deployment-tuning decisions -- but it does require the recognition behavior exist and produce visible signals to the partner. The reference deployment realizes this as an **Applicability Gate** component (see [`sparring-reference-deployment.md`](sparring-reference-deployment.md)).
 
-### Where it pays back
+### Value proposition (and honest cost)
 
-Decisions where:
-- The cost of being wrong is meaningful.
-- The question has genuine domain dimensions.
-- You can pair specialists with disjoint evidence bases (different domains, different data, different tools).
+The framework's value proposition has to be stated alongside its cost or it's pleasing-bias-shaped advocacy. Both columns matter; the Applicability Gate (`sparring-reference-deployment.md`) is what calibrates them per topic.
 
-Examples: code architecture reviewed by an engineer and a security specialist with different evidence; creative design pressure-tested by domain experts whose source bases don't overlap; plan scoping with reviewers from genuinely different lenses.
+**What the framework gives you that the no-framework path doesn't:**
 
-The leverage compounds when the specialization is real. When it's not -- when distinct evidence bases cannot be articulated for the two roles -- the discipline is to fall back to single-Challenger pressure-testing rather than spawning two correlated agents pretending to be specialists.
+1. **Defense against compounding failure modes in agent chains.** Single-call failures are tractable; chained-call failures compound (one agent's softened "yes" becomes the next agent's premise; one agent's invented detail becomes the next agent's quoted fact). Both-must-agree convergence (D4) + verifiable-artifact requirement (D3) + disjoint evidence (D2) cuts the compounding. Primary leverage.
+2. **Decision auditability.** Each spar produces a structured artifact recording personas + evidence bases, iteration log, agreement signals, cited artifacts, converged result or unresolved disagreement. Months later you can answer "was this decision made well?" -- not just "what was decided?"
+3. **Operational vocabulary for the failure modes themselves.** Naming "pleasing-bias compounding," "theatrical adversariality," "self-citation circularity," "disagreement-at-cap response menu" makes the patterns spottable in flight, whether or not you formally run a spar.
+4. **Permission for the "no answer yet" outcome.** When iteration cap is reached without convergence, the five-response menu (pick-side-with-tradeoffs, defer, reframe, escalate, synthesize) makes "we don't have an answer here" a legitimate outcome rather than failure-shaped.
+5. **Four Challenger functions, not one.** Standard adversarial setups (red team, GAN-style) give you one Challenger function -- the stress-test mode that's right at validation but actively wrong during exploration, false-novelty detection, and closure. SPARRING gives the role-shifted four (expand / filter / close / stress-test) so the right kind of pressure gets applied at the right point in the loop.
+
+**What it costs:**
+
+1. **Tokens / time / API cost.** A 2-iteration `/spar` is 2-4 LLM calls; a full four-phase ceremony is more. Substantially more expensive than single-call paths.
+2. **Partner cognitive overhead.** Setting up evidence bases, picking personas, reading the artifact, deciding whether to accept the convergence -- not free even when the agents do the work.
+3. **Misapplication risk.** Running SPARRING on factual lookups, mechanical edits, or routine prompts makes the structure itself the failure mode. Discipline 1 (apply to decisions, not every prompt) requires partner selectivity to enforce.
+4. **No empirical validation yet.** Quality leverage rests on structural argument plus one production reference implementation. Phase 1 measurement work is deferred. The cost is paid on a quality claim that cannot yet be measured independently of the framework's own materials (the self-citation-circularity gap named in "Failure modes the framework addresses").
+
+**When the cost is worth it (the value/cost gate):**
+
+| Worth it | Not worth it |
+|---|---|
+| High-stakes decision where being subtly wrong is expensive | Routine work -- bug fix, rename, dep bump, factual lookup |
+| Multi-agent chain where one output feeds another | Single-shot question with a checkable answer |
+| Verifiable artifacts available (D3 can fire) | Pure judgment-shaped question -- no evidence channel |
+| Disjoint evidence bases articulable (D2 satisfied) | Same-corpus agents; falls back to single-Challenger PNP |
+| Decision sets long-lived precedent | Decision is reversible at low cost |
+| Model's capability ceiling not the binding constraint | You're trying to multi-agent past the ceiling -- won't work |
+
+**Examples of where it pays back well:** code architecture reviewed by an engineer and a security specialist with different evidence; creative design pressure-tested by domain experts whose source bases don't overlap; plan scoping with reviewers from genuinely different lenses.
+
+**The leverage compounds when the specialization is real.** When it's not -- when distinct evidence bases cannot be articulated for the two roles -- the discipline is to fall back to single-Challenger pressure-testing rather than spawning two correlated agents pretending to be specialists.
+
+**Versus specific alternatives:**
+
+- **Single-shot LLM call.** Cheaper, faster; no structural defense against pleasing-bias drift; no audit trail.
+- **Manual partner review.** Highest quality but doesn't scale. SPARRING is a partner-leverage pattern -- not a substitute for partner judgment, but a way to structure inputs so the partner has less to verify.
+- **Generic red team / blue team / GAN.** Gives one Challenger function (stress-test). SPARRING gives four with role-shifts per phase.
+- **ADRs / post-mortems.** Capture decisions; don't constrain how decisions were made. SPARRING is upstream of the artifact.
+
+**The honest meta-claim:** SPARRING reduces the probability of specific failure modes, makes decisions auditable, and provides operational vocabulary for distinguishing real challenge from theater -- at real cost in tokens, time, and partner overhead. It does *not* guarantee correctness, does *not* substitute for partner judgment, does *not* address topics outside its scope, and *cannot* be empirically validated yet against held-out test cases. The framework's spec names these limits explicitly. Residual safety: partner judgment of the surfaced artifacts. The framework reduces *what the partner has to verify* by structuring the inputs; it does not remove the partner from the loop.
+
+One-line version: **the cheapest structural defense available against multi-agent compounding failures, paid for in tokens and partner attention, on a quality claim that's structurally argued but not yet empirically measured.**
 
 ### Future extensions worth pursuing
 
