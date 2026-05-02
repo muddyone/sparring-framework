@@ -2,7 +2,7 @@
 
 *Sibling working draft of `sparring-framework-notes.md`. Bridges the deferred Phase 2/3 eval-harness roadmap (Appendix D) into a concrete milestone shape, modeled on the project's existing Monte Carlo machinery in the combat engine.*
 
-*Status: DRAFT (2026-05-02). Not yet a milestone; this is the design doc that would back one.*
+*Status: DRAFT (2026-05-02, rev. 2 after two spars). Not yet a milestone; this is the design doc that would back one. Two pressure-test spars on this design landed in the same session: `spar-low-cost-pilot-design` (UNRESOLVED at cap on the framework-vs-no-framework comparative path under $400) and `spar-historical-case-corpus` (substantive convergence + narrow packaging hold on whether historical-case corpus can substitute for missing internal corpus). The findings from both have been incorporated in this rev.*
 
 ## Purpose
 
@@ -30,13 +30,17 @@ The harness should support all three; the milestone shape determines which to sh
 
 ## Test corpus
 
-The corpus is the single biggest pre-shipping investment. Three candidate construction paths:
+The corpus is the single biggest pre-shipping investment. Four candidate construction paths -- with honest assessments updated by the two pressure-test spars:
 
-- **Archived `/spar` runs whose outcomes have been validated.** Partner judgment on past spars (was this the right call?) plus any production outcomes that closed the loop on a decision. Cheapest source; constrained to decisions actually run through the framework.
-- **Sharma 2023 preference-flip prompts adapted to multi-agent settings (per spec Section 5.4).** Established sycophancy benchmark with known correct answers and known opposing-view formulations. Tests pleasing-bias defense specifically.
-- **Lifspel-internal deliberately-constructed test cases.** Decision shapes the framework should handle well (multi-agent, verifiable artifacts, disjoint evidence available) and decision shapes it should *not* handle well (routine work, pure judgment) -- the latter to validate the Applicability Gate's behavior, not the framework's quality leverage.
+- **Archived `/spar` runs whose outcomes have been validated.** Partner judgment on past spars plus any production outcomes that closed the loop. **Status (2026-05-02): only 2 archived spars exist, BOTH framework-on-itself meta-decisions** (submission-worthiness; post-6 closer-readiness). Per the self-citation circularity rule (`sparring-framework-notes.md` failure-mode catalog), using these as comparative-eval corpus would trip the rule the framework adopted yesterday. Honest treatment: tag as dogfooding artifacts, do not use as comparative-eval corpus. Will become useful as corpus only when many non-framework-internal spars accumulate organically (3-6+ months by usage projection).
 
-A first-pass corpus at small N (say 20 cases across the three categories) is sufficient to demonstrate the methodology and surface the first ablation results. Scale-up follows once the harness shape is validated.
+- **Sharma 2023 preference-flip prompts adapted to multi-agent settings (per spec Section 5.4).** Established sycophancy benchmark with known correct answers and known opposing-view formulations. Tests pleasing-bias defense specifically. **Status:** narrow but defensible -- tests one named failure mode against an external benchmark. Cleanest single-failure-mode test available at low cost.
+
+- **Lifspel-internal deliberately-constructed test cases.** Decision shapes the framework should handle well, plus shapes it should not (Applicability Gate validation). **Status revised (per `spar-low-cost-pilot-design` Generator R2 acknowledgment): manufacturing 8+ "real-stakes" cases on demand destroys ecological validity** -- you cannot manufacture authentic high-stakes decisions on a study schedule. Useful only for Applicability Gate validation (where artificiality is actually appropriate), not for quality-leverage testing.
+
+- **Historical case studies (Yin/Janis/Allison case-study research tradition).** Per `spar-historical-case-corpus` finding: methodologically defensible IN PRINCIPLE as theory-testing multiple-case design with structured-focused comparison + within-case process tracing. **Status at lifspel scale: NOT TRACTABLE today.** Five non-negotiable disciplines required (OSF pre-registration; blinded two-reviewer packet certification; four-cell process-x-outcome stratification; process-quality scoring as headline; scope-limited publishable claim). Two of the five (#2 blinded packet certification; #3 adversarial co-curator with the four-cell stratification) cannot be met at lifspel scale -- #3 is *structurally* impossible for an unpublished framework with no external critic pool. Realistic cost when feasible: $40-60k contracted labor + 18-month timeline + requires academic partnership. Becomes a viable Phase E only after the framework has external touchpoints (workshop paper, blog drawing critics, academic collaborator).
+
+**No first-pass corpus is currently buildable at lifspel scale that would support a methodologically-defensible framework-vs-no-framework comparative claim.** The honest near-term path is Phase A variance checking on individual non-framework-internal real Lifspel decisions, not a comparative-corpus study. See "Phasing" below.
 
 ## Ablations
 
@@ -67,20 +71,68 @@ The framework's inability to detect "converged on the wrong answer with both age
 
 ## Cost projection
 
+**Compute cost is the smallest line item; rater/curation labor is the dominant cost.**
+
 A 2-iteration `/spar` is 2-4 LLM calls. At N=100 per cell, that's 200-400 calls per (topic x configuration) data point. A first-pass corpus of 20 topics x 5 configurations (no-ablation baseline + 4 ablations) at N=100 is 20 * 5 * 100 * 3 = 30,000 LLM calls.
 
-At Claude Sonnet 4.6 pricing roughly, that's a meaningful but bounded cost -- substantially less than the cost of one production deployment going subtly wrong because pleasing-bias compounded undetected. The cost ceiling is the same shape as the combat-engine Monte Carlo's: tunable per experiment, with the option to cap at lower N when statistical power isn't the binding constraint.
+**Compute pricing depends on substrate (per the substrate-independence claim in `sparring-framework-notes.md`):**
+
+- All Sonnet (~$3/$15 per MTok): ~$7-8k for 30,000 calls
+- All Opus (~$15/$75 per MTok; the current `/spar` SKILL default): ~$30-40k for 30,000 calls
+- Mixed Sonnet bulk + Opus calibration: ~$10-15k
+- With prompt caching at scale: ~50% reduction on input
+
+**Rater/curation labor (the binding constraint, not compute):**
+
+For ANY methodologically-defensible RCT path, lifspel must source four labor categories none of which exist in the partner pool (per `spar-historical-case-corpus` Challenger R1):
+
+- **Blinded second reviewer for packet certification** (~40-80 hours)
+- **Cohen's kappa-calibrated process-quality raters** (~40-80 hours each plus calibration training)
+- **Adversarial co-curator** (structurally impossible for an unpublished framework with no external critic pool -- requires waiting until after framework publication exposes critics)
+- **Methodologist for OSF pre-registration pre-work** (~6-12 weeks of onboarded-methodologist time at lifspel scale, not 40-80 hours)
+
+At contracted labor rates ($50-300/hr depending on category), realistic all-in cost for a methodologically-defensible RCT at lifspel: **$40-60k + 6-18 months timeline.** The compute cost is a rounding error against this.
+
+**Smaller, honestly-scoped paths cost much less but produce narrower claims:**
+
+- **Phase A variance check** on a single non-framework-internal real Lifspel decision: ~$10-30 at Sonnet pricing. Produces internal instrumentation telemetry only -- explicit publishability ceiling applied (see Phasing below). Not a comparative claim.
+- **Sharma 2023 preference-flip narrow test:** ~$200-500 at Sonnet pricing for a specific test of pleasing-bias defense against an external benchmark. Single-failure-mode claim, not framework-wide.
+
+The combat-engine Monte Carlo cost-ceiling shape (tunable per experiment) still applies for the compute side. It does NOT solve the labor-pool side, which is the binding constraint at lifspel.
 
 ## Phasing
 
-The work decomposes into staged milestones rather than monolithic deployment:
+The work decomposes into staged milestones rather than monolithic deployment. Order updated per the two pressure-test spars to reflect what is actually executable at lifspel scale.
 
-- **Phase A: harness shell + corpus seed.** Build the runner that takes (topic, configuration, N) and produces a per-cell artifact with the statistical shape above. Seed a 20-case corpus. Ship without ablations -- measure baseline convergence consistency only. ~1-2 weeks of focused work.
-- **Phase B: ablation toggles.** Add the configuration knobs (`--no-d2`, `--cross-model`, `--persona-only`, `--cap=N`, etc.) and run the table above against the seed corpus. ~2-3 weeks.
-- **Phase C: LLM-as-judge for rubric scoring at scale.** Calibrate against partner-scored anchor sets per `docs/standards/challenger-output-rubric.md`. Replaces partner-only sampling for criterion 1-4 (the artifact-side criteria); criteria 5-7 may need to remain partner-applied. ~3-4 weeks.
-- **Phase D: cross-model integration.** API integration with Grok and OpenAI (or other vendors) for the cross-substrate variant. Output normalization in the orchestrator. ~2-3 weeks.
+- **Phase A: variance check on individual non-framework-internal decisions.** Build a minimal runner that takes (topic, configuration, N) and produces a per-cell artifact with statistical shape (convergence rate, revision-set similarity, recommendation consistency). Run on **single** real non-framework-internal Lifspel decisions, NOT on a comparative corpus. **Publishability-ceiling fence** applies: results are internal instrumentation telemetry, never written up as a finding, never cited in external material, never given a methodology designation. It is dogfooding the harness, not producing evidence about the framework. ~$10-30 per run at Sonnet pricing; ~1-2 weeks of harness-shell work.
+- **Phase B: ablation toggles -- DEFERRED until labor-pool exists.** Add configuration knobs (`--no-d2`, `--cross-model`, `--persona-only`, `--cap=N`, etc.) for the ablation table below. **Cannot ship at lifspel scale without contracted rater labor** -- per `spar-historical-case-corpus` Challenger findings. Realistic timeline contingent on either (a) academic partnership sourcing the four labor categories, or (b) external touchpoints producing genuine adversarial critics. Realistic cost when feasible: $40-60k + 6-18 months.
+- **Phase C: LLM-as-judge for rubric scoring at scale -- DEFERRED.** Calibrate against partner-scored anchor sets per `docs/standards/challenger-output-rubric.md`. Replaces partner-only sampling for criteria 1-4 (artifact-side); criteria 5-7 may need to remain partner-applied. Same labor-pool constraint as Phase B.
+- **Phase D: cross-model integration.** API integration with Grok and OpenAI (or other vendors) for the cross-substrate variant. The substrate-independence claim in `sparring-framework-notes.md` is the structural argument; Phase D is the empirical test of that claim. Cheaper than Phases B-C on the labor side (cross-model variance can be measured at the convergence-rate level without rater pool, similar to Phase A's instrumentation shape) but still benefits from Phase B's ablation infrastructure when available. ~2-3 weeks of API-integration work; per-spar cost depends on vendor pricing mix.
+- **Phase E: historical-case-study corpus -- FUTURE CONTINGENT, requires academic partnership.** Per `spar-historical-case-corpus` Generator R1 design: theory-testing multiple-case design with structured-focused comparison + within-case process tracing. Corpus of 12-20 historical decisions across military/political/business/scientific domains, four-cell process-x-outcome stratified, materials packets hindsight-stripped, scored on Janis-1989 vigilant-problem-solving rubric. **Becomes feasible only when:** (a) framework has external touchpoints producing adversarial-co-curator candidates, (b) academic partnership or grant funding sources contracted labor, (c) lifspel resources permit 18-month execution. Realistic cost when feasible: $40-60k + 18 months. Output: NeurIPS Evaluations & Datasets corpus-as-artifact paper + JBDM/AIES evaluation paper.
 
-Phases A-B together would produce the first empirical signal on framework leverage and would close the largest gap in the value-proposition claim: "structurally argued but not yet empirically measured" becomes "empirically measured at small N with stated CIs."
+**Operational reality at lifspel today:** Phase A is the only phase executable with current resources (and even Phase A is bounded as internal instrumentation, not external claim). Phases B-E are blocked on the labor-pool constraint that no spend on compute can solve. The honest near-term path is Phase A + escalate Phases B-E to partner triumvirate as a multi-year R&D investment decision.
+
+## Operational constraints at lifspel scale
+
+Surfaced explicitly by the two pressure-test spars on this design. The framework's discipline is to name these honestly rather than design around them implicitly.
+
+**Labor-pool constraint (binding):** the lifspel partner pool (3 partners, framework author is one) cannot supply blinded raters, kappa-calibrated process-quality raters, or adversarial co-curators. ALL of these positions require contracted external labor. Per the `spar-historical-case-corpus` Challenger R1 finding, this pushes any methodologically-defensible RCT into the contracted-labor cost scenario regardless of corpus path.
+
+**Adversarial-co-curator structural impossibility (until post-publication):** for an unpublished framework with no external critic pool, "someone whose interest is *not* aligned with the framework's success" cannot be sourced -- paid skeptics have an incentive problem; unpaid genuine adversaries do not exist for unpublished work; the closest analog (general AI-multi-agent skeptics) lacks specific stakes in SPARRING failing. This is a structural condition that resolves itself only after the framework has external touchpoints (a workshop paper that draws critics; a blog post that surfaces objections; an academic collaborator with their own methodological priors). Until then, Phase B-E disciplines that require this role are unmeetable.
+
+**`/spar` SKILL.md does not yet support corpus-runner orchestration or curated-materials-packet evidence bases.** Per Challenger R1 reading of SKILL.md lines 42-62 and 69-71: the persona evidence-base spec format is pointer-to-in-repo-files; no support for hindsight cutoff dates, certification hashes, "two-agents-without-framework" condition, or corpus-runner orchestration. Phase A's harness shell needs these additions before any phase can run. They are not in any current SKILL milestone.
+
+## Defensibility rubric for any future eval path
+
+Surfaced by `spar-historical-case-corpus` Generator R1. These are the disciplines that would make any future comparative eval defensible -- whether on historical cases, manufactured cases, accumulated archived spars, or some hybrid. Useful both as a forward-pointer for partner-triumvirate escalate decisions AND as the rubric against which any cheaper alternative should be measured.
+
+1. **OSF pre-registration before materials processing.** Public timestamp; cannot be retrofitted; locks selection criteria, materials cutoff rules, scoring rubric, condition specifications, statistical analysis plan, stopping rules.
+2. **Blinded two-reviewer packet certification** (or analogous discipline preventing post-hoc-knowledge leakage into the corpus that the framework reads).
+3. **Four-cell process-x-outcome stratification** with adversarial co-curator: corpus must include the rare bad-process/good-outcome cell to defend against Baron & Hershey 1988 outcome bias.
+4. **Process-quality + concern-coverage as headline scoring** (Janis-1989 vigilant-problem-solving rubric is one defensible instrument); decision-correctness reported but de-emphasized to avoid outcome-bias contamination of headline finding.
+5. **Explicit scope-limiting of publishable claim.** Whatever empirical signal the eval produces, the publishable claim must be narrower than "framework better than no-framework in production AI deployment" -- structural argument and limited corpus do not support that scope.
+
+If a proposed eval path cannot meet any of these five disciplines, the publication shape must shrink accordingly OR the path must be deferred until the discipline can be met. This is the operational expression of the framework's own discipline-against-its-own-claims (the same shape as Discipline 2's single-Challenger-fallback rule, applied to the meta-level eval design).
 
 ## Open questions
 
@@ -93,11 +145,15 @@ Phases A-B together would produce the first empirical signal on framework levera
 ## Connection to existing infrastructure
 
 - **Combat-engine Monte Carlo** (`storyforge/tests/api/monte-carlo.php`) -- methodology precedent, configuration-toggle pattern, per-cell-distribution shape.
-- **Per-output rubric** (`docs/standards/challenger-output-rubric.md`) -- the measurement instrument the harness scales out.
+- **Per-output rubric** (`docs/standards/challenger-output-rubric.md`) -- the measurement instrument the harness scales out. Updated 2026-05-02 with criterion 7 (external corroboration of load-bearing citations) addressing self-citation circularity.
 - **Spar artifact format** (per `.claude/spars/<date>/spar-*.md` examples) -- the structured output the harness reads as input data.
-- **`/spar` skill** (`.claude/skills/spar/SKILL.md`) -- the runtime the harness invokes.
-- **Spec Section 5.4** -- proposed Sharma 2023 preference-flip benchmark adaptation, which slots into the corpus-construction work.
+- **`/spar` skill** (`.claude/skills/spar/SKILL.md`) -- the runtime the harness invokes. Updated 2026-05-02 with self-citation circularity check in Step 3.
+- **Substrate independence** (`sparring-framework-notes.md` Substrate independence section) -- the structural claim this design doc's Phase D would empirically test.
+- **Spec Section 5.4** -- proposed Sharma 2023 preference-flip benchmark adaptation, which slots into the corpus-construction work as the cleanest single-failure-mode test.
 - **Spec Appendix D Phase 2/3 roadmap** (in framework notes) -- the strategic frame this design doc operationalizes.
+- **Prior pressure-test spars on this design:**
+  - `.claude/spars/2026-05-02/spar-low-cost-pilot-design.md` (UNRESOLVED at cap on framework-vs-no-framework comparative path under $400; surfaced cost-baseline / corpus-availability / rubric-circularity / rater-pool problems)
+  - `.claude/spars/2026-05-02/spar-historical-case-corpus.md` (substantive convergence + narrow packaging hold on whether historical-case corpus solves the corpus problem; surfaced lifspel-scale operational impossibilities for 2 of the 5 defensibility disciplines)
 
 ## What this design doc is NOT
 
