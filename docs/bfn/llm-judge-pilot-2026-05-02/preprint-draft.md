@@ -11,13 +11,15 @@
 
 ## Abstract
 
-We report an exploratory n=2 case study evaluating a structured AI-deliberation framework ("SPARRING") against a single-agent baseline using cross-vendor LLM-as-judge consensus, with partner-anchor calibration. We pre-registered a methodology gate (Spearman ρ ≥ 0.7 PASS, 0.4–0.7 BORDERLINE, < 0.4 FAIL) before any compute was spent. The cross-vendor consensus achieved ρ = 0.351 against the partner's ratings, formally failing the gate. However, two findings emerged that complicate that headline:
+We report an exploratory n=2 case study evaluating a structured AI-deliberation framework ("SPARRING") against a single-agent baseline using cross-vendor LLM-as-judge consensus, with partner-anchor calibration. We pre-registered a methodology gate (Spearman ρ ≥ 0.7 PASS, 0.4–0.7 BORDERLINE, < 0.4 FAIL) before any compute was spent. The cross-vendor consensus achieved ρ = 0.351 against the partner's ratings, formally failing the gate. However, three findings emerged that complicate that headline:
 
 **Directional finding**. All four raters (one human partner; three LLM judges across Anthropic Claude Sonnet 4.6, OpenAI GPT-4o, and xAI Grok-3) rated the framework's output higher than the single-agent baseline on every one of the four cross-condition-fair rubric criteria. Partner B−A delta averaged +1.125 (1–5 scale); cross-vendor consensus +0.417. Direction was unanimous; magnitude differed.
 
 **Methodological inversion**. After unblinding, the human partner explicitly stated greater confidence in the LLM judges' rubric scoring than in their own on the two rubric criteria where partner-judge alignment was weakest (ρ = 0.000 and 0.236). This is consistent with the partner under-discriminating on subjective rubric dimensions where humans are known to have specific blind spots, rather than the LLM judges being mis-calibrated against a human gold standard. The partner-anchor calibration premise — that human judgment is the gold standard — therefore warrants per-criterion specification rather than blanket application.
 
-We argue that small-n exploratory pilots like this one should be reported in the literature even when their pre-registered gates fail, because the partner-anchor inversion observation has methodological value independent of the substantive comparative claim. We outline four follow-up paths and explicitly do not advance the substantive claim that the framework outperforms single-agent deliberation; that claim is reserved for confirmatory work this pilot was not designed to conduct.
+**Pack-fidelity vs. ground-truth-fidelity gap**. A factual error in one decision pack (a fictional engine data structure) was discovered post-hoc by a partner reading the pack and outputs critically with the engine source available — not by either condition, despite the SPARRING Generator persona being explicitly configured with the engine codebase as its evidence base. This characterizes a class of failure mode in author-curated decision-pack methodologies and a corresponding gap in the evaluated framework's verifiable-artifact discipline (which mandates citation but not source-fetch-and-verify). The instance is small but operationally informative: the framework's stated partner-residual-safety position became load-bearing in practice.
+
+We argue that small-n exploratory pilots like this one should be reported in the literature even when their pre-registered gates fail, because the methodology observations (the partner-anchor inversion and the pack-fidelity gap) have value independent of the substantive comparative claim. We outline four follow-up paths and explicitly do not advance the substantive claim that the framework outperforms single-agent deliberation; that claim is reserved for confirmatory work this pilot was not designed to conduct.
 
 ---
 
@@ -215,7 +217,27 @@ Three implications:
 
 **(c) The "human-in-the-loop AI evaluation" convention has an asymmetric trust assumption baked in.** Mainstream practice treats human judgment as the gold standard and AI judgment as what's being calibrated. The partner's observation is a real-world counter-example. We do not claim this generalizes — n=1 partner observation in n=2 cases is not a population-level finding. But it is unusual enough for it to be surfaced explicitly during a calibration study that we argue it merits honest reporting and follow-up examination.
 
-### 5.4 What this study can and cannot conclude
+### 5.4 Pack-fidelity vs. ground-truth-fidelity: a layered finding from the case-b factual error
+
+A second partner-disclosed observation from a post-pre-reg blind-rating session by Matthew Niedner (the framework author's partner) surfaces a methodological gap distinct from the partner-anchor inversion in §5.3. We separate this from the §6 limitation entry because it has positive contribution beyond a "limitation": it characterizes a specific class of failure mode in author-curated decision-pack methodologies and a corresponding gap in the framework being evaluated.
+
+**The error.** The case-b decision pack asserted that the engine uses a discrete `{walk, trot, canter, gallop}` gait enum. It does not — the actual structure is action-keyed continuous fractions per species, verified by the partner against the engine source after the pilot's runs were complete. The pack assertion was not a deliberate construction; it was the framework author's misremembering of the engine state.
+
+**Three layers of failure / non-failure.** Both pilot conditions were faithful to the input they received. Condition A (single-agent baseline) reasoned over the fictional enum without flagging uncertainty. Condition B (SPARRING) did the same, despite its Generator persona being explicitly configured with the engine codebase as its evidence base. Neither caught the discrepancy. The error was caught by Matthew, a partner reading the pack and outputs critically *outside* the conditions, with the engine source available to verify against.
+
+**The framework-discipline gap.** The SPARRING framework's *verifiable-artifact requirement* mandates that every concern an agent raises must cite a specific artifact (file path, source citation, edge case). It does NOT mandate that agents fetch and verify cited artifacts, nor that they verify the input pack's assertions about external artifacts. There is a real distinction between "this concern cites a real source" and "this concern's source actually says what the agent claims it says" — and an even larger distinction between either of those and "the input pack's framing of the engine state actually matches the engine state." The framework's discipline addresses the first; this study revealed it does not address the second or third.
+
+**The partner-residual-safety as load-bearing.** The framework's substrate documentation positions partner judgment of surfaced artifacts as the residual safety against coordinated theater and shared agent blind spots. The case-b error is a small but clean instance of that residual safety actually firing: a partner reading the deliberation outputs *with the actual ground truth available* caught what the conditions could not. We argue this should be reported in the literature as evidence that the partner-residual-safety position is not theoretical — it is operationally load-bearing and can catch real factual errors in author-curated decision-pack methodologies.
+
+**Two implications for Phase 2 and for similar pilots elsewhere:**
+
+1. **Author-curated decision packs need an independent fact-check pass before any conditions run.** Standard scientific-paper hygiene applied to deliberation methodology. This is the §6 limitation framing. Cheap; defensible; should be standard.
+
+2. **Frameworks claiming verifiable-artifact discipline should consider extending the discipline to source-fetch-and-verify, not just source-citation.** This is a real cost-benefit decision: every additional Read call lengthens iterations and increases cost, but the gap demonstrated here is real. A defensible compromise is "fetch-and-verify required when the cited artifact is core to a load-bearing claim; citation-only sufficient for supporting context." Future framework iterations should think about which of their artifact-discipline rules apply to cited evidence vs. assumed-as-given input.
+
+We do not commit either implication as a Phase 2 design rule here; both are calls for the eventual scoper.
+
+### 5.5 What this study can and cannot conclude
 
 **Can:**
 - Direction: all four raters (1 partner + 3 LLM judges) rated the framework higher than baseline on every one of 4 criteria, on n=2 cases. This is preliminary, exploratory evidence consistent with the framework producing measurably different and consistently-preferred deliberation. It is not a confirmatory effect-size estimate.
@@ -228,7 +250,7 @@ Three implications:
 - "Cross-vendor LLM-as-judge tracks human judgment." Failed the gate as recorded; one judge passed alone, two did not.
 - Generalization to other deliberation frameworks, other domains, other rubrics, or other partner pools.
 
-### 5.5 Future work — four paths
+### 5.6 Future work — four paths
 
 We outline four follow-up paths, ordered from most-conservative-of-this-study's-methodology to least:
 
