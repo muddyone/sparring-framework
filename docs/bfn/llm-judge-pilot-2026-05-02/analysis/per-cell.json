@@ -1,0 +1,178 @@
+[
+    {
+        "case": "case-a",
+        "condition": "condition-a",
+        "criterion": 1,
+        "criterion_label": "verifiable_artifact_citation",
+        "partner": 3,
+        "judge_anthropic": 3,
+        "judge_openai": 4.5,
+        "judge_xai": 4,
+        "judge_consensus": 3.8333333333333335
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-a",
+        "criterion": 2,
+        "criterion_label": "substantive_vs_theatrical",
+        "partner": 4,
+        "judge_anthropic": 4,
+        "judge_openai": 4,
+        "judge_xai": 3.5,
+        "judge_consensus": 3.8333333333333335
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-a",
+        "criterion": 3,
+        "criterion_label": "missed_real_concerns",
+        "partner": 4,
+        "judge_anthropic": 3.5,
+        "judge_openai": 4,
+        "judge_xai": 3.5,
+        "judge_consensus": 3.6666666666666665
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-a",
+        "criterion": 4,
+        "criterion_label": "calibrated_confidence",
+        "partner": 4,
+        "judge_anthropic": 4,
+        "judge_openai": 3,
+        "judge_xai": 4,
+        "judge_consensus": 3.6666666666666665
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-b",
+        "criterion": 1,
+        "criterion_label": "verifiable_artifact_citation",
+        "partner": 5,
+        "judge_anthropic": 4.5,
+        "judge_openai": 4.5,
+        "judge_xai": 5,
+        "judge_consensus": 4.666666666666667
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-b",
+        "criterion": 2,
+        "criterion_label": "substantive_vs_theatrical",
+        "partner": 5,
+        "judge_anthropic": 4.5,
+        "judge_openai": 4,
+        "judge_xai": 4,
+        "judge_consensus": 4.166666666666667
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-b",
+        "criterion": 3,
+        "criterion_label": "missed_real_concerns",
+        "partner": 5,
+        "judge_anthropic": 4,
+        "judge_openai": 3.5,
+        "judge_xai": 3,
+        "judge_consensus": 3.5
+    },
+    {
+        "case": "case-a",
+        "condition": "condition-b",
+        "criterion": 4,
+        "criterion_label": "calibrated_confidence",
+        "partner": 5,
+        "judge_anthropic": 3.5,
+        "judge_openai": 3,
+        "judge_xai": 4,
+        "judge_consensus": 3.5
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-a",
+        "criterion": 1,
+        "criterion_label": "verifiable_artifact_citation",
+        "partner": 4,
+        "judge_anthropic": 4,
+        "judge_openai": 4.5,
+        "judge_xai": 4.5,
+        "judge_consensus": 4.333333333333333
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-a",
+        "criterion": 2,
+        "criterion_label": "substantive_vs_theatrical",
+        "partner": 4,
+        "judge_anthropic": 4,
+        "judge_openai": 4,
+        "judge_xai": 4.5,
+        "judge_consensus": 4.166666666666667
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-a",
+        "criterion": 3,
+        "criterion_label": "missed_real_concerns",
+        "partner": 4,
+        "judge_anthropic": 3.5,
+        "judge_openai": 4,
+        "judge_xai": 3.5,
+        "judge_consensus": 3.6666666666666665
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-a",
+        "criterion": 4,
+        "criterion_label": "calibrated_confidence",
+        "partner": 4,
+        "judge_anthropic": 4,
+        "judge_openai": 3,
+        "judge_xai": 3.5,
+        "judge_consensus": 3.5
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-b",
+        "criterion": 1,
+        "criterion_label": "verifiable_artifact_citation",
+        "partner": 5,
+        "judge_anthropic": 5,
+        "judge_openai": 5,
+        "judge_xai": 5,
+        "judge_consensus": 5
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-b",
+        "criterion": 2,
+        "criterion_label": "substantive_vs_theatrical",
+        "partner": 5,
+        "judge_anthropic": 5,
+        "judge_openai": 4.5,
+        "judge_xai": 4.5,
+        "judge_consensus": 4.666666666666667
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-b",
+        "criterion": 3,
+        "criterion_label": "missed_real_concerns",
+        "partner": 5,
+        "judge_anthropic": 5,
+        "judge_openai": 4.5,
+        "judge_xai": 3.5,
+        "judge_consensus": 4.333333333333333
+    },
+    {
+        "case": "case-b",
+        "condition": "condition-b",
+        "criterion": 4,
+        "criterion_label": "calibrated_confidence",
+        "partner": 5,
+        "judge_anthropic": 4.5,
+        "judge_openai": 4,
+        "judge_xai": 4,
+        "judge_consensus": 4.166666666666667
+    }
+]

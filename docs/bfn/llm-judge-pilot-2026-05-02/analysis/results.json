@@ -1,0 +1,412 @@
+{
+    "canonical_table": [
+        {
+            "case": "case-a",
+            "condition": "condition-a",
+            "criterion": 1,
+            "criterion_label": "verifiable_artifact_citation",
+            "partner": 3,
+            "judge_anthropic": 3,
+            "judge_openai": 4.5,
+            "judge_xai": 4,
+            "judge_consensus": 3.8333333333333335
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-a",
+            "criterion": 2,
+            "criterion_label": "substantive_vs_theatrical",
+            "partner": 4,
+            "judge_anthropic": 4,
+            "judge_openai": 4,
+            "judge_xai": 3.5,
+            "judge_consensus": 3.8333333333333335
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-a",
+            "criterion": 3,
+            "criterion_label": "missed_real_concerns",
+            "partner": 4,
+            "judge_anthropic": 3.5,
+            "judge_openai": 4,
+            "judge_xai": 3.5,
+            "judge_consensus": 3.6666666666666665
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-a",
+            "criterion": 4,
+            "criterion_label": "calibrated_confidence",
+            "partner": 4,
+            "judge_anthropic": 4,
+            "judge_openai": 3,
+            "judge_xai": 4,
+            "judge_consensus": 3.6666666666666665
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-b",
+            "criterion": 1,
+            "criterion_label": "verifiable_artifact_citation",
+            "partner": 5,
+            "judge_anthropic": 4.5,
+            "judge_openai": 4.5,
+            "judge_xai": 5,
+            "judge_consensus": 4.666666666666667
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-b",
+            "criterion": 2,
+            "criterion_label": "substantive_vs_theatrical",
+            "partner": 5,
+            "judge_anthropic": 4.5,
+            "judge_openai": 4,
+            "judge_xai": 4,
+            "judge_consensus": 4.166666666666667
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-b",
+            "criterion": 3,
+            "criterion_label": "missed_real_concerns",
+            "partner": 5,
+            "judge_anthropic": 4,
+            "judge_openai": 3.5,
+            "judge_xai": 3,
+            "judge_consensus": 3.5
+        },
+        {
+            "case": "case-a",
+            "condition": "condition-b",
+            "criterion": 4,
+            "criterion_label": "calibrated_confidence",
+            "partner": 5,
+            "judge_anthropic": 3.5,
+            "judge_openai": 3,
+            "judge_xai": 4,
+            "judge_consensus": 3.5
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-a",
+            "criterion": 1,
+            "criterion_label": "verifiable_artifact_citation",
+            "partner": 4,
+            "judge_anthropic": 4,
+            "judge_openai": 4.5,
+            "judge_xai": 4.5,
+            "judge_consensus": 4.333333333333333
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-a",
+            "criterion": 2,
+            "criterion_label": "substantive_vs_theatrical",
+            "partner": 4,
+            "judge_anthropic": 4,
+            "judge_openai": 4,
+            "judge_xai": 4.5,
+            "judge_consensus": 4.166666666666667
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-a",
+            "criterion": 3,
+            "criterion_label": "missed_real_concerns",
+            "partner": 4,
+            "judge_anthropic": 3.5,
+            "judge_openai": 4,
+            "judge_xai": 3.5,
+            "judge_consensus": 3.6666666666666665
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-a",
+            "criterion": 4,
+            "criterion_label": "calibrated_confidence",
+            "partner": 4,
+            "judge_anthropic": 4,
+            "judge_openai": 3,
+            "judge_xai": 3.5,
+            "judge_consensus": 3.5
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-b",
+            "criterion": 1,
+            "criterion_label": "verifiable_artifact_citation",
+            "partner": 5,
+            "judge_anthropic": 5,
+            "judge_openai": 5,
+            "judge_xai": 5,
+            "judge_consensus": 5
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-b",
+            "criterion": 2,
+            "criterion_label": "substantive_vs_theatrical",
+            "partner": 5,
+            "judge_anthropic": 5,
+            "judge_openai": 4.5,
+            "judge_xai": 4.5,
+            "judge_consensus": 4.666666666666667
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-b",
+            "criterion": 3,
+            "criterion_label": "missed_real_concerns",
+            "partner": 5,
+            "judge_anthropic": 5,
+            "judge_openai": 4.5,
+            "judge_xai": 3.5,
+            "judge_consensus": 4.333333333333333
+        },
+        {
+            "case": "case-b",
+            "condition": "condition-b",
+            "criterion": 4,
+            "criterion_label": "calibrated_confidence",
+            "partner": 5,
+            "judge_anthropic": 4.5,
+            "judge_openai": 4,
+            "judge_xai": 4,
+            "judge_consensus": 4.166666666666667
+        }
+    ],
+    "headline": {
+        "metric": "Spearman rho between partner ratings and cross-vendor LLM-judge consensus",
+        "n_points": 16,
+        "partner_vector": [
+            3,
+            4,
+            4,
+            4,
+            5,
+            5,
+            5,
+            5,
+            4,
+            4,
+            4,
+            4,
+            5,
+            5,
+            5,
+            5
+        ],
+        "consensus_vector": [
+            3.8333333333333335,
+            3.8333333333333335,
+            3.6666666666666665,
+            3.6666666666666665,
+            4.666666666666667,
+            4.166666666666667,
+            3.5,
+            3.5,
+            4.333333333333333,
+            4.166666666666667,
+            3.6666666666666665,
+            3.5,
+            5,
+            4.666666666666667,
+            4.333333333333333,
+            4.166666666666667
+        ],
+        "spearman_rho": 0.35127269898243413
+    },
+    "per_judge_spearman": {
+        "anthropic": {
+            "n": 16,
+            "rho": 0.7055458114456116
+        },
+        "openai": {
+            "n": 16,
+            "rho": 0.1450563035040488
+        },
+        "xai": {
+            "n": 16,
+            "rho": 0.1980953342370432
+        }
+    },
+    "per_criterion_spearman": {
+        "1": {
+            "label": "verifiable_artifact_citation",
+            "n": 4,
+            "rho": 0.9486832980505138,
+            "partner_vector": [
+                3,
+                5,
+                4,
+                5
+            ],
+            "consensus_vector": [
+                3.8333333333333335,
+                4.666666666666667,
+                4.333333333333333,
+                5
+            ]
+        },
+        "2": {
+            "label": "substantive_vs_theatrical",
+            "n": 4,
+            "rho": 0.7071067811865476,
+            "partner_vector": [
+                4,
+                5,
+                4,
+                5
+            ],
+            "consensus_vector": [
+                3.8333333333333335,
+                4.166666666666667,
+                4.166666666666667,
+                4.666666666666667
+            ]
+        },
+        "3": {
+            "label": "missed_real_concerns",
+            "n": 4,
+            "rho": 0,
+            "partner_vector": [
+                4,
+                5,
+                4,
+                5
+            ],
+            "consensus_vector": [
+                3.6666666666666665,
+                3.5,
+                3.6666666666666665,
+                4.333333333333333
+            ]
+        },
+        "4": {
+            "label": "calibrated_confidence",
+            "n": 4,
+            "rho": 0.23570226039551587,
+            "partner_vector": [
+                4,
+                5,
+                4,
+                5
+            ],
+            "consensus_vector": [
+                3.6666666666666665,
+                3.5,
+                3.5,
+                4.166666666666667
+            ]
+        }
+    },
+    "per_criterion_delta": {
+        "1": {
+            "label": "verifiable_artifact_citation",
+            "partner_delta": 1.5,
+            "partner_a_mean": 3.5,
+            "partner_b_mean": 5,
+            "consensus_delta": 0.7500000000000009,
+            "consensus_a_mean": 4.083333333333333,
+            "consensus_b_mean": 4.833333333333334,
+            "per_judge_delta": {
+                "anthropic": 1.25,
+                "openai": 0.25,
+                "xai": 0.75
+            }
+        },
+        "2": {
+            "label": "substantive_vs_theatrical",
+            "partner_delta": 1,
+            "partner_a_mean": 4,
+            "partner_b_mean": 5,
+            "consensus_delta": 0.41666666666666696,
+            "consensus_a_mean": 4,
+            "consensus_b_mean": 4.416666666666667,
+            "per_judge_delta": {
+                "anthropic": 0.75,
+                "openai": 0.25,
+                "xai": 0.25
+            }
+        },
+        "3": {
+            "label": "missed_real_concerns",
+            "partner_delta": 1,
+            "partner_a_mean": 4,
+            "partner_b_mean": 5,
+            "consensus_delta": 0.25,
+            "consensus_a_mean": 3.6666666666666665,
+            "consensus_b_mean": 3.9166666666666665,
+            "per_judge_delta": {
+                "anthropic": 1,
+                "openai": 0,
+                "xai": -0.25
+            }
+        },
+        "4": {
+            "label": "calibrated_confidence",
+            "partner_delta": 1,
+            "partner_a_mean": 4,
+            "partner_b_mean": 5,
+            "consensus_delta": 0.25000000000000044,
+            "consensus_a_mean": 3.583333333333333,
+            "consensus_b_mean": 3.8333333333333335,
+            "per_judge_delta": {
+                "anthropic": 0,
+                "openai": 0.5,
+                "xai": 0.25
+            }
+        }
+    },
+    "aggregate_delta_b_minus_a": {
+        "partner": 1.125,
+        "consensus": 0.4166666666666671,
+        "per_judge": {
+            "anthropic": 0.75,
+            "openai": 0.25,
+            "xai": 0.25
+        }
+    },
+    "position_bias": {
+        "anthropic": {
+            "mean_abs_diff_across_passes": 0.375,
+            "max_diff": 1,
+            "n_cells": 16,
+            "note": "mean abs(pass1_score - pass2_score) for the same condition; lower = less position-sensitive"
+        },
+        "openai": {
+            "mean_abs_diff_across_passes": 0.375,
+            "max_diff": 1,
+            "n_cells": 16,
+            "note": "mean abs(pass1_score - pass2_score) for the same condition; lower = less position-sensitive"
+        },
+        "xai": {
+            "mean_abs_diff_across_passes": 0.5,
+            "max_diff": 1,
+            "n_cells": 16,
+            "note": "mean abs(pass1_score - pass2_score) for the same condition; lower = less position-sensitive"
+        }
+    },
+    "cross_judge_agreement": {
+        "n_cells": 16,
+        "mean_stdev": 0.31654305404168187,
+        "max_stdev": 0.6236095644623235
+    },
+    "mode_collapse": {
+        "n_cells": 16,
+        "cells_all_judges_within_0_5": 1,
+        "fraction": 0.0625
+    },
+    "decision_gate": {
+        "rho": 0.35127269898243413,
+        "classification": "FAIL",
+        "reason": "LLM judges measuring something different from what partners would measure (rho < 0.4). Phase 2 NOT pursued without addressing the confound.",
+        "thresholds": {
+            "pass": "> 0.7",
+            "borderline": "0.4-0.7",
+            "fail": "< 0.4"
+        }
+    }
+}
