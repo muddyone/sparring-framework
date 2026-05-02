@@ -155,6 +155,28 @@ LLM-as-judge results without partner-anchored calibration are uninterpretable --
 
 **The calibration step is non-optional.** Without it, the LLM-judge pilot is theatrical adversariality at the meta-level: the judges look like neutral evaluators but their alignment with human judgment is unverified.
 
+### Partner-anchor premise — observed exception in 2026-05-02 pilot
+
+*Added 2026-05-02 after Phase 1 calibration check completed and partner unblinding revealed the substrate question below.*
+
+The procedure and interpretation table above treat **partner judgment as the calibration target** against which LLM-judge consensus is measured. The implicit premise is "partner = gold standard; judges are calibrated to partner."
+
+In the 2026-05-02 Phase 1 pilot run (`docs/bfn/llm-judge-pilot-2026-05-02/analysis/report.md`), partner Breegarra explicitly identified an exception to that premise after seeing the per-criterion ρ split (C1 citation discipline ρ = 0.949, C2 substantive concerns ρ = 0.707, C3 missed concerns ρ = 0.000, C4 calibrated confidence ρ = 0.236):
+
+> "In truth, I trust the LLMs ability to rate the rubric better than my own. I miss items in those last two categories that the LLMs are much better at catching. My 'all 5s' ratings was basically because I could not see a way to improve it. But the LLMs are better than me at this -- they see nuance and misses that I don't."
+
+This is a substantive partner-disclosed observation about the partner-anchor premise itself, not a complaint about the pilot result. It produces three methodological consequences worth carrying into Phase 2 design:
+
+1. **Partner-anchor calibration may be valid for some criteria and invalid for others.** Partner is well-positioned to calibrate citation discipline (C1: there is a verifiable artifact or there is not — partner has direct access to ground truth) and concern substantiveness (C2: partner can read the concerns and assess whether they're real). Partner is poorly positioned to calibrate "missed real concerns" (C3) — partners suffer the same omission blindness the framework's whole structural skeptic role exists to mitigate. Partner is also poorly positioned to calibrate "is this confidence appropriate?" (C4) — confidence calibration requires comparing the stated confidence against an outcome distribution that doesn't exist for one-shot deliberation outputs.
+
+2. **A pre-registered methodology gate failure may be measuring partner under-discrimination, not LLM mis-calibration.** When partner produces ceiling ratings (5/5/5/5 for SPARRING in both 2026-05-02 cases) on criteria where partner explicitly believes LLMs detect more nuance, the resulting low Spearman ρ is consistent with two readings: (a) "judges aren't calibrated to partner" (the gate's standard interpretation) and (b) "partner is under-discriminating; judges are tracking finer-grained signal." The gate as designed cannot distinguish these. Phase 2 design should either provide a way to distinguish them or scope its calibration claim narrowly to the criteria where partner-as-gold-standard premise is defensible.
+
+3. **The "human-in-the-loop AI evaluation" convention has an asymmetric trust assumption baked in.** Mainstream practice treats human judgment as the calibration target and AI judgment as what's being calibrated. Partner Breegarra's observation is a real-world counter-example: on specific subjective rubric dimensions, the human can identify domains where AI judgment is *more reliable* than the human's. This isn't an unusual claim — humans are well-known to have specific blind spots that pattern-matching AI can detect — but it is unusual for it to be surfaced explicitly during a calibration study. Phase 2 should design for this honestly: partner-anchor on the criteria where partner is confident in their own discrimination, LLM-consensus-anchor on the criteria where partner explicitly defers.
+
+**Status of this observation:** This is a single partner's reflection on a single n=2 pilot. It is not generalized into framework doctrine yet. It IS captured here so that Phase 2 design (or any future calibration pilot) consciously decides whether to treat partner judgment as gold standard, LLM judgment as gold standard, or use a per-criterion split. The default in this design doc remains "partner = calibration target" until additional evidence supports a different convention.
+
+**Provenance:** 2026-05-02 partner Breegarra reflection on Phase 1 calibration result. Verbatim partner statement preserved above; full pilot at `docs/bfn/llm-judge-pilot-2026-05-02/`.
+
 ## Statistical analysis plan
 
 **Pre-register before runs:**
