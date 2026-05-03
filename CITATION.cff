@@ -4,8 +4,9 @@ message: "If you use SPARRING in your research or methodology, please cite this 
 type: software
 authors:
   - family-names: "Niedner"
-    given-names: "Bart"
+    given-names: "Barton"
     affiliation: "Resource Forge LLC"
+    orcid: "https://orcid.org/0009-0003-4117-3426"
 repository-code: "https://github.com/muddyone/sparring-framework"
 abstract: >
   SPARRING is a methodology for structured AI deliberation in multi-agent

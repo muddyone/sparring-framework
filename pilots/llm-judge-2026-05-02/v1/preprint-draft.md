@@ -1,6 +1,6 @@
 # When the human anchor is not the gold standard: an exploratory case study in cross-vendor LLM-as-judge calibration
 
-**Author**: Bart Niedner, Resource Forge LLC
+**Author**: Barton Niedner ([ORCID 0009-0003-4117-3426](https://orcid.org/0009-0003-4117-3426)), Resource Forge LLC
 **Drafted**: 2026-05-02 (working draft for partner review and revision)
 **Type**: Exploratory-evidence preprint, intended for arXiv (cs.AI / cs.HC) with a blog companion
 **Word count target**: ~4,000 words; please trim or expand at sections marked `[length call]`

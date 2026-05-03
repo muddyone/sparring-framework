@@ -1,6 +1,6 @@
 # SPARRING Framework
 
-A framework for structured AI deliberation: SPARK / Pattern Lock / The Cut / PNP, with the SPARRING two-role mechanic. Originally developed by Bart Niedner under Resource Forge LLC.
+A framework for structured AI deliberation: SPARK / Pattern Lock / The Cut / PNP, with the SPARRING two-role mechanic. Originally developed by Barton Niedner ([ORCID 0009-0003-4117-3426](https://orcid.org/0009-0003-4117-3426)) under Resource Forge LLC. The author also publishes professionally as Bart Niedner on LinkedIn and other business surfaces; see ORCID for canonical identity.
 
 ## What this is
 
@@ -37,7 +37,7 @@ Each pilot version is locked at a specific commit + tag (e.g., `v2-prereg-2026-0
 
 When citing this work, see [`CITATION.cff`](CITATION.cff) for machine-readable citation metadata, or attribute the framework as:
 
-> Niedner, Bart. *SPARRING Framework*. Resource Forge LLC, 2026. https://github.com/muddyone/sparring-framework
+> Niedner, Barton. *SPARRING Framework*. Resource Forge LLC, 2026. https://github.com/muddyone/sparring-framework. ORCID: 0009-0003-4117-3426.
 
 ## Working pattern
 

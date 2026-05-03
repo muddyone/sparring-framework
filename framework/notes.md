@@ -1,6 +1,6 @@
 # SPARRING Framework -- Working Notes
 
-*Working-notes / scratchpad for Bart Niedner's SPARRING Framework (originally "SPARK/PNP," developed under ResourceForge), and the larger ongoing conversation around it -- including how it has been applied to the Lifspel agentic ecosystem.*
+*Working-notes / scratchpad for Barton Niedner's SPARRING Framework (originally "SPARK/PNP," developed under ResourceForge), and the larger ongoing conversation around it -- including how it has been applied to the Lifspel agentic ecosystem. The author also publishes professionally as Bart Niedner; in-text references to "Bart" within these notes are the author's own narrative voice and refer to the same person.*
 
 *This is a **living working document**, not a single-source-of-truth artifact. Mature content is extracted from this doc into standalone docs in `/docs/bfn/`. See "Documentation workflow" below.*
 
