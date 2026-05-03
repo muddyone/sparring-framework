@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: "SPARRING Framework"
+message: "If you use SPARRING in your research or methodology, please cite this work."
+type: software
+authors:
+  - family-names: "Niedner"
+    given-names: "Bart"
+    affiliation: "Resource Forge LLC"
+repository-code: "https://github.com/muddyone/sparring-framework"
+abstract: >
+  SPARRING is a methodology for structured AI deliberation in multi-agent
+  LLM systems. It addresses compounding LLM failure modes (sycophancy,
+  confirmation bias, anchoring, blind spots, hallucinated detail,
+  confidently-wrong outputs, bandwagon contamination) by structuring agent
+  collaboration into a four-phase ceremony (SPARK, Pattern Lock, The Cut,
+  PNP) with two roles (Generator and Challenger) and nine disciplines.
+  The repository contains the framework documents, pre-registered
+  evaluation pilots, decision packs, condition outputs, partner ratings,
+  judge results, analysis scripts, and preprint drafts.
+keywords:
+  - "structured AI deliberation"
+  - "multi-agent LLM"
+  - "AI evaluation methodology"
+  - "LLM-as-judge"
+  - "pre-registration"
+  - "agentic AI"
+  - "AI safety"
+license: "CC-BY-4.0 AND Apache-2.0"
+license-url: "https://github.com/muddyone/sparring-framework/blob/main/README.md#license"

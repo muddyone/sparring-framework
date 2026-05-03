@@ -1,10 +1,10 @@
 # V2 SPARRING LLM-Judge Pilot — Pre-Registration
 
-**Status**: PRE-REGISTRATION LOCKED at commit `a26fc103` (tag `v2-prereg-2026-05-03`).
+**Status**: PRE-REGISTRATION LOCKED at commit `a20e7272` (tag `v2-prereg-2026-05-03`; originating Lifspel-private commit `a26fc103`).
 **Pilot identifier**: `sparring-llm-judge-pilot-2026-05-03-v2`.
 **Parent design**: [`v2-design.md`](./v2-design.md) (locked 2026-05-03).
 **V1 reference**: [`00-pre-registration.md`](./00-pre-registration.md), [`preprint-draft.md`](./preprint-draft.md).
-**Pre-reg commit hash**: `a26fc103` (committed 2026-05-03; tag `v2-prereg-2026-05-03`).
+**Pre-reg commit hash**: `a20e7272` (committed 2026-05-03; tag `v2-prereg-2026-05-03`).
 
 This document is the binding pre-registration for V2. It specifies the methodology, the analysis plan, and the decision gate **before any V2 compute is spent**. Once committed, it is immutable until V2 results are produced; deviations from this plan after compute begins must be reported as protocol amendments per [Nosek et al. 2018](https://www.pnas.org/doi/10.1073/pnas.1708274114) preregistration discipline.
 
