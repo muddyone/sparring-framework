@@ -4,7 +4,8 @@
 **Drafted**: 2026-05-02 (working draft for partner review and revision)
 **Type**: Exploratory-evidence preprint, intended for arXiv (cs.AI / cs.HC) with a blog companion
 **Word count target**: ~4,000 words; please trim or expand at sections marked `[length call]`
-**Pre-registration**: Available in the public artifact bundle (linked at submission)
+**Repository**: All artifacts (framework documents, pre-registration, decision packs, condition outputs, normalized texts, judge prompts, raw judge responses, partner ratings, analysis scripts, and this preprint) are publicly available at <https://github.com/muddyone/sparring-framework>.
+**Pre-registration**: Locked at git tag [`v1-prereg-2026-05-02`](https://github.com/muddyone/sparring-framework/releases/tag/v1-prereg-2026-05-02) (commit `f22db5cf`, authored 2026-05-02 before any V1 compute was spent). Public-repo artifact: [`pilots/llm-judge-2026-05-02/v1/pre-registration.md`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v1/pre-registration.md).
 **Conflict of interest**: The author is the developer of the SPARRING framework being evaluated. This study is exploratory case study; the author conducted both the deliberation runs and the rating step that the cross-vendor LLM judges were calibrated against. The findings are scoped accordingly.
 
 ---
@@ -45,7 +46,7 @@ We report these honestly under exploratory-evidence framing, acknowledge the sub
 
 SPARRING is a structured deliberation protocol that pairs two LLM specialist agents with explicitly disjoint evidence-base specifications: a *Generator* proposes an evaluation; a *Challenger* applies a rigorous critique discipline ("PNP — polite, not pleasing") with a verifiable-artifact requirement (every concern must cite a specific source). Both agents emit structured agreement signals at the end of each round; convergence requires both to signal agreement explicitly. If the iteration cap is hit without convergence, the protocol returns "unresolved at cap" rather than papering over disagreement.
 
-The framework's design intent is to mitigate well-documented failure modes in agentic AI deployment: pleasing-bias compounding (Sharma et al. 2023), specialization theater (two correlated agents that look distinct), self-citation circularity, and theatrical adversariality (challenger producing manufactured concerns to look rigorous). Full framework documentation is available in the public artifact bundle.
+The framework's design intent is to mitigate well-documented failure modes in agentic AI deployment: pleasing-bias compounding (Sharma et al. 2023), specialization theater (two correlated agents that look distinct), self-citation circularity, and theatrical adversariality (challenger producing manufactured concerns to look rigorous). Full framework documentation is publicly available at <https://github.com/muddyone/sparring-framework/blob/main/framework/notes.md>.
 
 For the purposes of this paper, the framework is the *case* under evaluation rather than the contribution. The contribution is the methodology observation about partner-anchor calibration that emerged from evaluating it.
 
@@ -104,7 +105,7 @@ For each case, the (Condition A, Condition B) pair was presented to judges *twic
 
 ### 3.8 Partner rating
 
-The same four-criterion rubric, on the same anonymized X/Y pairs, was administered to partner raters (pre-registration anticipated 1-2 partners). Partners saw the question + evidence summary + both answers, blind to the X/Y → condition mapping. Partner ratings were collected via a multi-rater audit-trail-preserving web tool (described in the artifact bundle). Single rating per pair (no position-flip pass for partners; partner time was the binding constraint). Partners did not see judge scores until partner ratings were complete.
+The same four-criterion rubric, on the same anonymized X/Y pairs, was administered to partner raters (pre-registration anticipated 1-2 partners). Partners saw the question + evidence summary + both answers, blind to the X/Y → condition mapping. Partner ratings were collected via a multi-rater audit-trail-preserving web tool. The tool is operationally hosted on Resource Forge's Lifspel infrastructure (a separate codebase that is *not* part of the SPARRING framework itself); the rating-tool's database schema and form/API code remain in that infrastructure as Lifspel-specific operational integration of the methodology, while the methodology, decision packs, condition outputs, partner ratings, and analysis are committed to the public SPARRING repository. Single rating per pair (no position-flip pass for partners; partner time was the binding constraint). Partners did not see judge scores until partner ratings were complete.
 
 The framework author rated first (rater_user_id=1, "Breegarra", 2026-05-02 16:21-16:39). A second partner, Matthew Niedner (rater_user_id=7, "Icarus"), rated after the preprint had been drafted (2026-05-02 19:27-19:58). During data collection we discovered the two raters had been operating under different rating conditions; we report the asymmetry post-hoc in §4.8 (CONSORT 2010 item 14b on protocol deviation reporting). The headline statistics in §4.1-4.4 are computed against the framework author's ratings only (n=16 score points = 2 cases × 2 conditions × 4 criteria), preserving the original analysis as it was always going to be against the author's ratings; the second partner's data is reported as exploratory standalone in §4.8 per Calderon et al. 2025 (alt-test) single-rater-per-condition discipline.
 
@@ -303,7 +304,7 @@ Splitting prevents the cell where a recommendation is factually wrong but active
 - **Paired-comparison parallel pass (optional second instrument).** Keep absolute scoring for backwards-compat with V1 numbers, AND collect a paired ranking ("on C1, A is better / B is better / tied; on C2..."). Paired comparison is robust to ceiling effects by construction (no scale to top out) and produces a different statistic that is independently informative. Cost: ~1.2x rater time per case; benefit: ceiling-resistant signal.
 - **Required rater-condition declaration field.** Per CONSORT 2010 item 11a affirmative-declaration discipline, V2 makes the rater-condition declaration a required field (not optional notes) — choices include unaided / aided-by-AI / aided-by-co-reader / aided-by-external-source-check, with free-text disclosure for the specific aid. This closes the V1 silence-as-permission inference that the §4.8 §6 limitation flagged.
 
-We do not commit to any path here; the costs and benefits depend on whether the eventual goal is a peer-reviewed-journal claim or continued internal use of the framework with bounded confidence. The full V2 design materialization (rubric anchors, tool changes, pre-registration draft) lives at `docs/bfn/llm-judge-pilot-2026-05-02/v2-design.md`.
+We do not commit to any path here; the costs and benefits depend on whether the eventual goal is a peer-reviewed-journal claim or continued internal use of the framework with bounded confidence. The full V2 design materialization (rubric anchors, tool changes, pre-registration) lives in the public SPARRING repository at [`pilots/llm-judge-2026-05-02/v2/design.md`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v2/design.md) and the V2 pre-registration is locked at git tag [`v2-prereg-2026-05-03`](https://github.com/muddyone/sparring-framework/releases/tag/v2-prereg-2026-05-03).
 
 ---
 
@@ -322,9 +323,9 @@ We do not commit to any path here; the costs and benefits depend on whether the 
 
 ## 7. Data and code availability
 
-All artifacts from this study are committed in a public bundle, including: the pre-registration (timestamped commit before any compute spent), both cases' decision packs, both conditions' raw outputs and normalized texts, all 12 LLM judge calls (raw API responses), the Spearman analysis script, partner ratings (audit-trail-preserving), and this preprint draft. Bundle URL provided at submission.
+All artifacts from this study are publicly available at <https://github.com/muddyone/sparring-framework>, including: the pre-registration (timestamped commit `f22db5cf` from before any compute was spent, tagged [`v1-prereg-2026-05-02`](https://github.com/muddyone/sparring-framework/releases/tag/v1-prereg-2026-05-02)); both cases' decision packs ([`v1/decision-packs/`](https://github.com/muddyone/sparring-framework/tree/main/pilots/llm-judge-2026-05-02/v1/decision-packs)); both conditions' raw outputs and normalized texts ([`v1/condition-a-baseline/`](https://github.com/muddyone/sparring-framework/tree/main/pilots/llm-judge-2026-05-02/v1/condition-a-baseline) and [`v1/condition-b-spar/`](https://github.com/muddyone/sparring-framework/tree/main/pilots/llm-judge-2026-05-02/v1/condition-b-spar), with normalized variants in [`v1/normalized/`](https://github.com/muddyone/sparring-framework/tree/main/pilots/llm-judge-2026-05-02/v1/normalized)); all 12 LLM judge calls (raw API responses, in [`v1/judging/judge-results.json`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v1/judging/judge-results.json)); the Spearman analysis script ([`v1/scripts/analyze.php`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v1/scripts/analyze.php)); partner ratings (audit-trail-preserving, exported to the public repo as anonymized snapshots); and this preprint draft.
 
-The deliberation framework's source documentation is available in the same artifact bundle.
+The deliberation framework's source documentation lives in the same repository under [`framework/`](https://github.com/muddyone/sparring-framework/tree/main/framework). Citation metadata is provided in [`CITATION.cff`](https://github.com/muddyone/sparring-framework/blob/main/CITATION.cff). The repository is dual-licensed: framework documents and pilot data under CC BY 4.0; analysis scripts and tooling under Apache 2.0 (see [`LICENSE`](https://github.com/muddyone/sparring-framework/blob/main/LICENSE) and [`LICENSE-CODE`](https://github.com/muddyone/sparring-framework/blob/main/LICENSE-CODE)).
 
 ---
 
@@ -346,13 +347,13 @@ The cross-vendor LLM judges were Anthropic Claude Sonnet 4.6 (anthropic.com), Op
 - Yin, R.K. (2014). *Case Study Research: Design and Methods*, 5th ed. Sage.
 - Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., Lin, Z., Li, Z., Li, D., Xing, E.P., Zhang, H., Gonzalez, J.E., & Stoica, I. (2023). Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. *arXiv*:2306.05685.
 
-Plus: ICZN Code (4th ed., 1999); de Queiroz & Gauthier (1990, 1992); Mayr (1969); Hyland (1994); Conlan (2003); May (2007); Selby (2000); Hardy (2010); Smail (1995, 2nd ed.); Karasulas (2004); Tolkien (1981, Carpenter ed., Letters); Shippey (2000); Frye (1957); Campbell (1949) — see decision-pack and spar-artifact citations in the artifact bundle for full evidence chains.
+Plus: ICZN Code (4th ed., 1999); de Queiroz & Gauthier (1990, 1992); Mayr (1969); Hyland (1994); Conlan (2003); May (2007); Selby (2000); Hardy (2010); Smail (1995, 2nd ed.); Karasulas (2004); Tolkien (1981, Carpenter ed., Letters); Shippey (2000); Frye (1957); Campbell (1949) — see decision-pack and spar-artifact citations in the public repository ([`v1/decision-packs/`](https://github.com/muddyone/sparring-framework/tree/main/pilots/llm-judge-2026-05-02/v1/decision-packs) and [`v1/condition-b-spar/`](https://github.com/muddyone/sparring-framework/tree/main/pilots/llm-judge-2026-05-02/v1/condition-b-spar)) for full evidence chains.
 
 ---
 
 ## Appendix A — per-cell canonical table
 
-[length call: include the 16-row per-cell.json as a formatted markdown table; available in the artifact bundle as machine-readable JSON]
+[length call: include the 16-row per-cell.json as a formatted markdown table; machine-readable form at [`v1/analysis/per-cell.json`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v1/analysis/per-cell.json)]
 
 | Case | Condition | Criterion | Partner | Anthropic | OpenAI | xAI | Consensus |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -379,7 +380,7 @@ Plus: ICZN Code (4th ed., 1999); de Queiroz & Gauthier (1990, 1992); Mayr (1969)
 
 ## Appendix B — pre-registration as posted
 
-[link; full text in artifact bundle]
+Full text at [`pilots/llm-judge-2026-05-02/v1/pre-registration.md`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v1/pre-registration.md), locked at git tag [`v1-prereg-2026-05-02`](https://github.com/muddyone/sparring-framework/releases/tag/v1-prereg-2026-05-02) (commit `f22db5cf`).
 
 ---
 
@@ -395,7 +396,7 @@ Plus: ICZN Code (4th ed., 1999); de Queiroz & Gauthier (1990, 1992); Mayr (1969)
 - Author byline: single-author or do you want a multi-author byline? Idris Harmon, Lena Vasik, or other partners contributed to the case content (decision packs draw on their thread #200 and §6/§7 commentary respectively); they could be acknowledged in §8 instead of bylined.
 - Anthropic disclosure: the §8 acknowledgments mention AI tooling was used in drafting. Anthropic publishes guidance on AI-tooling disclosure (https://www.anthropic.com/responsible-disclosure or equivalent — please verify the current URL); follow that standard.
 - Conflict-of-interest note: the §0 author block names the partner as both framework developer and rater; this is honest but you may want to expand it.
-- Numbers in Appendix A are pulled from the analysis canonical table (`docs/bfn/llm-judge-pilot-2026-05-02/analysis/per-cell.json`) and should be sanity-checked once more before submission — specifically that consensus values match the JSON's `judge_consensus` column.
+- Numbers in Appendix A are pulled from the analysis canonical table ([`pilots/llm-judge-2026-05-02/v1/analysis/per-cell.json`](https://github.com/muddyone/sparring-framework/blob/main/pilots/llm-judge-2026-05-02/v1/analysis/per-cell.json)) and should be sanity-checked once more before submission — specifically that consensus values match the JSON's `judge_consensus` column.
 - "[length call]" tags mark sections where I made a judgment call that you may want to revisit.
 - Suggested venue order: arXiv preprint first (cs.AI / cs.HC), then optionally a workshop track at AIES, FAccT, or NeurIPS. Preprint can be cited as prior work in any later confirmatory paper.
 - The blog companion (you mentioned) should probably be ~800-1,200 words, written in plain language, with the key visualization being the per-criterion delta table. Happy to draft that as a follow-up if useful.
