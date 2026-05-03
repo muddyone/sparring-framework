@@ -1,11 +1,13 @@
 # V2 Design Notes — SPARRING LLM-Judge Pilot
 
-**Status**: DRAFT design specification, not yet committed for execution.
+**Status**: DESIGN LOCKED 2026-05-03 (partner adjudication on five open questions completed). Pre-registration document drafted; awaiting pre-registration commit + tag before V2 compute begins.
 **Parent pilot**: [SPARRING LLM-Judge Pilot 2026-05-02](./00-pre-registration.md)
 **Source preprint**: [`preprint-draft.md`](./preprint-draft.md), §5.6 Path F + §6 limitations
+**V2 pre-registration**: [`v2-00-pre-registration.md`](./v2-00-pre-registration.md)
+**V2 decision packs**: [`v2-decision-packs/`](./v2-decision-packs/)
 **Date**: 2026-05-03
 
-V2 is **not built yet.** This document materializes the design concretely so we can decide whether to commit it. Until a V2 pre-registration is signed and a V2 case is run, V2 exists only as text.
+V2 is **not built yet but is fully designed.** This document materializes the design concretely. Pre-registration commit + tag is the next step; V2 compute begins only after that commit.
 
 What changes between V1 and V2 lives below. Where V1 is fine as-is, V2 inherits unchanged.
 
@@ -234,15 +236,65 @@ For clarity, V2 inherits unchanged:
 
 ---
 
-## Open V2 design questions for partner adjudication
+## Locked V2 design decisions (2026-05-03)
 
-The following design choices were proposed but require partner sign-off before V2 pre-registration:
+The five open design questions were adjudicated on 2026-05-03:
 
-1. **Re-run against V1 cases vs. new cases.** Re-running gives direct V1-vs-V2 comparability but requires fact-checking case-a and case-b retroactively (already partially done for case-b). New cases test V2 in fresh territory but break direct comparability.
-2. **Same partner pool or expanded pool.** V1 had n=1 partner for the headline. V2 with 1-2 partners has the same author-as-rater limitation; V2 with non-author raters costs partner time but addresses the §6 limitation directly.
-3. **Paired-comparison instrument: required or optional.** Required eliminates the V1 ceiling effect by construction but doubles the analysis surface. Optional preserves rater-time budget but means the ceiling-resistant signal isn't always available.
-4. **Per-criterion gate thresholds**: V1 used a single ρ ≥ 0.7 / 0.4 threshold. V2 may benefit from per-criterion thresholds given §5.2's finding that direct-inspection criteria (C1, C2) and counterfactual-inference criteria (C3, C4) showed structurally different alignment patterns. Path D in §5.6 named this; V2 should commit to a specific resolution.
-5. **Cross-substrate variant**: V1 had both conditions on Claude. A Phase 2 variant with Condition A on a non-Claude substrate would test cross-substrate generalization. V2 could include this as a sub-condition or defer to Phase 2.
+### Q1 — Cases: two NEW non-SFxLS decision packs
+
+**Decision**: V2 runs against two newly-authored decision packs whose subject matter is **outside the SPARRING / SFxLS / Lifspel domain**. This serves a methodologically stronger purpose than re-running V1 cases: it tests SPARRING's value in domain-independent settings, removes the case-content-author conflict (raters are not domain experts in the case material), and produces a cleaner cross-rater pool because all four raters approach the cases from comparable non-expert positions. Decision-pack content lives at [`v2-decision-packs/case-a-organizational-vocabulary.md`](./v2-decision-packs/case-a-organizational-vocabulary.md) and [`v2-decision-packs/case-b-introductory-programming-curriculum.md`](./v2-decision-packs/case-b-introductory-programming-curriculum.md).
+
+### Q2 — Rater pool: four raters, three RF partners + one external
+
+**Decision**: V2 uses a four-rater pool:
+- **Bart Niedner (Breegarra)** — RF partner, SPARRING framework author. user_id=1 in the existing system.
+- **Matthew Niedner (Icarus)** — RF partner, conceptual architecture co-author. user_id=7.
+- **Kelly Cope (Worthless Wizard)** — RF partner, not a SPARRING-framework author. user_id=4. New to V2 rating role; brief onboarding required.
+- **Michelle Niedner** — external rater (`michelle.niedner@gmail.com`), not RF, not SFxLS. Provisioning required: needs a user account with rating-tool access. *See "Logistical follow-ups" below for how this is set up before V2 compute begins.*
+
+n=3 RF + n=1 external is the published-methodology minimum for inter-rater-reliability calculations under Krippendorff 2004 §11 and the alt-test reference-distribution requirements (Calderon et al. 2025). The author-as-rater limitation V1 explicitly named (preprint §6) is materially reduced by Kelly + Michelle being framework non-authors.
+
+### Q3 — Paired-comparison: required, not optional
+
+**Decision**: V2 requires raters to complete BOTH instruments per case:
+1. Absolute scoring on the 1-7 anchored scale per criterion (six criteria: C1, C2, C3, C4, C5a, C5b — the C5 split was already locked in §5.6 Path F).
+2. Paired comparison per criterion ("X better / Y better / tied") on the same six criteria.
+
+Rationale: the V1 partner ceiling effect (preprint §4.7) was load-bearing on the headline ρ. Paired comparison is robust to ceiling by construction. Making it optional repeats the V1 design hole; the ~25% rater-minute cost is the right trade for ceiling-resistant signal across the V2 dataset.
+
+### Q4 — Two-tier per-criterion thresholds
+
+**Decision**: V2 abandons the V1 single-threshold gate (ρ ≥ 0.7 PASS / < 0.4 FAIL applied uniformly across criteria) in favor of two-tier thresholds that honor the §5.2 structural finding:
+
+- **High tier** (direct-inspection or factuality criteria): C1 (verifiable artifact citation), C2 (substantive vs theatrical concerns), C5a (factuality), C5b (engagement-with-source). Threshold: ρ ≥ 0.7 PASS, 0.4-0.7 BORDERLINE, < 0.4 FAIL. Same as V1 single threshold.
+- **Lower tier** (counterfactual-inference criteria): C3 (missed real concerns), C4 (calibrated confidence). Threshold: ρ ≥ 0.5 PASS, 0.2-0.5 BORDERLINE, < 0.2 FAIL. Honors the §5.3 partner-anchor inversion finding: counterfactual-inference rubric items have structurally noisy partner-side judgment, and demanding the same correlation against partner ratings as for direct-inspection criteria conflates noise with judge mis-calibration.
+
+Aggregate V2 gate classification:
+- **PASS**: at least 5 of 6 criteria pass their respective tier AND no criterion fails.
+- **BORDERLINE**: at least 4 of 6 criteria pass AND no more than 1 criterion fails.
+- **FAIL**: any other outcome.
+
+### Q5 — Cross-substrate: deferred to Phase 2 with explicit documentation
+
+**Decision**: V2 keeps both conditions on Claude Opus 4.7 (matching V1's substrate choice, preserving direct V1-vs-V2 substrate comparability where the cases are non-comparable but the substrate is). Cross-substrate testing — running Condition A on GPT-4o or Gemini, Condition B on Claude — is **explicitly deferred to a Phase 2 ceremony** as the next experimental escalation after V2 lands.
+
+The deferral rationale, preserved here for the Phase 2 scoper:
+- V2 already adds five substantial methodology shifts (rubric expansion to 6 criteria, scale 1-5 → 1-7, paired-comparison required, rater-condition required, expanded rater pool). Adding cross-substrate on top would mix too many simultaneous changes — if V2 results differ from V1, attribution would be impossible.
+- Cross-substrate tests a different question than V2: V2 tests "does SPARRING produce different/better outputs than single-agent on Claude across domains," and Phase 2 cross-substrate would test "does the answer depend on which model substrate the conditions run on."
+- Phase 2 cross-substrate requires its own pre-registration with prompt-portability decisions (the Generator/Challenger sub-agent prompts are tuned for Claude; running them on GPT-4o or Gemini will produce different output shapes that the rubric needs to handle without per-substrate carve-outs).
+
+This Phase 2 deferral is also recorded in the V2 pre-registration document so future readers see the deferral chain explicitly.
+
+## Logistical follow-ups (before V2 compute begins)
+
+These tasks are not design decisions; they are setup steps that must complete before V2 conditions are run. They block the pre-registration commit ONLY in the sense that the pre-reg should reference the locked rater pool by user-id; the actual user-account provisioning happens after pre-reg lock.
+
+1. **Add Michelle Niedner as a user with rating-tool access.** The current rating tool (`research/blind-rating.php`) is gated by `admin-auth.php` and requires a logged-in user. Michelle needs a user record (`users` table) with `is_admin = 1` for access OR — preferably — a narrower "rater" role can be introduced if her access should be scoped to the rating tool only. Bart's call on which approach. Pre-reg captures her email; user_id is filled in after provisioning.
+2. **Brief Kelly on the V2 rating methodology.** Kelly has not used the rating tool. A 15-minute walkthrough covers: how the blind-rating tool works, how the rater-condition declaration works, how the paired-comparison pass works, what each rubric criterion measures. The "How to approach this rating" instruction block in the rating tool already covers most of this; the briefing is to ensure smooth first use.
+3. **Brief Michelle similarly.** Same content as Kelly. Plus an introduction to what the SPARRING framework is at a high level so she has context for what she's rating outputs of (without that context being part of her rubric scoring — see V1 §3.7 on judge instructions for the analogous principle).
+4. **Run the V2 schema migration** on nonprod and prod. Migration file: `database/migrations/198_v2_eval_schema.sql` (drafted as part of the pre-reg lock). Adds the C5a/C5b columns, the rater-condition fields, and the paired-comparison parallel table.
+5. **Implement the rating-tool form/API updates** to render the V2 schema. This is form-rendering code (1-7 scale, six criteria, rater-condition declaration field, paired-comparison pass UI) and API code (accept new fields on submit/edit, return them on get). Lives in `research/blind-rating.php` and `src/api/research/eval.php`. Schema migration is committed with the pre-reg; UI/API implementation follows in a subsequent commit but is non-load-bearing for the pre-reg validity (the locked design specifies what the tool must support; the implementation produces a tool that supports it).
+6. **Run V2 conditions against the two decision packs** ONCE the pre-reg is committed and tagged. This is the "compute begins" gate — V2 compute runs against the immutable pre-reg.
 
 ---
 
