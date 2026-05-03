@@ -244,6 +244,30 @@ V2 compute begins after step 4. The schema migration is run on nonprod. The rati
 
 ---
 
+## 12.1. Protocol amendments
+
+Amendments to this pre-registration after lock are appended below in chronological order, per the Nosek 2018 / APS *Observer* deviation-disclosure discipline named in §10. Each entry records: amendment date, scope, rationale, what changed, and whether any rater data had been collected at the time of amendment (the integrity-relevant question).
+
+### Amendment 2026-05-03 — format symmetry between Cond A and Cond B outputs
+
+**Date**: 2026-05-03 (same calendar day as pre-reg lock).
+**Pre-rater-data**: YES — no rater data had been collected at the time of this amendment. Amendment was applied during the operational deployment phase (§13 logistical follow-ups), specifically immediately after `rd_eval_cases` was populated with the V2 condition outputs and before the first rater session opened.
+**Scope**: Display format of the Condition B outputs in the rating tool, for both cases.
+**Rationale**: A blinding-integrity defect was observed during pre-rater operational review. The Condition A outputs (single-agent baseline) rendered as clean decision-quality recommendations with the structure `## Recommendation / ## Reasoning chain / ## Concerns / ## Confidence`. The Condition B outputs (SPARRING ceremony) rendered as the full `/spar` ceremony record, including `## Personas`, `## Iteration log` with `### Round 1` / `### Round 2` headers, persona signal blocks (`{agree: true|false, reasoning: "..."}`), `## Final evaluation`, `## Artifacts surfaced`, and `## Recommendation for parent` sections. This format asymmetry is visually distinctive at first glance (before any content is read) and breaks the blind: a rater can identify which side is the SPARRING output purely from structural cues, regardless of the X/Y position-randomization that anonymizes condition assignment. Per Schulz & Grimes (*Lancet* 2002), blinding requires that allocation be concealed at the level of the comparison instrument, not merely at the level of the labels on the comparison. Format-level cue-leakage falls within the scope of the Schulz & Grimes blind-integrity standard.
+**What changed**: For both cases, a new format-symmetric recommendation file was authored alongside the existing ceremony record:
+- Case A: [`v2-condition-b-spar/case-a-recommendation.md`](./v2-condition-b-spar/case-a-recommendation.md) (new) alongside [`v2-condition-b-spar/case-a-spar.md`](./v2-condition-b-spar/case-a-spar.md) (preserved, ceremony audit trail).
+- Case B: [`v2-condition-b-spar/case-b-recommendation.md`](./v2-condition-b-spar/case-b-recommendation.md) (new) alongside [`v2-condition-b-spar/case-b-spar.md`](./v2-condition-b-spar/case-b-spar.md) (preserved, ceremony audit trail).
+
+The new recommendation files preserve the substantive content of the SPARRING ceremony output (recommendations, citations, residual concerns, confidence calibration) but match Condition A's section structure (`## Recommendation / ## Reasoning chain / ## Concerns / ## Confidence`). The original ceremony records are retained unchanged as the audit trail of what the `/spar` ceremony actually produced — they remain the methodologically authoritative artifact for any post-hoc analysis questions about the ceremony itself. The recommendation files are the rater-presented form.
+
+The `rd_eval_cases` rows on nonprod were updated to point to the new recommendation files: case id=3 (Case A) `answer_y_text` (Y=sparring per the locked X/Y assignment) replaced; case id=4 (Case B) `answer_x_text` (X=sparring per the locked X/Y assignment) replaced.
+
+**Affected analysis steps**: None of the §8 analysis plan steps depend on the Condition B output format — they depend on rater scores and judge scores, which are produced from the rater/judge view of the materials. The amendment changes the rater/judge view of the Condition B side from "ceremony record" to "recommendation," which is the methodologically correct view for the comparison the pre-registration specifies (decision-quality output of the framework vs. decision-quality output of the baseline).
+
+**Tag**: `v2-prereg-amendment-2026-05-03-format-symmetry` (applied to the amendment commit).
+
+---
+
 ## 13. Logistical follow-ups (must complete before V2 compute begins)
 
 These are operational tasks, not design decisions. They are tracked in [`v2-design.md`](./v2-design.md) "Logistical follow-ups." Summary:
