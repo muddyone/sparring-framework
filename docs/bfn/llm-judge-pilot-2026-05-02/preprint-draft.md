@@ -104,7 +104,9 @@ For each case, the (Condition A, Condition B) pair was presented to judges *twic
 
 ### 3.8 Partner rating
 
-The same four-criterion rubric, on the same anonymized X/Y pairs, was administered to one human partner (the author). Partner saw the question + evidence summary + both answers, blind to the X/Y → condition mapping. Partner ratings were collected via a multi-rater audit-trail-preserving web tool (described in the artifact bundle). Single rating per pair (no position-flip pass for the partner; partner time was the binding constraint). Partner did not see judge scores until partner ratings were complete.
+The same four-criterion rubric, on the same anonymized X/Y pairs, was administered to partner raters (pre-registration anticipated 1-2 partners). Partners saw the question + evidence summary + both answers, blind to the X/Y → condition mapping. Partner ratings were collected via a multi-rater audit-trail-preserving web tool (described in the artifact bundle). Single rating per pair (no position-flip pass for partners; partner time was the binding constraint). Partners did not see judge scores until partner ratings were complete.
+
+The framework author rated first (rater_user_id=1, "Breegarra", 2026-05-02 16:21-16:39). A second partner, Matthew Niedner (rater_user_id=7, "Icarus"), rated after the preprint had been drafted (2026-05-02 19:27-19:58). During data collection we discovered the two raters had been operating under different rating conditions; we report the asymmetry post-hoc in §4.8 (CONSORT 2010 item 14b on protocol deviation reporting). The headline statistics in §4.1-4.4 are computed against the framework author's ratings only (n=16 score points = 2 cases × 2 conditions × 4 criteria), preserving the original analysis as it was always going to be against the author's ratings; the second partner's data is reported as exploratory standalone in §4.8 per Calderon et al. 2025 (alt-test) single-rater-per-condition discipline.
 
 ### 3.9 Decision gate
 
@@ -119,11 +121,11 @@ Pre-registered:
 
 ### 4.1 Headline
 
-**Cross-vendor LLM-judge consensus Spearman ρ vs partner ratings = 0.351 (n=16 score points).** Below the 0.4 PASS threshold. Pre-registered gate classification: **FAIL**.
+**Cross-vendor LLM-judge consensus Spearman ρ vs the framework author's ratings = 0.351 (n=16 score points = 2 cases × 2 conditions × 4 criteria, single rater per §3.8).** Below the 0.4 PASS threshold. Pre-registered gate classification: **FAIL**.
 
-### 4.2 Per-judge alignment (all n = 16 score points)
+### 4.2 Per-judge alignment (all n = 16 score points, vs framework author)
 
-| Judge | Vendor | Spearman ρ vs partner |
+| Judge | Vendor | Spearman ρ vs author |
 |---|---|---:|
 | Anthropic | claude-sonnet-4-6 | **0.706** |
 | OpenAI | gpt-4o | 0.145 |
@@ -179,6 +181,28 @@ Cross-judge consensus has internal coherence — judges are within ~⅓ of a rat
 
 The partner rated the framework condition at the rubric ceiling (5 out of 5) on every criterion in both cases. Single-agent baseline received scores between 3 and 4. This ceiling effect substantially constrains what the headline correlation can detect, since within-framework variance on the partner side is structurally zero. We discuss the implications in §5.3.
 
+### 4.8 Post-pre-reg observation: rater-condition asymmetry (a second partner)
+
+We ran a clean blinded design with two partner raters anticipated in the pre-registration (§3.8). The framework author rated first under condition α (unaided, blind to X/Y assignment); a second partner, Matthew Niedner, rated after preprint draft. During data collection we discovered the two raters had been operating under different rating conditions — the second rater's session involved substantial AI-assisted analysis, including ground-truth verification of the case-b decision pack against the engine source code. That session is the discovery surface for the §5.4 case-b factual-error finding. We report the second partner's per-criterion ratings here as exploratory standalone under condition β.
+
+**Second partner's ratings (Matthew Niedner, condition β: AI-assisted blind rating).**
+
+| Case | Condition | C1 | C2 | C3 | C4 |
+|---|---|---:|---:|---:|---:|
+| A | baseline | 4 | 4 | 3 | 4 |
+| A | SPARRING | 4 | 3 | 4 | 3 |
+| B | baseline | 4 | 4 | 4 | 4 |
+| B | SPARRING | 5 | 4 | 4 | 4 |
+
+**Cross-rater observations.** Mean per-criterion B−A delta (framework minus baseline) for the second partner: C1 = +0.5, C2 = −0.5, C3 = +0.5, C4 = −0.5. Across-criteria mean Δ = **0.00**, vs the framework author's mean Δ = **+1.125** (§4.4). The second partner did not exhibit the ceiling-saturated directional preference the author did, and partially reversed direction on C2 and C4. The most informative single observation is that AI-assisted rating produced *less* directional preference for the framework condition than unaided rating did — the opposite of what an AI-AI bias hypothesis (Panickssery et al. 2024; PNAS 2025 on LLMs preferring LLM-generated content) would predict at face value. The sample size is too small for any general claim, but the direction is worth recording.
+
+**Why we do not fold these into the headline.** The headline ρ = 0.351 (§4.1) was always computed against the framework author's ratings only, per the original analysis design; folding the second partner's condition-β data into a multi-rater statistic would mix two structurally non-comparable conditions. We follow Calderon et al. 2025 (alt-test) discipline on single-rater-per-condition data and report condition β as exploratory standalone rather than as a confounded multi-rater pool.
+
+**Rater-condition declaration (per CONSORT 2010 item 11a affirmative-declaration discipline).** The asymmetry is disclosed structurally rather than buried in §6 limitations:
+
+- **Condition α** (the framework author): rated unaided. No AI assistance, no co-reader, no parallel session. Rated based solely on the materials presented in the blind-rating tool, treating presented facts as given and evaluating how each condition reasoned through them. Rating-tool `notes` field empty (audit trail).
+- **Condition β** (Matthew Niedner): substantial AI-assisted analytical session during rating, including engine-source verification of the case-b decision pack's locomotion claim. Documented in chatlog `docs/chatlogs/202605021600.icarus-blind-rating-walkthrough-and-engine-locomotion-finding.md`. Rating-tool `notes` field contains the substantive engine-source finding (verbatim, audit trail preserved).
+
 ---
 
 ## 5. Discussion
@@ -227,7 +251,7 @@ A second partner-disclosed observation from a post-pre-reg blind-rating session 
 
 **The framework-discipline gap.** The SPARRING framework's *verifiable-artifact requirement* mandates that every concern an agent raises must cite a specific artifact (file path, source citation, edge case). It does NOT mandate that agents fetch and verify cited artifacts, nor that they verify the input pack's assertions about external artifacts. There is a real distinction between "this concern cites a real source" and "this concern's source actually says what the agent claims it says" — and an even larger distinction between either of those and "the input pack's framing of the engine state actually matches the engine state." The framework's discipline addresses the first; this study revealed it does not address the second or third.
 
-**The partner-residual-safety as load-bearing.** The framework's substrate documentation positions partner judgment of surfaced artifacts as the residual safety against coordinated theater and shared agent blind spots. The case-b error is a small but clean instance of that residual safety actually firing: a partner reading the deliberation outputs *with the actual ground truth available* caught what the conditions could not. We argue this should be reported in the literature as evidence that the partner-residual-safety position is not theoretical — it is operationally load-bearing and can catch real factual errors in author-curated decision-pack methodologies.
+**A class of failure mode for author-curated decision-pack methodologies.** Setting aside any framework-internal interpretation: the case-b error is a clean instance of a class of failure that pack-curated AI-deliberation studies are structurally exposed to. The class is "the input pack contains a factual error about the system the recommendation will be acted on against, and the deliberation conditions, however well they reason, cannot detect it from the pack alone." A partner reading the deliberation outputs with ground truth available caught what the conditions could not — but we make no broader claim from a single observation that this rescue mechanism is reliable. We surface the finding because the failure class itself is worth naming in the literature on AI-deliberation evaluation; reliable mitigation is a separate empirical question. (We avoid the stronger framing "partner judgment is operationally load-bearing residual safety" because (a) it would lean on the framework author's own substrate documentation as supporting evidence, which is self-citation circularity; and (b) the published automation-bias literature, e.g., Goddard et al. 2012 JAMIA, treats AI exposure during human review as a *risk factor* for the reviewer rather than a feature of the review apparatus — the directional evidence runs against the stronger framing.)
 
 **Two implications for Phase 2 and for similar pilots elsewhere:**
 
@@ -264,14 +288,29 @@ We outline four follow-up paths, ordered from most-conservative-of-this-study's-
 
 **Path E (honest abandon)**: Conclude that LLM-as-judge for this rubric is not viable at this scale, and accept that a different evaluation methodology (e.g., contracted-rater RCT at the documented $40–60k+ cost for ~12-month timeline) is what would be needed for a confirmatory comparative claim. Per pre-registration, this is a defensible outcome.
 
-We do not commit to any path here; the costs and benefits depend on whether the eventual goal is a peer-reviewed-journal claim or continued internal use of the framework with bounded confidence.
+**Path F (rubric expansion: ground-truth fidelity dimension)**: Add a fifth rubric criterion in V2 to address the pack-fidelity-vs-ground-truth-fidelity gap surfaced in §5.4. The case-b finding shows that the existing C1–C4 rubric scores faithfulness *to the input pack* but is structurally blind to whether the pack itself accurately describes the system the recommendation is about. Following the rubric-design literature on faithfulness vs. factuality (Liang et al. 2023 HELM; Es et al. 2023 RAGAS) and on multidimensional vs. unidimensional scales (Krippendorff 2004 §11), we propose a *split* rather than a single combined dimension:
+
+- **C5a (factuality)**: 1 = recommendation contradicts known engine / ground-truth state; 5 = factually correct against engine / ground-truth state. Anchored against verifiable artifacts (file paths, source citations, sim runs).
+- **C5b (engagement-with-source)**: 1 = silent on or skips load-bearing assertions in the input pack; 5 = engages substantively with the input pack's load-bearing assertions, agreeing or productively challenging.
+
+Splitting prevents the cell where a recommendation is factually wrong but actively engages the source from collapsing onto the same number as a recommendation that is factually correct but disengaged — a failure mode the case-b decision pack would actually have produced if scored on a combined scale. The cost is real: rater-side ground-truth verification adds time per case. A defensible compromise is to give raters a verified-pack view (i.e., upstream fact-check pass per §5.4 implication 1) AND keep C5a/C5b at the rater level for spot-checking, mirroring the MT-Bench (Zheng et al. 2023 §C.1) reference-solution pattern that gives raters ground truth to compare against without removing factuality from the rubric.
+
+**Scale and instruction changes proposed for V2** (to address the V1 partner ceiling effect surfaced in §4.7 and to harden inter-rater reliability):
+
+- **1-7 scale rather than 1-5.** Per the rubric-design literature (Cox 1980 on optimal response alternatives; Preston & Colman 2000 on scale length and reliability; Krosnick 1991 on shorter-scale reliability for non-expert raters), 7 levels is empirically the modal recommendation — wider than the V1 1-5 (which produced ceiling saturation on the framework condition) but not so wide that rater drift between "what I think 6 means" and "what you think 6 means" overwhelms signal. 1-7 also has a natural neutral midpoint (4) that 1-10 lacks.
+- **Behavioral anchors at every level**, not just 1 / mid / max. V1's anchored 1-5 scale (`research/blind-rating.php` form view) anchored only the endpoints and a "3 = adequate" middle; V2 should anchor every level for every criterion, e.g., "C2 level 4 = concerns are evidence-rooted on at least 3 of 4 listed claims" rather than "C2 level 4 = strong, minor gaps."
+- **Forced-distribution instruction.** Add a rater-side instruction along the lines of "your ratings within a case must span at least 2 levels somewhere across the 4-criterion x 2-condition grid; if you find yourself on the verge of saturated identical scores, re-read for a pairwise distinction before submitting." Identical-saturated scores remain valid (a rater who genuinely cannot differentiate should report so), but the prompt forces a second look. V1 had no such instruction.
+- **Paired-comparison parallel pass (optional second instrument).** Keep absolute scoring for backwards-compat with V1 numbers, AND collect a paired ranking ("on C1, A is better / B is better / tied; on C2..."). Paired comparison is robust to ceiling effects by construction (no scale to top out) and produces a different statistic that is independently informative. Cost: ~1.2x rater time per case; benefit: ceiling-resistant signal.
+- **Required rater-condition declaration field.** Per CONSORT 2010 item 11a affirmative-declaration discipline, V2 makes the rater-condition declaration a required field (not optional notes) — choices include unaided / aided-by-AI / aided-by-co-reader / aided-by-external-source-check, with free-text disclosure for the specific aid. This closes the V1 silence-as-permission inference that the §4.8 §6 limitation flagged.
+
+We do not commit to any path here; the costs and benefits depend on whether the eventual goal is a peer-reviewed-journal claim or continued internal use of the framework with bounded confidence. The full V2 design materialization (rubric anchors, tool changes, pre-registration draft) lives at `docs/bfn/llm-judge-pilot-2026-05-02/v2-design.md`.
 
 ---
 
 ## 6. Limitations
 
 - **n = 2 cases.** Calibration-check sample size; not statistical-power sample size. No effect-size claim.
-- **n = 1 partner.** Pre-registration anticipated 1–2 partners; only one rated. Inter-rater reliability cannot be computed.
+- **n = 1 partner for the headline analysis; rater-condition asymmetry on the second partner.** Pre-registration anticipated 1-2 partners. The framework author rated under condition α (unaided, blind to X/Y assignment); a second partner rated post-pre-reg under condition β (substantial AI-assisted analysis during the rating session, including engine-source verification of the case-b decision pack). The conditions are not directly comparable, so the second partner's data is reported as exploratory standalone in §4.8 rather than folded into the headline statistics. The pre-registration was silent on AI-assisted rating; under published methodology defaults (CONSORT 2010, Schulz & Grimes 2002 *Lancet*, Zheng et al. 2023 MT-Bench §C.1) "blind rating" without further specification is read as blind-AND-unaided, so the framework author's condition α is the published-methodology-aligned condition. Folding condition β into a multi-rater statistic would risk an AI-AI bias confound (PNAS 2025 finding that LLMs systematically prefer LLM-generated content): a Claude-assisted rater evaluating Claude-pipeline outputs introduces a directional bias that the cross-rater statistic cannot separate from rater disagreement. Inter-rater reliability across the two raters cannot be computed cleanly under these conditions; the V2 design (§5.6 Path F) treats rater-condition declaration as a required field per CONSORT 2010 item 11a affirmative-declaration discipline.
 - **Partner ceiling effect.** Partner gave the framework 5/5/5/5 on every criterion in both cases. Within-framework variance on the partner side is structurally zero, limiting the headline correlation by construction.
 - **Author-as-rater.** The partner who rated is also the author of the framework being evaluated. This is acknowledged as a substantial limit; a Phase 2 design would need raters with no framework-author conflict.
 - **Pre-registered model substitutions.** Pre-reg targeted Anthropic Sonnet 4.7 (used Sonnet 4.6, the current frontier Sonnet) and "Grok-4 class" (used Grok-3, the available key). Substantive substitutions; effect on results unknown.
