@@ -1,0 +1,368 @@
+{
+    "metadata": {
+        "timestamp": "2026-05-04T00:20:51+00:00",
+        "pre_registration_tag": "v2-prereg-2026-05-03",
+        "judges": {
+            "anthropic": "claude-sonnet-4-6",
+            "openai": "gpt-4o",
+            "xai": "grok-3"
+        },
+        "cases": [
+            "case-a",
+            "case-b"
+        ],
+        "pair_assignments": {
+            "case-a": {
+                "pass1": {
+                    "X": "baseline",
+                    "Y": "sparring"
+                },
+                "pass2": {
+                    "X": "sparring",
+                    "Y": "baseline"
+                }
+            },
+            "case-b": {
+                "pass1": {
+                    "X": "sparring",
+                    "Y": "baseline"
+                },
+                "pass2": {
+                    "X": "baseline",
+                    "Y": "sparring"
+                }
+            }
+        },
+        "rubric_system_prompt": "You evaluate decision recommendations on six criteria using a 1-7 anchored scale. Score per criterion only. Do not state which you prefer overall. Output ONLY the scores in the exact format requested. No preamble, no explanation, no analysis text.",
+        "criteria": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5a",
+            "C5b"
+        ],
+        "scale_max": 7,
+        "call_count": 12,
+        "elapsed_seconds": 23.03983187675476,
+        "rerun_notes": [
+            "case-b pass2 openai: original call returned valid scores with one mislabel (X5a on Y line); re-run with identical prompt produced clean labels. Pre-reg integrity preserved (still 12 distinct calls per the locked plan; the re-run replaces a parse-failed row, not a re-judge)."
+        ]
+    },
+    "results": [
+        {
+            "case": "case-a",
+            "pass": "pass1",
+            "judge": "anthropic",
+            "x_condition": "baseline",
+            "y_condition": "sparring",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 7,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 7,
+                    "2": 7,
+                    "3": 7,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 7
+                }
+            },
+            "text": "X1=6 X2=6 X3=7 X4=6 X5a=6 X5b=6\nY1=7 Y2=7 Y3=7 Y4=6 Y5a=6 Y5b=7"
+        },
+        {
+            "case": "case-a",
+            "pass": "pass1",
+            "judge": "openai",
+            "x_condition": "baseline",
+            "y_condition": "sparring",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 5,
+                    "3": 4,
+                    "4": 5,
+                    "5a": 6,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 7,
+                    "2": 6,
+                    "3": 6,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 7
+                }
+            },
+            "text": "X1=6 X2=5 X3=4 X4=5 X5a=6 X5b=6\nY1=7 Y2=6 Y3=6 Y4=6 Y5a=6 Y5b=7"
+        },
+        {
+            "case": "case-a",
+            "pass": "pass1",
+            "judge": "xai",
+            "x_condition": "baseline",
+            "y_condition": "sparring",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 6,
+                    "4": 5,
+                    "5a": 6,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 6,
+                    "4": 5,
+                    "5a": 6,
+                    "5b": 6
+                }
+            },
+            "text": "X1=6 X2=6 X3=6 X4=5 X5a=6 X5b=6\nY1=6 Y2=6 Y3=6 Y4=5 Y5a=6 Y5b=6"
+        },
+        {
+            "case": "case-a",
+            "pass": "pass2",
+            "judge": "anthropic",
+            "x_condition": "sparring",
+            "y_condition": "baseline",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 7,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 7
+                },
+                "Y": {
+                    "1": 5,
+                    "2": 5,
+                    "3": 6,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                }
+            },
+            "text": "X1=6 X2=6 X3=7 X4=6 X5a=6 X5b=7\nY1=5 Y2=5 Y3=6 Y4=5 Y5a=5 Y5b=6"
+        },
+        {
+            "case": "case-a",
+            "pass": "pass2",
+            "judge": "openai",
+            "x_condition": "sparring",
+            "y_condition": "baseline",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 7,
+                    "4": 5,
+                    "5a": 6,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 7,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 6
+                }
+            },
+            "text": "X1=6 X2=6 X3=7 X4=5 X5a=6 X5b=6  \nY1=6 Y2=6 Y3=7 Y4=6 Y5a=6 Y5b=6"
+        },
+        {
+            "case": "case-a",
+            "pass": "pass2",
+            "judge": "xai",
+            "x_condition": "sparring",
+            "y_condition": "baseline",
+            "scores": {
+                "X": {
+                    "1": 7,
+                    "2": 7,
+                    "3": 6,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 7
+                },
+                "Y": {
+                    "1": 6,
+                    "2": 5,
+                    "3": 5,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                }
+            },
+            "text": "X1=7 X2=7 X3=6 X4=6 X5a=6 X5b=7\nY1=6 Y2=5 Y3=5 Y4=5 Y5a=5 Y5b=6"
+        },
+        {
+            "case": "case-b",
+            "pass": "pass1",
+            "judge": "anthropic",
+            "x_condition": "sparring",
+            "y_condition": "baseline",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 6,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 5,
+                    "2": 5,
+                    "3": 5,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                }
+            },
+            "text": "X1=6 X2=6 X3=6 X4=5 X5a=5 X5b=6\nY1=5 Y2=5 Y3=5 Y4=5 Y5a=5 Y5b=6"
+        },
+        {
+            "case": "case-b",
+            "pass": "pass1",
+            "judge": "openai",
+            "x_condition": "sparring",
+            "y_condition": "baseline",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 5,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 7,
+                    "2": 5,
+                    "3": 6,
+                    "4": 6,
+                    "5a": 5,
+                    "5b": 6
+                }
+            },
+            "text": "X1=6 X2=6 X3=5 X4=5 X5a=5 X5b=6  \nY1=7 Y2=5 Y3=6 Y4=6 Y5a=5 Y5b=6"
+        },
+        {
+            "case": "case-b",
+            "pass": "pass1",
+            "judge": "xai",
+            "x_condition": "sparring",
+            "y_condition": "baseline",
+            "scores": {
+                "X": {
+                    "1": 7,
+                    "2": 7,
+                    "3": 6,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 7
+                },
+                "Y": {
+                    "1": 6,
+                    "2": 5,
+                    "3": 4,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                }
+            },
+            "text": "X1=7 X2=7 X3=6 X4=6 X5a=6 X5b=7\nY1=6 Y2=5 Y3=4 Y4=5 Y5a=5 Y5b=6"
+        },
+        {
+            "case": "case-b",
+            "pass": "pass2",
+            "judge": "anthropic",
+            "x_condition": "baseline",
+            "y_condition": "sparring",
+            "scores": {
+                "X": {
+                    "1": 5,
+                    "2": 5,
+                    "3": 6,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 6,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                }
+            },
+            "text": "X1=5 X2=5 X3=6 X4=5 X5a=5 X5b=6\nY1=6 Y2=6 Y3=6 Y4=5 Y5a=5 Y5b=6"
+        },
+        {
+            "case": "case-b",
+            "pass": "pass2",
+            "judge": "openai",
+            "x_condition": "baseline",
+            "y_condition": "sparring",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 5,
+                    "3": 5,
+                    "4": 5,
+                    "5a": 6,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 6,
+                    "4": 6,
+                    "5a": 6,
+                    "5b": 6
+                }
+            },
+            "text": "X1=6 X2=5 X3=5 X4=5 X5a=6 X5b=6  \nY1=6 Y2=6 Y3=6 Y4=6 Y5a=6 Y5b=6  ",
+            "rerun_note": "Original call had a one-character mislabel (X5a appeared on the Y line); scores were present but parser was strict. Re-run produced clean labeling.",
+            "original_parse_failed_text": "X1=6 X2=6 X3=6 X4=5 X5a=6 X5b=6\nY1=7 Y2=7 Y3=7 Y4=6 X5a=6 Y5b=6"
+        },
+        {
+            "case": "case-b",
+            "pass": "pass2",
+            "judge": "xai",
+            "x_condition": "baseline",
+            "y_condition": "sparring",
+            "scores": {
+                "X": {
+                    "1": 6,
+                    "2": 6,
+                    "3": 5,
+                    "4": 5,
+                    "5a": 5,
+                    "5b": 6
+                },
+                "Y": {
+                    "1": 7,
+                    "2": 7,
+                    "3": 6,
+                    "4": 6,
+                    "5a": 5,
+                    "5b": 7
+                }
+            },
+            "text": "X1=6 X2=6 X3=5 X4=5 X5a=5 X5b=6\nY1=7 Y2=7 Y3=6 Y4=6 Y5a=5 Y5b=7"
+        }
+    ]
+}
